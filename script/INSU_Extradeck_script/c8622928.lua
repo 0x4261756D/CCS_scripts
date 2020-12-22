@@ -54,13 +54,14 @@ end
 function c8622928.lzop(e,tp,eg,ep,ev,re,r,rp)
 	local tc=Duel.GetFirstMatchingCard(c8622928.cfilter,tp,LOCATION_DECK,0,nil,tp)
 	if tc then
-		local fc=Duel.GetFieldCard(tp,LOCATION_SZONE,5)
+		--[[local fc=Duel.GetFieldCard(tp,LOCATION_SZONE,5)
 		if fc then
 			Duel.SendtoGrave(fc,REASON_RULE)
 			Duel.BreakEffect()
 			end
 		Duel.MoveToField(tc,tp,tp,LOCATION_SZONE,POS_FACEUP,true)
-		fc=Duel.GetFieldCard(1-tp,LOCATION_SZONE,5)
+		fc=Duel.GetFieldCard(1-tp,LOCATION_SZONE,5)]]--
+		aux.PlayFieldSpell(tc, e, tp, eg, ep, ev, re, r, rp)
 		local dg=Duel.GetMatchingGroup(nil,tp,LOCATION_ONFIELD,LOCATION_ONFIELD,nil)
 		if dg:GetCount()>0 and Duel.GetMatchingGroupCount(Card.IsSetCard,tp,LOCATION_GRAVE,0,nil,0x39)>=3 and Duel.SelectYesNo(tp,aux.Stringid(8622928,0)) then
 			Duel.BreakEffect()

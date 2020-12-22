@@ -1,7 +1,7 @@
 --Lavalval Archtyrant
 function c8622928.initial_effect(c)
 	--link summon
-	Link.AddProcedure(c,aux.FilterBoolFunctionEx(Card.IsAttribute,ATTRIBUTE_FIRE),2,3,c8622928.lcheck)
+	Link.AddProcedure(c,aux.FilterBoolFunctionEx(Card.IsAttribute,ATTRIBUTE_FIRE),2,3,c8622928.matcheck)
 	c:EnableReviveLimit()
 	--field spell
 	local e1=Effect.CreateEffect(c)
@@ -39,8 +39,8 @@ function c8622928.initial_effect(c)
 	e4:SetCode(EFFECT_INDESTRUCTABLE_EFFECT)
 	c:RegisterEffect(e4)
 end
-function c8622928.lcheck(g,lc)
-	return g:IsExists(Card.IsLinkSetCard,1,nil,0x39)
+function c8622928.matcheck(g,lc)
+	return g:IsExists(Card.IsSetCard,1,nil,0x39,lc,sumtype,tp)
 end
 function c8622928.lzcon(e,tp,eg,ep,ev,re,r,rp)
 	return e:GetHandler():IsSummonType(SUMMON_TYPE_LINK)

@@ -19,7 +19,7 @@ function c64000155.condition(e,tp,eg,ep,ev,re,r,rp)
 	return Duel.IsExistingMatchingCard(c64000155.cfilter,tp,LOCATION_MZONE,0,1,nil)
 end
 function c64000155.filter(c)
-	return (c:IsSetCard(0x14d) or c:IsSetCard(0x14e) or c:IsCode(79575620))  and c:IsAbleToHand() and not c:IsCode(64000155)
+	return (c:IsSetCard(0x19d) or c:IsSetCard(0x19e) or c:IsCode(79575620))  and c:IsAbleToHand() and not c:IsCode(64000155)
 end
 function c64000155.target(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chkc then return chkc:GetControler()==tp and chkc:GetLocation()==LOCATION_DECK and c64000155.filter(chkc) end

@@ -19,10 +19,10 @@ function c64000152.initial_effect(c)
 end
 function c64000152.eqlimit(e,c)
 	return c:GetControler()==e:GetHandler():GetControler()
-		and (c:IsCode(5519829) or c:IsCode(79575620) or (c:IsSetCard(0x14d)))
+		and (c:IsCode(5519829) or c:IsCode(79575620) or (c:IsSetCard(0x19d)))
 end
 function c64000152.filter(c)
-	return c:IsCode(5519829) or c:IsCode(79575620) or (c:IsSetCard(0x14d))
+	return c:IsCode(5519829) or c:IsCode(79575620) or (c:IsSetCard(0x19d))
 end
 function c64000152.reccon(e,tp,eg,ep,ev,re,r,rp)
 	local ec=e:GetHandler():GetEquipTarget()

@@ -25,7 +25,7 @@ function c64000150.spfilter(c)
 	return c:IsFaceup() and (c:IsCode(79575620) or c:IsCode(5519829))
 end
 function c64000150.cfilter(c)
-	return c:IsFaceup() and (c:IsCode(79575620) or c:IsSetCard(0x14d))
+	return c:IsFaceup() and (c:IsCode(79575620) or c:IsSetCard(0x19d))
 end
 function c64000150.spcon(e,c)
 	if c==nil then return true end

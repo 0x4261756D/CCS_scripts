@@ -1,7 +1,7 @@
 --Majespecter Dog
 function c48859012.initial_effect(c)
 	--pendulum summon
-	Pendulum.AddProcedure
+	Pendulum.AddProcedure(c)
 	--tohand
 	local e1=Effect.CreateEffect(c)
 	e1:SetCategory(CATEGORY_TOHAND)

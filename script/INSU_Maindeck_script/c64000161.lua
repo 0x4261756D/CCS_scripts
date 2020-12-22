@@ -43,7 +43,7 @@ function c64000161.con(e)
 	return Duel.GetFieldGroupCount(e:GetHandlerPlayer(),0,LOCATION_MZONE)>0
 end
 function c64000161.filter(c,e,tp)
-	return c:IsCanBeSpecialSummoned(e,0,tp,false,false) and c:IsCode(79575620) or c:IsCode(5519829) or c:IsSetCard(0x14d) and c:IsType(TYPE_MONSTER)
+	return c:IsCanBeSpecialSummoned(e,0,tp,false,false) and c:IsCode(79575620) or c:IsCode(5519829) or c:IsSetCard(0x19d) and c:IsType(TYPE_MONSTER)
 end
 function c64000161.filter1(c)
 	return c:IsFaceup() and
@@ -92,7 +92,7 @@ function c64000161.condition(e,tp,eg,ep,ev,re,r,rp)
 	return Duel.IsExistingMatchingCard(c64000161.envfilter,e:GetHandlerPlayer(),LOCATION_ONFIELD,0,1,nil) 
 end
 function c64000161.spfilter(c)
-	return (c:IsCode(79575620) or c:IsSetCard(0x14d)) and c:IsReason(REASON_DESTROY) 
+	return (c:IsCode(79575620) or c:IsSetCard(0x19d)) and c:IsReason(REASON_DESTROY) 
 		and c:IsPreviousLocation(LOCATION_MZONE) 
 end
 function c64000161.spcon(e,tp,eg,ep,ev,re,r,rp)

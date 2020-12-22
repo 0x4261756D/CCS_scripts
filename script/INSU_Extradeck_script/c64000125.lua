@@ -41,7 +41,7 @@ function c64000125.initial_effect(c)
 	return e:GetHandler():GetSummonType()==SUMMON_TYPE_XYZ
 end
 function c64000125.filter(c)
-	return c:IsCode(25704359) or c:IsCode(64000121) and c:IsSSetable()
+	return c:IsType(TYPE_SPELL+TYPE_TRAP) and c:IsSetCard(0xc0) and c:IsSSetable()
 end
 function c64000125.settg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.GetLocationCount(tp,LOCATION_SZONE)>0

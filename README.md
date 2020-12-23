@@ -1,7 +1,7 @@
 # CCS_scripts
 
 Kleine Information wie das Hochladen von Dateien (scripts, cdb's und Bildern) via Pull Request aussehen sollte.
-Scripte kommen in "script/name des Archetypes.
+Scripte kommen in "script/Name des Archetypes.
 cdb's kommen in die Root.
 Bilder kommen in "pics".
 Wenn ein Archetype erweitert wird, haben in der cdb AUSSCHLIEßLICH die neuen Karten dieses Archetypes zu stehen und die cdb hat so zu heißen, dass man sofort weiß um welchen 

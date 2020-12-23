@@ -19,14 +19,14 @@ function c9998829.initial_effect(c)
 	c:RegisterEffect(e2)
 end
 --function c9998829.hdfilter(c)
---	return c:IsType(TYPE_MONSTER) and (c:IsType(TYPE_DUAL) or c:IsSetCard(0x29A))
+--	return c:IsType(TYPE_MONSTER) and (c:IsType(TYPE_Gemini) or c:IsSetCard(0x29A))
 --end
 --function c9998829.handcon(e)
 --	return Duel.GetMatchingGroupCount(Card.IsType,tp,LOCATION_GRAVE,0,nil,TYPE_MONSTER)>0 and
 --	Duel.GetMatchingGroupCount(Card.IsType,tp,LOCATION_GRAVE,0,nil,TYPE_MONSTER)==Duel.GetMatchingGroupCount(c9998829.hdfilter,tp,LOCATION_GRAVE,0,nil)
 --end
 function c9998829.hdfilter(c)
-	return not (c:IsType(TYPE_DUAL) or c:IsSetCard(0x29A))
+	return not (c:IsType(TYPE_Gemini) or c:IsSetCard(0x29A))
 end
 function c9998829.handcon(e,tp,eg,ep,ev,re,r,rp)
 	local g=Duel.GetMatchingGroup(Card.IsType,tp,LOCATION_GRAVE,0,nil,TYPE_MONSTER)
@@ -56,7 +56,7 @@ function c9998829.filter(c)
 	return c:IsRace(RACE_FAIRY) and c:IsAbleToGrave()
 end
 function c9998829.filter2(c)
-	return c:IsFaceup() and c:IsType(TYPE_DUAL) and c:IsAbleToDeck()
+	return c:IsFaceup() and c:IsType(TYPE_Gemini) and c:IsAbleToDeck()
 end
 function c9998829.target(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsExistingMatchingCard(c9998829.filter,tp,LOCATION_DECK,0,1,nil) 

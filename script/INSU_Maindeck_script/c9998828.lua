@@ -51,7 +51,7 @@ function c9998828.sumop(e,tp,eg,ep,ev,re,r,rp,chk)
 	local g=Duel.SelectMatchingCard(tp,c9998828.filter,tp,LOCATION_MZONE+LOCATION_HAND,0,1,1,nil)
 	if g:GetCount()>0 then
 		if g:GetFirst():IsLocation(LOCATION_MZONE) then
-			g:GetFirst():EnableDualState()
+			g:GetFirst():EnableGeminiState()
 		end
 		Duel.Summon(tp,g:GetFirst(),true,nil)
 	end

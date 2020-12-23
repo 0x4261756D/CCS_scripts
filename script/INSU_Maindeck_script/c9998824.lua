@@ -1,6 +1,6 @@
 --Knochenschädel Karreth
 function c9998824.initial_effect(c)
-	aux.EnableDualAttribute(c)
+	aux.EnableGeminiAttribute(c)
 	--summon
 	local e1=Effect.CreateEffect(c)
 	e1:SetCategory(CATEGORY_SUMMON)
@@ -29,7 +29,7 @@ function c9998824.cfilter(c)
 		and c:GetPreviousControler()==tp
 end
 function c9998824.sumcon(e,tp,eg,ep,ev,re,r,rp)
-	return aux.IsDualState(e) and eg:IsExists(c9998824.cfilter,1,nil)
+	return aux.IsGeminiState(e) and eg:IsExists(c9998824.cfilter,1,nil)
 end
 
 function c9998824.filter(c,e,tp)

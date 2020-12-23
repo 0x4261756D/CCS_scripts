@@ -1,13 +1,13 @@
 --Knochenschädel Basan
 function c9998821.initial_effect(c)
-	aux.EnableDualAttribute(c)
+	aux.EnableGeminiAttribute(c)
 	--shuffle into deck
 	local e1=Effect.CreateEffect(c)
 	e1:SetCategory(CATEGORY_TODECK)
 	e1:SetType(EFFECT_TYPE_IGNITION)
 	e1:SetRange(LOCATION_MZONE)
 	e1:SetCountLimit(1)
-	e1:SetCondition(aux.IsDualState)
+	e1:SetCondition(aux.IsGeminiState)
 	e1:SetCost(c9998821.cost)
 	e1:SetTarget(c9998821.target)
 	e1:SetOperation(c9998821.operation)

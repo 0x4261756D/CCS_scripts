@@ -1,6 +1,6 @@
 --Knochenschädel Grimper
 function c9998822.initial_effect(c)
-	aux.EnableDualAttribute(c)
+	aux.EnableGeminiAttribute(c)
 	--special summon
 	local e1=Effect.CreateEffect(c)
 	e1:SetCategory(CATEGORY_SPECIAL_SUMMON)
@@ -28,7 +28,7 @@ function c9998822.cfilter(c)
 	return c:IsType(TYPE_NORMAL)
 end
 function c9998822.spcon(e,tp,eg,ep,ev,re,r,rp)
-	return aux.IsDualState(e) and eg:IsExists(c9998822.cfilter,1,nil)
+	return aux.IsGeminiState(e) and eg:IsExists(c9998822.cfilter,1,nil)
 end
 
 function c9998822.filter(c,e,tp)
@@ -49,7 +49,7 @@ function c9998822.spop(e,tp,eg,ep,ev,re,r,rp,chk)
 	end
 end
 function c9998822.spfilter(c,e,tp)
-	return  c:IsType(TYPE_DUAL) and c:GetLevel()==1 and c:IsCanBeSpecialSummoned(e,0,tp,false,false)
+	return  c:IsType(TYPE_Gemini) and c:GetLevel()==1 and c:IsCanBeSpecialSummoned(e,0,tp,false,false)
 end
 function c9998822.spcondition(e,tp,eg,ep,ev,re,r,rp)
     return e:GetHandler():GetPreviousLocation()==LOCATION_MZONE and
@@ -66,6 +66,6 @@ function c9998822.spoperation(e,tp,eg,ep,ev,re,r,rp)
 	local g=Duel.SelectMatchingCard(tp,c9998822.spfilter,tp,LOCATION_DECK,0,1,1,nil,e,tp)
 	local tc=g:GetFirst()
 	if Duel.SpecialSummon(tc,0,tp,tp,false,false,POS_FACEUP)~=0 then
-		tc:EnableDualState()
+		tc:EnableGeminiState()
 	end
 end

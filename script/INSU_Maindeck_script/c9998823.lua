@@ -1,6 +1,6 @@
 --Knochenschaedel Heatad 
 function c9998823.initial_effect(c)
-	aux.EnableDualAttribute(c)
+	aux.EnableGeminiAttribute(c)
 	--remove
 	local e1=Effect.CreateEffect(c)
 	e1:SetCategory(CATEGORY_REMOVE)
@@ -26,11 +26,11 @@ end
 
 function c9998823.cfilter(c,tp)
 	return c:IsControler(tp) and c:IsPreviousLocation(LOCATION_GRAVE)
-		and (c:IsType(TYPE_DUAL) or c:IsType(TYPE_NORMAL))
+		and (c:IsType(TYPE_Gemini) or c:IsType(TYPE_NORMAL))
 		--
 end
 function c9998823.condition(e,tp,eg,ep,ev,re,r,rp)
-	return aux.IsDualState(e) and eg:IsExists(c9998823.cfilter,1,nil,tp)
+	return aux.IsGeminiState(e) and eg:IsExists(c9998823.cfilter,1,nil,tp)
 end
 function c9998823.target(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chk==0 then return Duel.IsExistingMatchingCard(Card.IsAbleToRemove,tp,LOCATION_ONFIELD,LOCATION_ONFIELD,1,1,nil) end

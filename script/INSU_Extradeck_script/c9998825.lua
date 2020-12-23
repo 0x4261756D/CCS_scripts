@@ -1,7 +1,7 @@
 --Knochenschaedel Hulu
 function c9998825.initial_effect(c)
 	--link summon
-	Link.AddProcedure(c,aux.FilterBoolFunctionEx(Card.IsType,TYPE_DUAL),1,1)
+	Link.AddProcedure(c,aux.FilterBoolFunctionEx(Card.IsType,TYPE_GEMINI),1,1)
 	c:EnableReviveLimit()
 	--summon
 	local e1=Effect.CreateEffect(c)
@@ -37,7 +37,7 @@ function c9998825.sumcon(e,tp,eg,ep,ev,re,r,rp)
 	return e:GetHandler():IsSummonType(SUMMON_TYPE_LINK)
 end
 function c9998825.filter(c,e,tp)
-	return c:IsType(TYPE_DUAL) and c:IsSummonable(true,nil)
+	return c:IsType(TYPE_GEMINI) and c:IsSummonable(true,nil)
 end
 function c9998825.sumtg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chk==0 then return Duel.IsExistingMatchingCard(c9998825.filter,tp,LOCATION_MZONE+LOCATION_HAND,0,1,nil) end

@@ -35,7 +35,7 @@ c:EnableReviveLimit()
 	end
 	
 function c9998826.lcheck(g,lc)
-	return g:IsExists(Card.IsType,1,nil,TYPE_DUAL)
+	return g:IsExists(Card.IsType,1,nil,TYPE_GEMINI)
 end
 
 function c9998826.spcon(e,tp,eg,ep,ev,re,r,rp)
@@ -57,12 +57,12 @@ function c9998826.spop(e,tp,eg,ep,ev,re,r,rp,chk)
 	local g=Duel.SelectMatchingCard(tp,c9998826.filter,tp,LOCATION_DECK,0,1,1,nil,e,tp)
 	local tc=g:GetFirst()
 	if tc and Duel.SpecialSummon(tc,0,tp,tp,false,false,POS_FACEUP)~=0 then
-		tc:EnableDualState()
+		tc:EnableGeminiState()
 	end
 end
 
 function c9998826.filter2(c)
-	return c:IsType(TYPE_DUAL) and c:IsAbleToGraveAsCost()
+	return c:IsType(TYPE_GEMINI) and c:IsAbleToGraveAsCost()
 end
 function c9998826.cost(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsExistingMatchingCard(c9998826.filter2,tp,LOCATION_DECK,0,2,nil) end
@@ -100,7 +100,7 @@ function c9998826.spoperation(e,tp,eg,ep,ev,re,r,rp)
 	local i=Duel.SelectMatchingCard(tp,c9998826.filter4,tp,LOCATION_DECK,0,1,1,nil,e,tp)
 	local tc=i:GetFirst()
 	if tc and Duel.SpecialSummon(tc,0,tp,tp,false,false,POS_FACEUP)~=0
-		and tc:IsLocation(LOCATION_MZONE) and tc:IsType(TYPE_DUAL) then
-		tc:EnableDualState()
+		and tc:IsLocation(LOCATION_MZONE) and tc:IsType(TYPE_GEMINI) then
+		tc:EnableGeminiState()
 	end
 end

@@ -39,7 +39,7 @@ function c1033315.lcheck(g,lc)
 	and g:IsExists(Card.IsAttribute,1,nil,ATTRIBUTE_EARTH)
 	end
 function c1033315.filter(c)
-	return c:IsSetCard(0x14d) and c:IsAbleToHand()
+	return c:IsSetCard(0x19d) and c:IsAbleToHand()
 end
 function c1033315.tg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsExistingMatchingCard(c1033315.filter,tp,LOCATION_GRAVE,0,1,nil) end

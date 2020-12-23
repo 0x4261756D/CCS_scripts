@@ -60,7 +60,7 @@ function c64000156.thop(e,tp,eg,ep,ev,re,r,rp)
 	end
 end
 function c64000156.negfilter(c)
-	return c:IsOnField() and c:IsType(TYPE_MONSTER) and (c:IsCode(79575620) or c:IsSetCard(0x14d))
+	return c:IsOnField() and c:IsType(TYPE_MONSTER) and (c:IsCode(79575620) or c:IsSetCard(0x19d))
 end
 function c64000156.negcon(e,tp,eg,ep,ev,re,r,rp)
 	if e==re or e:GetHandler():IsStatus(STATUS_BATTLE_DESTROYED) or not Duel.IsChainNegatable(ev) then return false end
@@ -80,7 +80,7 @@ function c64000156.negcon(e,tp,eg,ep,ev,re,r,rp)
 	return false
 end
 function c64000156.negfilterc(c)
-	return c:IsType(TYPE_SPELL) and c:IsSetCard(0x14e)
+	return c:IsType(TYPE_SPELL) and c:IsSetCard(0x19e)
 	 and c:IsAbleToRemoveAsCost() and aux.SpElimFilter(c,true)
 end
 function c64000156.negcost(e,tp,eg,ep,ev,re,r,rp,chk)
@@ -104,7 +104,7 @@ end
 
 function c64000156.gtcon(e,tp,eg,ep,ev,re,r,rp)
 	local tc=eg:GetFirst()
-	return ep~=tp and tc:IsControler(tp) and (tc:IsCode(79575620) or tc:IsSetCard(0x14d)) and tc~=e:GetHandler()
+	return ep~=tp and tc:IsControler(tp) and (tc:IsCode(79575620) or tc:IsSetCard(0x19d)) and tc~=e:GetHandler()
 end
 function c64000156.filterf(c)
 	return c:IsType(TYPE_TRAP) and c:IsSSetable() and c:IsCode(64000153) or c:IsCode(64000161)

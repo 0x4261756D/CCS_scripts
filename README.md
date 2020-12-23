@@ -5,8 +5,13 @@ Kleine Information wie das Hochladen von Dateien (scripts, cdb's und Bildern) vi
 Scripte kommen in "script".
 cdb's kommen in die Root.
 Bilder kommen in "pics".
-Wenn ein Archetype erweitert wird, sollen in der cdb *ausschließlich* die neuen Karten dieses Archetypes zu stehen und die cdb sollte so zu heißen, dass man sofort weiß um welchen Archetype es sich handelt (VirtualWorldExtension.cdb z.B.).
+Wenn ein Archetype erweitert wird, sollen in der cdb *ausschließlich* die neuen Karten dieses Archetypes stehen und die cdb sollte so zu heißen, dass man sofort weiß um welchen Archetype es sich handelt (VirtualWorldExtension.cdb z.B.).
 Pull Requests werden nur gemerged, wenn sie eine Info enthalten welche Person mit einem Sinn für Balancing (also nicht Rundas, aber z.B. Retrogamer) die Karte abgesegnet hat.
+
+**Neue Archetypes/Counter hinzufügen**
+Wenn ein neuer Archetype oder ein neuer Counter Type hinzugefügt wird, soll die Datei "strings.conf" aus der Root im PR editiert werden:
+!counter freie hex ID Counter Name
+!setname freie hex ID Archetype Name
 
 **Automatisches Update für den Client**
 Damit die Karten in eurem EDOPro-Client immer aktuell sind solltet ihr in eurem ProjectIgnis-Ordner in /config/configs.json unter

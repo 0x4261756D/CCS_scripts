@@ -26,7 +26,8 @@ Damit die Karten in eurem EDOPro-Client immer aktuell sind solltet ihr in eurem 
             "should_read": true
         },
 ```
-eine neue Zeile und ```json
+eine neue Zeile und 
+```json
         {
             "url": "https://github.com/0x4261756D/CCS_scripts",
             "repo_name": "CCS Scripts",
@@ -35,4 +36,5 @@ eine neue Zeile und ```json
             "should_update": true,
             "should_read": true
         },
-``` einfügt.
+``` 
+einfügt.

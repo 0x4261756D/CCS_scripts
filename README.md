@@ -6,7 +6,6 @@ Scripte kommen in "script/Archetype Unterordner" oder "script/Set Unterordner" (
 cdb's kommen in die Root wobei der Eintrag "ot" 32 (bzw. 0x20) sein sollte um alle Customs auch als solche zu deklarieren. Macht die Suche nach Customs einfacher und es ist irgendwie falsch Customs als offizielle Karten zu deklarieren.
 Bilder kommen in "pics" und NICHT in "pics/Unterordner", da der pics Ordner das nicht supported.
 Wenn ein Archetype erweitert wird, sollen in der cdb *ausschließlich* die neuen Karten dieses Archetypes stehen und die cdb sollte so heißen, dass man sofort weiß um welchen Archetype es sich handelt (VirtualWorldExtension.cdb z.B.).
-Pull Requests werden nur gemerged, wenn sie eine Info enthalten welche Person mit einem Sinn für Balancing (also nicht Rundas, aber z.B. Retrogamer) die Karte abgesegnet hat.
 
 **Neue Archetypes/Counter hinzufügen:**
 Wenn ein neuer Archetype oder ein neuer Counter Type hinzugefügt wird, soll die Datei "strings.conf" aus der Root im PR editiert werden:

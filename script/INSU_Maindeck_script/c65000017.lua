@@ -42,8 +42,6 @@ function c65000017.rmop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_REMOVE)
 	local g=Duel.SelectMatchingCard(tp,c65000017.rmfilter,tp,LOCATION_DECK,0,1,1,nil)	
 	Duel.Remove(g,POS_FACEUP,REASON_EFFECT)
-	Duel.BreakEffect()
-	Duel.Draw(tp,1,REASON_EFFECT)
 end
 function c65000017.filter(c,tp)
 	return c:IsFaceup() and c:IsControler(tp) and c:IsLocation(LOCATION_MZONE)

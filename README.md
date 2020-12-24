@@ -1,6 +1,6 @@
 # CCS_scripts
 
-**Hochladen neuer Karten**
+**Hochladen neuer Karten:**
 Kleine Information wie das Hochladen von Dateien (scripts, cdb's und Bildern) via Pull Request aussehen sollte.
 Scripte kommen in "script/Archetype Unterordner" oder "script/Set Unterordner" (je nachdem ob ein Archetype oder ein "Custom Booster Pack" hochgeladen wird).
 cdb's kommen in die Root wobei das Feld "ot" für jede Karte mit 32 (bzw. 0x20) ausgefüllt sein sollte, da dies Custom Karten darstellt und so das Filtern einfacher macht.
@@ -9,14 +9,14 @@ Bilder kommen in "pics" und NICHT in "pics/Unterordner", da der pics Ordner das 
 Wenn ein Archetype erweitert wird, sollen in der cdb *ausschließlich* die neuen Karten dieses Archetypes stehen und die cdb sollte so heißen, dass man sofort weiß um welchen Archetype es sich handelt (VirtualWorldExtension.cdb z.B.).
 Pull Requests werden nur gemerged, wenn sie eine Info enthalten welche Person mit einem Sinn für Balancing (also nicht Rundas, aber z.B. Retrogamer) die Karte abgesegnet hat.
 
-**Neue Archetypes/Counter hinzufügen**
+**Neue Archetypes/Counter hinzufügen:**
 Wenn ein neuer Archetype oder ein neuer Counter Type hinzugefügt wird, soll die Datei "strings.conf" aus der Root im PR editiert werden:
 
 !counter freie hex ID Counter Name (für Counter)
 
 !setname freie hex ID Archetype Name (für Archetypes)
 
-**Automatisches Update für den Client**
+**Automatisches Update für den Client:**
 Damit die Karten in eurem EDOPro-Client immer aktuell sind solltet ihr in eurem ProjectIgnis-Ordner in /config/configs.json unter
 
 ```json

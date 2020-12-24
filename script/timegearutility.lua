@@ -1,3 +1,4 @@
+//Noch nicht vollständig getestet, also noch nicht in Customs verwenden
 Timegear={}
 
 function Timegear.AddTimeLeapProcedure(c,con,f,min,max,desc,tb,...)

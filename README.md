@@ -11,8 +11,10 @@ Pull Requests werden nur gemerged, wenn sie eine Info enthalten welche Person mi
 
 **Neue Archetypes/Counter hinzufügen**
 Wenn ein neuer Archetype oder ein neuer Counter Type hinzugefügt wird, soll die Datei "strings.conf" aus der Root im PR editiert werden:
-!counter freie hex ID Counter Name
-!setname freie hex ID Archetype Name
+
+!counter freie hex ID Counter Name (für Counter)
+
+!setname freie hex ID Archetype Name (für Archetypes)
 
 **Automatisches Update für den Client**
 Damit die Karten in eurem EDOPro-Client immer aktuell sind solltet ihr in eurem ProjectIgnis-Ordner in /config/configs.json unter

@@ -54,5 +54,31 @@ function Timegear.TimeLeapOperation(c)
 		Duel.Remove(mat,POS_FACEUP,REASON_MATERIAL+REASON_FUSION+69)
 		mat:DeleteGroup()
 		Duel.RegisterFlagEffect(tp,3400,RESET_PHASE+PHASE_END,EFFECT_FLAG_OATH,1)
+		mat:RegisterFlagEffect(3401,RESET_PHASE+PHASE_END,0,1)
+	end
+end
+
+function Timegear.TimeBanishTarget(c)
+	return function(e,tp,eg,ep,ev,re,r,rp,chk)
+		if chk==0 then return c:IsAbleToRemove() end
+	end
+end
+
+function Timegear.TimeBanishFilter(c,e,tp)
+	return c:GetFlagEffect(3401)~=0 and c:IsCanBeSpecialSummoned(e,0,tp,false,false)
+end
+
+function Timegear.TimeBanishOperation(c)
+	return function(e,tp,eg,ep,ev,re,r,rp)
+		Duel.Remove(c,POS_FACEUP,REASON_EFFECT,tp)
+		local e1=Effect.CreateEffect(c)
+		e1:SetType(EFFECT_TYPE_SINGLE)
+		e1:SetCode(EFFECT_CANNOT_BE_EFFECT_TARGET)
+		e1:SetProperty(EFFECT_FLAG_SINGLE_RANGE)
+		e1:SetRange(LOCATION_REMOVED)
+		e1:SetValue(1)
+		c:RegisterEffect(e1,true)
+		local tc=Duel.SelectMatchingCard(tp,Timegear.TimeBanishFilter,tp,LOCATION_REMOVED,0,1,1,nil,e,tp)
+		Duel.SpecialSummon(tc,0,tp,tp,false,false,POS_FACEUP)
 	end
 end

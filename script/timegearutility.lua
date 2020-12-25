@@ -1,6 +1,5 @@
 --Noch nicht vollständig getestet, also noch nicht in Customs verwenden
 Timegear={}
-print("oof")
 function Timegear.AddTimeLeapProcedure(c,con,f,min,max,desc,tb,...)
 	local params={...}
 	local e1=Effect.CreateEffect(c)
@@ -42,8 +41,9 @@ function Timegear.TimeLeapTarget(c,f,min,max,...)
 		local lv=c:GetLevel()
 		local g=Duel.GetMatchingGroup(Card.IsLevel,tp,LOCATION_MZONE,0,nil,lv-1)
 		if #g>0 then
-			local mat=g:FilterSelect(tp,f,min,max,true,nil,table.unpack(params)):GetFirst()
+			local mat=g:FilterSelect(tp,f,min,max,true,nil,table.unpack(params))
 			e:SetLabelObject(mat)
+			mat:KeepAlive()
 			return true
 			else return false
 		end
@@ -58,6 +58,7 @@ function Timegear.TimeLeapOperation(c)
 		mat:DeleteGroup()
 		Duel.RegisterFlagEffect(tp,3400,RESET_PHASE+PHASE_END,EFFECT_FLAG_OATH,1)
 		mat:RegisterFlagEffect(3401,RESET_PHASE+PHASE_END,0,1)
+		mat:DeleteGroup()
 	end
 end
 

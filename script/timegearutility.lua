@@ -1,7 +1,8 @@
 --Noch nicht vollständig getestet, also noch nicht in Customs verwenden
 Timegear={}
-
+print("oof")
 function Timegear.AddTimeLeapProcedure(c,con,f,min,max,desc,tb,...)
+	local params={...}
 	local e1=Effect.CreateEffect(c)
 	e1:SetType(EFFECT_TYPE_FIELD)
 	if desc then
@@ -13,7 +14,7 @@ function Timegear.AddTimeLeapProcedure(c,con,f,min,max,desc,tb,...)
 	e1:SetProperty(EFFECT_FLAG_UNCOPYABLE+EFFECT_FLAG_IGNORE_IMMUNE)
 	e1:SetRange(LOCATION_EXTRA)
 	e1:SetCondition(Timegear.TimeLeapCondition(con))
-	e1:SetTarget(Timegear.TimeLeapTarget(c,f,min,max,...))
+	e1:SetTarget(Timegear.TimeLeapTarget(c,f,min,max,table.unpack(params)))
 	e1:SetOperation(Timegear.TimeLeapOperation(c))
 	e1:SetValue(SUMMON_TYPE_FUSION+69)
 	c:RegisterEffect(e1)
@@ -36,11 +37,12 @@ function Timegear.TimeLeapCondition(con)
 end
 
 function Timegear.TimeLeapTarget(c,f,min,max,...)
+	local params={...}
 	return function(e,tp,eg,ep,ev,re,r,rp)
 		local lv=c:GetLevel()
 		local g=Duel.GetMatchingGroup(Card.IsLevel,tp,LOCATION_MZONE,0,nil,lv-1)
 		if #g>0 then
-			local mat=g:FilterSelect(tp,f,min,max,true,nil,...):GetFirst()
+			local mat=g:FilterSelect(tp,f,min,max,true,nil,table.unpack(params)):GetFirst()
 			e:SetLabelObject(mat)
 			return true
 			else return false

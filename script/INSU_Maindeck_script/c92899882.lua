@@ -49,7 +49,7 @@ function s.equipop(c,e,tp,tc)
 end
 function s.eqop(e,tp,eg,ep,ev,re,r,rp)
 	if Duel.GetLocationCount(tp,LOCATION_SZONE)==0 or e:GetHandler():IsFacedown() or not e:GetHandler():IsRelateToEffect(e)
-		or Duel.GetMatchingGroupCountCount(s.filter,tp,0,LOCATION_DECK,nil,tp)==0 then return end
+		or Duel.GetMatchingGroupCount(s.filter,tp,0,LOCATION_DECK,nil,tp)==0 then return end
 			local g=Duel.GetMatchingGroup(s.filter,tp,0,LOCATION_DECK,nil,tp)
 			local tc=g:Filter(Card.IsSequence,nil,0):GetFirst()
 	if tc then

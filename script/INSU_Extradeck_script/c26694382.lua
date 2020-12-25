@@ -46,7 +46,7 @@ end
 function s.operation(e,tp,eg,ep,ev,re,r,rp)
 	if not e:GetHandler():IsRelateToEffect(e) then return end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_DESTROY)
-	local g=Duel.SelectMatchingCard(tp,Card.IsDestructable,tp,LOCATION_DECK,0,1,1,nil):Filter(Card.IsMonster,nil)
+	local g=Duel.SelectMatchingCard(tp,s.desfilter,tp,LOCATION_DECK,0,1,1,nil)
 	if #g>0 then
 		Duel.Destroy(g,REASON_EFFECT)
 	end
@@ -54,15 +54,17 @@ end
 function s.sdfilter(c)
 	return c:IsFaceup() and c:IsRace(RACE_DINOSAUR)
 end
-function s.sdcon(e)
-	return Duel.IsExistingMatchingCard(s.sdfilter,e:GetHandlerPlayer(),LOCATION_MZONE,0,1,e:GetHandler())
+function s.sdcon(e,tp,eg)
+	return eg:FilterCount(s.sdfilter,nil)>0
 end
 function s.desfilter(c)
+	return c:IsType(TYPE_MONSTER) and c:IsDestructable()
+end
+function s.desfilter2(c)
 	return c:IsType(TYPE_SPELL+TYPE_TRAP) and c:IsDestructable()
 end
 function s.destg(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return Duel.IsExistingMatchingCard(s.desfilter,tp,LOCATION_DECK,0,1,nil)
-		and e:GetHandler():IsDestructable() end
+	if chk==0 then return true end
 	Duel.SetOperationInfo(0,CATEGORY_DESTROY,e:GetHandler(),1,tp,LOCATION_MZONE)
 	Duel.SetOperationInfo(0,CATEGORY_DESTROY,nil,1,tp,LOCATION_DECK)
 end
@@ -70,7 +72,7 @@ function s.desop(e,tp,eg,ep,ev,re,r,rp)
 	if not e:GetHandler():IsRelateToEffect(e) then return end
 	Duel.Destroy(e:GetHandler(),REASON_EFFECT)
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_DESTROY)
-	local g=Duel.SelectMatchingCard(tp,s.desfilter,tp,LOCATION_DECK,0,1,1,nil)
+	local g=Duel.SelectMatchingCard(tp,s.desfilter2,tp,LOCATION_DECK,0,1,1,nil)
 	if #g>0 then
 		Duel.Destroy(g,REASON_EFFECT)
 	end

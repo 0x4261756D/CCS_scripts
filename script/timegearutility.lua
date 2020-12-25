@@ -26,6 +26,7 @@ function Timegear.AddTimeLeapProcedure(c,con,f,min,max,desc,tb,...)
 			e2:SetCondition(function(e) return Duel.GetTurnPlayer()==e:GetHandlerPlayer() end)
 			e2:SetTarget(Timegear.TimeBanishTarget(c))
 			e2:SetOperation(Timegear.TimeBanishOperation(c))
+			c:RegisterEffect(e2)
 		end
 end
 

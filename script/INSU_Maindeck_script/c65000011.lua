@@ -1,95 +1,117 @@
---Skurrilist Wogian
-function c65000011.initial_effect(c)
-	--activate
+--Weirzard Wogian
+local s,id=GetID()
+function s.initial_effect(c)
+	--Add
 	local e1=Effect.CreateEffect(c)
-	e1:SetDescription(aux.Stringid(65000011,0))
-	e1:SetCategory(CATEGORY_REMOVE)
-	e1:SetProperty(EFFECT_FLAG_CARD_TARGET)
-	e1:SetType(EFFECT_TYPE_IGNITION)
-	e1:SetRange(LOCATION_MZONE)
-	e1:SetCountLimit(1,65000011)
-	e1:SetCost(c65000011.cost)
-	e1:SetTarget(c65000011.target)
-	e1:SetOperation(c65000011.operation)
+	e1:SetDescription(aux.Stringid(id,0))
+	e1:SetCategory(CATEGORY_TOHAND)
+	e1:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_O)
+	e1:SetCode(EVENT_REMOVE)
+	e1:SetRange(LOCATION_GRAVE)
+	e1:SetCountLimit(1,id)
+	e1:SetCondition(s.con)
+	e1:SetCost(s.cost)
+	e1:SetTarget(s.target)
+	e1:SetOperation(s.operation)
 	c:RegisterEffect(e1)
-	--spsummon                            triggered sich noch nicht
+	--spsummon
 	local e2=Effect.CreateEffect(c)
-	e2:SetDescription(aux.Stringid(65000011,1))
+	e2:SetDescription(aux.Stringid(id,1))
 	e2:SetCategory(CATEGORY_SPECIAL_SUMMON)
 	e2:SetType(EFFECT_TYPE_IGNITION)
-	--e2:SetProperty(EFFECT_FLAG_CARD_TARGET)
 	e2:SetRange(LOCATION_MZONE)
-	e2:SetCountLimit(1,65000012)
-	e2:SetCost(c65000011.spcost)
-	e2:SetTarget(c65000011.sptg)
-	e2:SetOperation(c65000011.spop)
+	e2:SetCountLimit(1,id+100)
+	e2:SetCost(s.spcost)
+	e2:SetTarget(s.sptg)
+	e2:SetOperation(s.spop)
 	c:RegisterEffect(e2)
+	--protecc
+	local e3=Effect.CreateEffect(c)
+	e3:SetType(EFFECT_TYPE_CONTINUOUS+EFFECT_TYPE_FIELD)
+	e3:SetCode(EFFECT_DESTROY_REPLACE)
+	e3:SetRange(LOCATION_MZONE)
+	e3:SetValue(1)
+	e3:SetTarget(s.destg)
+	e3:SetOperation(s.desop)
+	c:RegisterEffect(e3)
 end
-function c65000011.bdfilter1(c,tp)
+function s.bdfilter1(c,tp)
 	return c:IsAbleToDeckAsCost() and c:IsType(TYPE_SPELL)
-		and Duel.IsExistingMatchingCard(c65000011.rmfilter,tp,LOCATION_DECK,0,1,nil,c:GetCode())
+		and Duel.IsExistingMatchingCard(s.rmfilter,tp,LOCATION_DECK,0,1,nil)
 end
-function c65000011.rmfilter(c,r)
+function s.rmfilter(c)
 	return c:IsType(TYPE_SPELL) and c:IsAbleToRemove()
-	and not c:IsCode(r)
 end
-function c65000011.cost(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return Duel.IsExistingMatchingCard(c65000011.bdfilter1,tp,LOCATION_GRAVE,0,1,nil,tp) end
+function s.thfilter(c)
+	return c:IsType(TYPE_MONSTER) and c:IsSetCard(0x800) and c:IsAbleToHand()
+end
+function s.confilter(c)
+	return c:IsType(TYPE_SPELL) and c:IsPreviousLocation(LOCATION_DECK)
+end
+function s.con(e,tp,eg,ep,ev,re,r,rp)
+	return eg:IsExists(s.confilter,1,nil)
+end
+function s.target(e,tp,eg,ep,ev,re,r,rp,chk)
+	if chk==0 then return Duel.IsExistingMatchingCard(s.thfilter,tp,LOCATION_GRAVE,0,1,nil) end 
+	Duel.SetOperationInfo(0,CATEGORY_TOHAND,nil,1,tp,LOCATION_GRAVE)
+end
+function s.operation(e,tp,eg,ep,ev,re,r,rp)
+	if not Duel.IsExistingMatchingCard(s.thfilter,tp,LOCATION_GRAVE,0,1,nil) then return end
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TOHAND)
+	local g=Duel.SelectMatchingCard(tp,s.thfilter,tp,LOCATION_GRAVE,0,1,1,nil)
+	Duel.SendToHand(g,REASON_EFFECT)
+end
+function s.spcost(e,tp,eg,ep,ev,re,r,rp,chk)
+	if chk==0 then return Duel.IsExistingMatchingCard(Card.IsType,tp,LOCATION_GRAVE,0,1,nil,TYPE_SPELL) end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TODECK)
-	local g=Duel.SelectMatchingCard(tp,c65000011.bdfilter1,tp,LOCATION_GRAVE,0,1,1,nil,tp)
-	e:SetLabel(g:GetFirst():GetCode())
+	local g=Duel.SelectMatchingCard(tp,Card.IsType,tp,LOCATION_GRAVE,0,1,1,nil,TYPE_SPELL)
 	Duel.SendtoDeck(g,nil,2,REASON_COST)
-end
-function c65000011.target(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return true end 
-	Duel.SetOperationInfo(0,CATEGORY_REMOVE,nil,1,tp,LOCATION_DECK)
-end
-function c65000011.operation(e,tp,eg,ep,ev,re,r,rp)
-	if not e:GetHandler():IsRelateToEffect(e) then return end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_REMOVE)
-	local g1=Duel.SelectMatchingCard(tp,c65000011.rmfilter,tp,LOCATION_DECK,0,1,1,nil,e:GetLabel())	
-	Duel.Remove(g1,POS_FACEUP,REASON_EFFECT)
+	g=Duel.SelectMatchingCard(tp,s.rmfilter,tp,LOCATION_DECK,0,1,1,nil)
 end
-function c65000011.spcost(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return Duel.GetFieldGroupCount(tp,LOCATION_REMOVED,0)>0 end
-	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TODECK)
-	local g=Duel.GetFieldGroup(tp,LOCATION_REMOVED,nil)
-	if g:GetCount()==0 then return end
-	local sg=g:RandomSelect(tp,1)
-	--local g=Duel.SelectMatchingCard(tp,c65000011.filter,tp,LOCATION_GRAVE,0,1,1,nil,tp)
-	--e:SetLabel(g:GetFirst():GetCode())
-	Duel.SendtoDeck(sg,nil,2,REASON_COST)
-end
-function c65000011.spfilter(c,e,tp)
+function s.spfilter(c,e,tp)
 	return c:IsCanBeSpecialSummoned(e,0,tp,false,false) and c:IsSetCard(0x800)
 end
-function c65000011.sptg(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return Duel.GetLocationCount(tp,LOCATION_MZONE)>0
-		and Duel.IsExistingMatchingCard(c65000011.spfilter,tp,LOCATION_HAND,0,1,nil,e,tp) end
+function s.sptg(e,tp,eg,ep,ev,re,r,rp,chk)
+	if chk==0 then return Duel.GetLocationCount(tp,LOCATION_MZONE)>0 and Duel.IsExistingMatchingCard(s.spfilter,tp,LOCATION_HAND,1,nil,e,tp) end
 	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,nil,1,tp,LOCATION_HAND)
 end
-
-	
-function c65000011.spop(e,tp,eg,ep,ev,re,r,rp)
-	if Duel.GetLocationCount(tp,LOCATION_MZONE)<=0 then return end
+function s.spop(e,tp,eg,ep,ev,re,r,rp)
+	if Duel.GetLocationCount(tp,LOCATION_MZONE)==0 then return end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
-	local g=Duel.SelectMatchingCard(tp,c65000011.spfilter,tp,LOCATION_HAND,0,1,1,nil,e,tp)
-	if g:GetCount()>0 then
-		local tc=g:GetFirst()	
-		if tc and Duel.SpecialSummonStep(tc,0,tp,tp,false,false,POS_FACEUP_DEFENSE) then
+	local g=Duel.SelectMatchingCard(tp,s.spfilter,tp,LOCATION_HAND,0,1,1,nil,e,tp)
+	if #g>0 then
+		local tc=g:GetFirst()
+		if tc and Duel.SpecialSummonStep(tc,0,tp,tp,false,false,POS_FACEUP) then
 		local e1=Effect.CreateEffect(e:GetHandler())
 		e1:SetType(EFFECT_TYPE_SINGLE)
 		e1:SetCode(EFFECT_DISABLE)
-		e1:SetReset(RESET_EVENT+0x1fe0000)
-		tc:RegisterEffect(e1,true)
+		e1:SetReset(RESET_EVENT+RESETS_STANDARD)
+		tc:RegisterEffect(e1)
 		local e2=Effect.CreateEffect(e:GetHandler())
 		e2:SetType(EFFECT_TYPE_SINGLE)
 		e2:SetCode(EFFECT_DISABLE_EFFECT)
-		e2:SetReset(RESET_EVENT+0x1fe0000)
-		tc:RegisterEffect(e2,true)
+		e2:SetReset(RESET_EVENT+RESETS_STANDARD)
+		tc:RegisterEffect(e2)
 		Duel.SpecialSummonComplete()
 		end
-	--end	
-		--Duel.SpecialSummon(g,0,tp,tp,false,false,POS_FACEUP_DEFENSE)
 	end
+end
+function s.destg(e,tp,eg,ep,ev,re,r,rp,chk)
+	if chk==0 then
+		local res=true
+		if not Duel.IsExistingMatchingCard(s.rmfilter,tp,LOCATION_DECK,0,1,nil) or Duel.GetFlagEffect(tp,id)~=0 then res=false end
+		for tc in aux.Next(eg) do
+		if not tc:IsFaceup() or not tc:IsLocation(LOCATION_ONFIELD) or not tc:IsSetCard(0x800)  or tc:IsReason(REASON_REPLACE) or not tc:IsReason(REASON_BATTLE+REASON_EFFECT) then
+			res=false
+		end
+		return res
+	end
+	return Duel.SelectEffectYesNo(tp,e:GetHandler(),96)
+end
+function s.desop(e,tp,eg,ep,ev,re,r,rp)
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_REMOVE)
+	local g=Duel.SelectMatchingCard(tp,s.rmfilter,tp,LOCATION_DECK,0,1,1,nil)
+	Duel.Remove(g,POS_FACEUP,REASON_EFFECT+REASON_REPLACE)
+	Duel.RegisterFlagEffect(tp,id,RESET_PHASE+PHASE_END,0,1)
 end

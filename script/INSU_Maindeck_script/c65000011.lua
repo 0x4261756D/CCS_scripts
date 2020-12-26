@@ -102,8 +102,9 @@ function s.destg(e,tp,eg,ep,ev,re,r,rp,chk)
 		local res=true
 		if not Duel.IsExistingMatchingCard(s.rmfilter,tp,LOCATION_DECK,0,1,nil) or Duel.GetFlagEffect(tp,id)~=0 then res=false end
 		for tc in aux.Next(eg) do
-		if not tc:IsFaceup() or not tc:IsLocation(LOCATION_ONFIELD) or not tc:IsSetCard(0x800)  or tc:IsReason(REASON_REPLACE) or not tc:IsReason(REASON_BATTLE+REASON_EFFECT) then
-			res=false
+			if not tc:IsFaceup() or not tc:IsLocation(LOCATION_ONFIELD) or not tc:IsSetCard(0x800)  or tc:IsReason(REASON_REPLACE) or not tc:IsReason(REASON_BATTLE+REASON_EFFECT) then
+				res=false
+			end
 		end
 		return res
 	end

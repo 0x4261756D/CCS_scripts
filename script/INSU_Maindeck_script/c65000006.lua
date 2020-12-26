@@ -80,7 +80,7 @@ end
 function c65000006.cost(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsExistingMatchingCard(c65000006.kfilter,tp,LOCATION_GRAVE,0,1,nil) end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TODECK)
-	local g=Duel.SelectMatchingCard(tp,c65000006.kfilter,tp,LOCATION_GRAVE,0,1,10,nil)
+	local g=Duel.SelectMatchingCard(tp,c65000006.kfilter,tp,LOCATION_GRAVE,0,1,5,nil)
 	Duel.SendtoDeck(g,nil,2,REASON_COST)
 end
 function c65000006.target(e,tp,eg,ep,ev,re,r,rp,chk)

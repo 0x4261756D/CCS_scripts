@@ -1,6 +1,6 @@
---Hilfskostenfunktion um ein Anzahl X Xyz Materialien abzuhängen (min=<X=<max). min=nil -> alle Materialien werden abgehängt.
+--Hilfskostenfunktion um eine Anzahl X Xyz Materialien abzuhängen (min=<X=<max). min=nil -> alle Materialien werden abgehängt.
 --label=true -> Die Anzahl abgehängter Materialien wird als Label gespeichert.
---Es ist ebenfalls möglich eine weitere Kostenfunktion mit einzubinden, indem diese als Parameter 4  mit übergeben wird.
+--Es ist ebenfalls möglich eine weitere Kostenfunktion mit einzubinden, indem diese als Parameter 4 mit übergeben wird.
 --Dabei ist drauf zu achten, dass dann auch eine 0 oder 1 als Parameter 5 mitgegeben wird (0 führt die zusätzliche Kostenfunktion vor dem Abhängen aus, 1 tut es nachdem äbgehängt wurde).
 function Auxiliary.doccost(min,max,label,cost,order)
 	return function(e,tp,eg,ep,ev,re,r,rp,chk)

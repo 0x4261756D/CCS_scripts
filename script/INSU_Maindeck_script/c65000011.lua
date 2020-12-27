@@ -30,8 +30,9 @@ function s.initial_effect(c)
 	e3:SetCode(EFFECT_DESTROY_REPLACE)
 	e3:SetRange(LOCATION_MZONE)
 	e3:SetValue(1)
-	e3:SetTarget(s.destg)
-	e3:SetOperation(s.desop)
+	e3:SetTarget(s.reptg)
+	e3:SetValue(s.repval)
+	e3:SetOperation(s.repop)
 	c:RegisterEffect(e3)
 end
 function s.bdfilter(c)
@@ -93,22 +94,24 @@ function s.spop(e,tp,eg,ep,ev,re,r,rp)
 		Duel.SpecialSummonComplete()
 	end
 end
-function s.destg(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then
-		local res=true
-		if not Duel.IsExistingMatchingCard(s.rmfilter,tp,LOCATION_DECK,0,1,nil) or Duel.GetFlagEffect(tp,id)~=0 then res=false end
-		for tc in aux.Next(eg) do
-			if not tc:IsFaceup() or not tc:IsLocation(LOCATION_ONFIELD) or not tc:IsSetCard(0x800)  or tc:IsReason(REASON_REPLACE) or not tc:IsReason(REASON_BATTLE+REASON_EFFECT) then
-				res=false
-			end
-		end
-		return res
-	end
-	return Duel.SelectEffectYesNo(tp,e:GetHandler(),96)
+function s.repfilter(c,tp)
+	return c:IsFaceup() and c:IsControler(tp) and c:IsOnField() and c:IsSetCard(0x800)
+		and not c:IsReason(REASON_REPLACE) and c:IsReason(REASON_EFFECT+REASON_BATTLE)
 end
-function s.desop(e,tp,eg,ep,ev,re,r,rp)
+function s.reptg(e,tp,eg,ep,ev,re,r,rp,chk)
+	if chk==0 then return Duel.GetFlagEffect(tp,id)==0 and Duel.IsExistingMatchingCard(s.rmfilter,tp,LOCATION_DECK,0,1,nil) and eg:IsExists(s.repfilter,1,nil,tp) end
+	if Duel.SelectEffectYesNo(tp,e:GetHandler(),96) then
+		Duel.RegisterFlagEffect(tp,id,RESET_PHASE+PHASE_END,0,1)
+		return true
+	else
+		return false
+	end
+end
+function s.repval(e,c)
+	return s.repfilter(c,e:GetHandlerPlayer())
+end
+function s.repop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_REMOVE)
 	local g=Duel.SelectMatchingCard(tp,s.rmfilter,tp,LOCATION_DECK,0,1,1,nil)
 	Duel.Remove(g,POS_FACEUP,REASON_EFFECT+REASON_REPLACE)
-	Duel.RegisterFlagEffect(tp,id,RESET_PHASE+PHASE_END,0,1)
 end

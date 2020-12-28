@@ -34,12 +34,18 @@ function Auxiliary.doccost(min,max,label,cost,order)
 								c:RemoveOverlayCard(tp,min,max,REASON_COST)
 								cost(e,tp,eg,ep,ev,re,r,rp,1)
 					end
-				else 
+				else
 					if (eff and set) and (ct==0 or (ct>0 and Duel.SelectYesNo(tp,aux.Stringid(CARD_NUMERON_NETWORK,1)))) then
 						return true
 							else
 								c:RemoveOverlayCard(tp,min,max,REASON_COST)
 					end
+				end
+			else
+				if (eff and set) and (ct==0 or (ct>0 and Duel.SelectYesNo(tp,aux.Stringid(CARD_NUMERON_NETWORK,1)))) then
+						return true
+							else
+								c:RemoveOverlayCard(tp,min,max,REASON_COST)
 				end
 			end
 		if label==true then 

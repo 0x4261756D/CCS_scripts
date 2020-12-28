@@ -48,11 +48,11 @@ function s.thfilter1(c,r)
 end
 function s.cost(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return e:GetHandler():CheckRemoveOverlayCard(tp,1,REASON_COST)
-		and	Duel.IsExistingMatchingCard(s.rmfilter,tp,LOCATION_DECK,0,1,nil,tp) end
-	e:GetHandler():RemoveOverlayCard(tp,1,1,REASON_COST)
+		and	Duel.IsExistingMatchingCard(s.rmfilter,0,LOCATION_DECK,0,1,nil,0) end
+	e:GetHandler():RemoveOverlayCard(0,1,1,REASON_COST)
 	Duel.BreakEffect()
-	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_REMOVE)
-	local g=Duel.SelectMatchingCard(tp,s.rmfilter,tp,LOCATION_DECK,0,1,1,nil,tp):GetFirst()
+	Duel.Hint(HINT_SELECTMSG,0,HINTMSG_REMOVE)
+	local g=Duel.SelectMatchingCard(0,s.rmfilter,0,LOCATION_DECK,0,1,1,nil,0):GetFirst()
 	if g then
 		Duel.Remove(g,POS_FACEUP,REASON_COST)
 		e:SetLabel(g:GetCode())
@@ -72,12 +72,11 @@ function s.operation(e,tp,eg,ep,ev,re,r,rp)
 			Duel.ConfirmCards(1-tp,tc)
 			local e1=Effect.CreateEffect(e:GetHandler())
 			e1:SetType(EFFECT_TYPE_FIELD)
-			e4:SetCode(EFFECT_CANNOT_ACTIVATE)
+			e1:SetCode(EFFECT_CANNOT_ACTIVATE)
 			e1:SetProperty(EFFECT_FLAG_PLAYER_TARGET)
 			e1:SetTargetRange(1,0)
-			e1:SetTarget(s.sumlimit)
 			e1:SetLabel(tc:GetCode())
-			e4:SetValue(s.aclimit)
+			e1:SetValue(s.aclimit)
 			e1:SetReset(RESET_PHASE+PHASE_END)
 			Duel.RegisterEffect(e1,tp)
 		end
@@ -109,9 +108,9 @@ end
 function s.remfilter(c)
 	return c:IsFaceup() and c:IsRace(RACE_SPELLCASTER)
 end
-function s.remcon(e,tp)
-	return not Duel.IsExistingMatchingCard(s.remfilter,tp,LOCATION_MZONE,0,1,nil)
+function s.remcon(e)
+	return not Duel.IsExistingMatchingCard(s.remfilter,e:GetHandlerPlayer(),LOCATION_MZONE,0,1,nil)
 end
-function s.remcon2(e,tp)
-	return not Duel.IsExistingMatchingCard(s.remfilter,tp,0,LOCATION_MZONE,1,nil)
+function s.remcon2(e)
+	return not Duel.IsExistingMatchingCard(s.remfilter,e:GetHandlerPlayer(),0,LOCATION_MZONE,1,nil)
 end

@@ -53,3 +53,13 @@ function Auxiliary.doccost(min,max,label,cost,order)
 		end
 	end
 end
+--Diese Funktion ist ein Shortcut für Karten die legal spezialbeschworen werden können. Sie muss mit e und tp aufgerufen werden und unterstützt einen Zusatzfilter
+--mit allen nötigen Extraparametern. Ein Beispiel: Duel.IsExistingMatchingCard(aux.spfilter(e,tp,s.filter,a,b),tp,LOCATION_GRAVE,0,1,nil) wobei a und b die Extraparameter von
+--s.filter sind.
+function Auxiliary.spfilter(e,tp,f,...)
+	local params={...}
+	return function(c)
+		if f then return c:IsCanBeSpecialSummoned(e,0,tp,false,false) and f(c,table.unpack(params))
+		else return c:IsCanBeSpecialSummoned(e,0,tp,false,false) end
+	end
+end

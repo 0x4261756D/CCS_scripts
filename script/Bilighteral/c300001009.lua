@@ -160,7 +160,7 @@ function s.op(c)
 		if choice==0 then
 			tc=Duel.SelectMatchingCard(tp,s.setfilter,tp,LOCATION_DECK,0,1,1,nil)
 			Duel.SSet(tp,tc)
-			if additional then
+			if additional and Duel.SelectYesNo(tp,aux.Stringid(id,4)) then
 				Duel.ConfirmCards(tp,Duel.GetFieldGroup(tp,0,LOCATION_HAND))
 				tc=Duel.GetFieldGroup(tp,0,LOCATION_HAND):FilterSelect(tp,Card.IsDiscardable,1,nil)
 				Duel.SendtoGrave(tc,REASON_EFFECT+REASON_DISCARD)
@@ -170,7 +170,7 @@ function s.op(c)
 			Duel.ConfirmCards(tp,Duel.GetFieldGroup(tp,0,LOCATION_HAND))
 			tc=Duel.GetFieldGroup(tp,0,LOCATION_HAND):FilterSelect(tp,Card.IsDiscardable,1,nil)
 			Duel.SendtoGrave(tc,REASON_EFFECT+REASON_DISCARD)
-			if additional then
+			if additional and Duel.SelectYesNo(tp,aux.Stringid(id,4)) then
 				tc=Duel.SelectMatchingCard(tp,s.setfilter,tp,LOCATION_DECK,0,1,1,nil)
 				Duel.SSet(tp,tc)
 			end

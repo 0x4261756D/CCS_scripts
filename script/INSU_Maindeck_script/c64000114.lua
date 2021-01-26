@@ -1,4 +1,6 @@
-function c64000114.initial_effect(c)
+--The Sanctuary above the Clouds
+local s,id=GetID
+function s.initial_effect(c)
 	--activate
 	local e1=Effect.CreateEffect(c)
 	e1:SetType(EFFECT_TYPE_ACTIVATE)
@@ -19,8 +21,8 @@ function c64000114.initial_effect(c)
 	e3:SetProperty(EFFECT_FLAG_SET_AVAILABLE+EFFECT_FLAG_IGNORE_IMMUNE)
 	e3:SetRange(LOCATION_SZONE)
 	e3:SetTargetRange(LOCATION_MZONE,0)
-	e3:SetTarget(c64000114.target)
-	e3:SetValue(c64000114.indval)
+	e3:SetTarget(s.target)
+	e3:SetValue(s.indval)
 	c:RegisterEffect(e3)
 	local e4=Effect.CreateEffect(c)
 	e4:SetType(EFFECT_TYPE_FIELD)
@@ -28,44 +30,42 @@ function c64000114.initial_effect(c)
 	e4:SetProperty(EFFECT_FLAG_SET_AVAILABLE)
 	e4:SetRange(LOCATION_SZONE)
 	e4:SetTargetRange(LOCATION_MZONE,0)
-	e4:SetTarget(c64000114.target)
-	e4:SetValue(c64000114.indval)
+	e4:SetTarget(s.target)
+	e4:SetValue(s.indval)
 	c:RegisterEffect(e4)
 	--search
 	local e6=Effect.CreateEffect(c)
-	e6:SetDescription(aux.Stringid(64000114,0))
+	e6:SetDescription(aux.Stringid(id,0))
 	e6:SetCategory(CATEGORY_TOHAND+CATEGORY_SEARCH)
 	e6:SetProperty(EFFECT_FLAG_CARD_TARGET)
 	e6:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
 	e6:SetCode(EVENT_TO_GRAVE)
 	e6:SetRange(LOCATION_GRAVE)
-	e6:SetCost(c64000114.cost)
-	e6:SetTarget(c64000114.tg)
-	e6:SetOperation(c64000114.operation)
+	e6:SetCost(s.cost)
+	e6:SetTarget(s.tg)
+	e6:SetOperation(s.operation)
 	c:RegisterEffect(e6)
-	end
-	function c64000114.target(e,c)
-	return c:IsSetCard(0xf10) or c:IsSetCard(0x10a) or c:IsSetCard(0x44) or c:IsCode(55794644) or c:IsCode(18378582) or c:IsCode(59509952) and c:IsType(TYPE_MONSTER)
 end
-function c64000114.indval(e,re,tp)
+	function s.target(e,c)
+	return (c:IsSetCard(0xf10) or c:IsSetCard(0x10a) or c:IsSetCard(0x44) or c:IsCode(55794644) or c:IsCode(18378582) or c:IsCode(59509952)) and c:IsType(TYPE_MONSTER)
+end
+function s.indval(e,re,tp)
 	return tp~=e:GetHandlerPlayer()
 end
-
-
-function c64000114.cost(e,tp,eg,ep,ev,re,r,rp,chk)
+function s.cost(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return e:GetHandler():IsAbleToRemoveAsCost() end
 	Duel.Remove(e:GetHandler(),POS_FACEUP,REASON_COST)
 end
-function c64000114.filter(c)
+function s.filter(c)
 	return c:IsCode(56433456) and c:IsAbleToHand()
 end
-function c64000114.tg(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return Duel.IsExistingMatchingCard(c64000114.filter,tp,LOCATION_DECK,0,1,nil) end
+function s.tg(e,tp,eg,ep,ev,re,r,rp,chk)
+	if chk==0 then return Duel.IsExistingMatchingCard(s.filter,tp,LOCATION_DECK,0,1,nil) end
 	Duel.SetOperationInfo(0,CATEGORY_TOHAND,nil,1,tp,LOCATION_DECK)
 end
-function c64000114.operation(e,tp,eg,ep,ev,re,r,rp)
+function s.operation(e,tp,eg,ep,ev,re,r,rp)
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_ATOHAND)
-	local g=Duel.SelectMatchingCard(tp,aux.NecroValleyFilter(c64000114.filter),tp,LOCATION_DECK,0,1,1,nil)
+	local g=Duel.SelectMatchingCard(tp,aux.NecroValleyFilter(s.filter),tp,LOCATION_DECK,0,1,1,nil)
 	if g:GetCount()>0 then
 		Duel.SendtoHand(g,nil,REASON_EFFECT)
 		Duel.ConfirmCards(1-tp,g)

@@ -131,7 +131,7 @@ end
 
 function s.cost(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsExistingMatchingCard(Card.IsDiscardable,tp,LOCATION_HAND,0,1,nil) end
-	Duel.DiscardHand(tp,Card.IsDiscardable,1,1,nil)
+	Duel.DiscardHand(tp,Card.IsDiscardable,1,1,REASON_COST,nil)
 end
 
 function s.tg(c)

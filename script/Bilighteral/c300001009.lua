@@ -94,7 +94,7 @@ function s.remfilter(c)
 end
 
 function s.trapcost(e,tp,eg,ep,ev,re,r,rp,chk)
-	local g=Duel.GetMatchingGroup(s.remfilter,tp,LOCATION_GRAVE+LOCATION_HAND,nil)
+	local g=Duel.GetMatchingGroup(s.remfilter,tp,LOCATION_GRAVE+LOCATION_HAND,0,nil)
 	if chk==0 then return Duel.IsExistingTarget(s.tfilter,tp,LOCATION_MZONE,0,1,nil,g) end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TARGET)
 	local tc1=Duel.SelectTarget(tp,s.tfilter,tp,LOCATION_MZONE,0,1,1,nil,g):GetFirst()

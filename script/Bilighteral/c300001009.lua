@@ -82,7 +82,7 @@ end
 --trap effect
 
 function s.tfilter(c,g)
-	return Duel.IsExistingMatchingCard(s.rfilter,tp,LOCATION_EXTRA,0,1,nil,c,g) and c:IsType(TYPE_XYZ) --and c:IsSetCard(0x400)
+	return Duel.IsExistingMatchingCard(s.rfilter,tp,LOCATION_EXTRA,0,1,nil,c,g) and c:IsType(TYPE_XYZ) and c:IsFaceup() --and c:IsSetCard(0x400)
 end
 
 function s.rfilter(c,tc,g)

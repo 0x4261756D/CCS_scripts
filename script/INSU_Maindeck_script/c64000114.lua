@@ -1,5 +1,5 @@
 --The Sanctuary above the Clouds
-local s,id=GetID
+local s,id=GetID()
 function s.initial_effect(c)
 	--activate
 	local e1=Effect.CreateEffect(c)

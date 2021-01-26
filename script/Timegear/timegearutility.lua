@@ -96,7 +96,7 @@ function Timegear.TimeBanishOperation(c)
 		e1:SetRange(LOCATION_REMOVED)
 		e1:SetValue(1)
 		c:RegisterEffect(e1,true)
-		local tc=Duel.SelectMatchingCard(tp,aux.spfilter(e,tp,Timegear.TimeBanishFilter),tp,LOCATION_REMOVED,0,1,1,nil)
+		local tc=Duel.SelectMatchingCard(tp,aux.spfilter(e,tp,0,Timegear.TimeBanishFilter),tp,LOCATION_REMOVED,0,1,1,nil)
 		Duel.SpecialSummon(tc,0,tp,tp,false,false,POS_FACEUP)
 	end
 end

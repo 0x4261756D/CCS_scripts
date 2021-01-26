@@ -1,10 +1,10 @@
---Diese Datei enthält alle archetype-unspezifischen Hilfsfunktionen. Jeder Funktion soll eine kleine Beschreibung vorangehen, damit andere auch wissen wie sie verwendet wird.
+--This file contains a useful list of functions which can be used for a lot of things. Each function should have a small description as well.
 
---Hilfskostenfunktion um eine Anzahl X Xyz Materialien abzuhängen (min=<X=<max). min=nil -> alle Materialien werden abgehängt.
---label=true -> Die Anzahl abgehängter Materialien wird als Label gespeichert.
---Es ist ebenfalls möglich eine weitere Kostenfunktion mit einzubinden, indem diese als Parameter 4 mit übergeben wird.
---Es ist darauf zu achten, dass order nicht nil ist wenn cost nicht nil ist.
---Denn sonst wird die Kostenfunktion gar nicht ausgeführt (order=0 -> die Kostenfunktion wird vor dem Abhängen ausgeführt, order=1 -> danach).
+--doccost detaches a specific amount of materials from an Xyz monster (min=<X=<max). min=nil -> detaches all materials.
+--label=true -> the amount of detached materials will be saved as a label.
+--The function also supports another cost when passed as parameter 4.
+--If "cost" isn't nil, it is required that "order" isn't nil as well, otherwise the passed function won't be executed.
+--order=0 -> the passed cost will be executed before the detaching, order=1 -> afterwards
 function Auxiliary.doccost(min,max,label,cost,order)
 	return function(e,tp,eg,ep,ev,re,r,rp,chk)
 		local c=e:GetHandler()
@@ -53,13 +53,12 @@ function Auxiliary.doccost(min,max,label,cost,order)
 		end
 	end
 end
---Diese Funktion ist ein Shortcut für Karten die legal spezialbeschworen werden können. Sie muss mit e und tp aufgerufen werden und unterstützt einen Zusatzfilter
---mit allen nötigen Extraparametern. Ein Beispiel: Duel.IsExistingMatchingCard(aux.spfilter(e,tp,s.filter,a,b),tp,LOCATION_GRAVE,0,1,nil) wobei a und b die Extraparameter von
---s.filter sind.
-function Auxiliary.spfilter(e,tp,f,...)
+--aux.spfilter is a shortcut to check for legally special summonable. It has to be called with e,tp and the summon type and also supports another filter which has to be fullfilled along with all its extraparams.
+--Example: Duel.IsExistingMatchingCard(aux.spfilter(e,tp,s.filter,a,b),tp,LOCATION_GRAVE,0,1,nil) where a and b are the extraparams of s.filter.
+function Auxiliary.spfilter(e,tp,sumtype,f,...)
 	local params={...}
 	return function(c)
-		if f then return c:IsCanBeSpecialSummoned(e,0,tp,false,false) and f(c,table.unpack(params))
-		else return c:IsCanBeSpecialSummoned(e,0,tp,false,false) end
+		if f then return c:IsCanBeSpecialSummoned(e,sumtype,tp,false,false) and f(c,table.unpack(params))
+		else return c:IsCanBeSpecialSummoned(e,sumtype,tp,false,false) end
 	end
 end

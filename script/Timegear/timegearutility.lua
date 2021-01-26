@@ -1,10 +1,9 @@
 Duel.LoadScript("customutility.lua")
---Hier eine kleine Erläuterung wie man die Funktionen in dieser Datei verwenden kann:
---1.) Die Karte die eine oder mehrere Funktionen aus dieser Datei verwenden will, braucht "Duel.LoadScript("timegearutility.lua")" vor dem initial_effect (ohne die äußeren Anführungszeichen).
---2.) Die Extra Parameter, die die Filterfunktion "f" benötigt, werden in dem script der Karte als table zusammengefasst und als letztes Argument übergeben.
---Erklärung der Parameter:
---c=Karte die die Beschwörungsmethode nutzt, con=Bedingung die erfüllt sein muss um zu beschwören, f=Filter der valide Materialien herausfiltert, min/max=Angabe wie viele Monster benötigt werden,
---desc=Beschreibung der Beschwörung, tb (time banish)=Angabe ob die time banish mechanic verwendet werden soll, extraparams=ein Feld, das alle Extraparameter von "f" enthält.
+--Little note on how to use functions from this file:
+--The card has to use "Duel.LoadScript("timegearutility.lua")" before its initial_effect.
+--Explanation of params:
+--c=card which will be summoned, con=required conditions, f=filter for materials, min/max=how many materials are needed,
+--desc=optional description, tb=bool to specify whether to time banish in the end phase, extraparams=array containing all extraparams of "f".
 Timegear={}
 Timegear.AddTimeLeapProcedure=aux.FunctionWithNamedArgs(
 	function Timegear.AddTimeLeapProcedure(c,con,f,min,max,desc,tb,extraparams)

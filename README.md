@@ -14,8 +14,22 @@ Wenn ein neuer Archetype oder ein neuer Counter Type hinzugefügt wird, soll die
 
 !setname freie hex ID Archetype Name (für Archetypes)
 
-**Automatisches Update für den Client:**
-Damit die Karten in eurem EDOPro-Client immer aktuell sind solltet ihr in eurem ProjectIgnis-Ordner in /config/configs.json unter
+**How to upload new cards:**
+Here's a little info on how to upload new files (scripts, databases or pics) via PR.
+Scripts belong in "script/archetype subfolder" oder "script/set subfolder" (depending on whether a custom archetype or a "custom booster pack" is uploaded).
+cdb files belong in the root and the entry "ot" should be 32 (or 0x20).
+Pics belong in "pics" and NOT in "pics/subfolder", since "pics" doesn't support subfolders.
+If an archetype is extended, the cdb is supposed to *exclusively* contain the new cards of said archetype. The file should also have a name which makes it easy to know what is expanded (like VirtualWorldExtension.cdb for example).
+
+**Add new archetypes/counters:**
+An archetype/counter is added by editing "strings.conf" from the root:
+
+!counter free hex ID counter name (for counters)
+
+!setname fee hex ID archetype name (for archetypes)
+
+**Automatic Cleint Updates:**
+For keeping the cards up-to-date you should add the following lines in /config/configs.json in your ProjectIgnis folder:
 
 ```json
 {
@@ -32,7 +46,7 @@ Damit die Karten in eurem EDOPro-Client immer aktuell sind solltet ihr in eurem 
             "should_read": true
         },
 ```
-eine neue Zeile und 
+empty line
 ```json
         {
             "url": "https://github.com/0x4261756D/CCS_scripts",
@@ -43,4 +57,3 @@ eine neue Zeile und
             "should_read": true
         },
 ``` 
-einfügen.

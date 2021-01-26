@@ -50,7 +50,7 @@ function c64000110.sumlimit(e,c)
 end
 
 function c64000110.filter(c)
-	return c:IsSetCard(0x6c) or c:IsCode(18378582) or c:IsCode(59509952) and c:IsType(TYPE_MONSTER) 
+	return c:IsSetCard(0xf10) or c:IsCode(18378582) or c:IsCode(59509952) and c:IsType(TYPE_MONSTER) 
 		and c:IsAbleToHand()
 end
 function c64000110.thtg(e,tp,eg,ep,ev,re,r,rp,chk)

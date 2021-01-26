@@ -15,7 +15,7 @@ function aux.EffectCheck(tp,cons,strings)
 		end
 	end
 	local choice=Duel.SelectOption(tp,table.unpack(eff))
-	return sel[choice+1]
+	return sel[choice]
 end
 
 --doccost detaches a specific amount of materials from an Xyz monster (min=<X=<max). min=nil -> detaches all materials.

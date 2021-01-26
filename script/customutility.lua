@@ -11,7 +11,7 @@ function aux.EffectCheck(tp,cons,strings)
 	for i,con in ipairs(cons) do
 		if con then 
 			table.insert(eff,strings[i])
-			table.insert(choice,i)
+			table.insert(sel,i)
 		end
 	end
 	local choice=Duel.SelectOption(tp,table.unpack(eff))

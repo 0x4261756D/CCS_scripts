@@ -90,7 +90,7 @@ function s.rfilter(c,tc,g)
 end
 
 function s.remfilter(c)
-	return c:IsAbleToRemoveAsCost() --and c:IsSetCard(0x400)
+	return c:IsAbleToRemoveAsCost() and c:IsSetCard(0x400)
 end
 
 function s.trapcost(e,tp,eg,ep,ev,re,r,rp,chk)
@@ -101,6 +101,7 @@ function s.trapcost(e,tp,eg,ep,ev,re,r,rp,chk)
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
 	local tc2=Duel.SelectMatchingCard(tp,aux.spfilter(e,tp,SUMMON_TYPE_XYZ,s.rfilter,tc1,g),tp,LOCATION_EXTRA,0,1,1,nil):GetFirst()
 	local ct=math.abs(tc1:GetRank()-tc2:GetRank())
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_REMOVE)
 	local rem=Duel.SelectMatchingCard(tp,s.remfilter,tp,LOCATION_HAND+LOCATION_GRAVE,0,ct,ct,nil)
 	Duel.Remove(rem,POS_FACEUP,REASON_COST)
 	e:SetLabelObject({tc1,tc2})
@@ -113,7 +114,7 @@ end
 
 function s.trapop(e,tp,eg,ep,ev,re,r,rp)
 	local tc1,tc2=table.unpack(e:GetLabelObject())
-	Duel.Overlay(Group.FromCards(tc1)+tc1:GetOverlayGroup(),tc2)
+	Duel.Overlay(tc2,Group.FromCards(tc1)+tc1:GetOverlayGroup())
 	Duel.SpecialSummon(sc,SUMMON_TYPE_XYZ,tp,tp,false,false,POS_FACEUP)
 	tc2:CompleteProcedure()
 	if Duel.SelectYesNo(tp,aux.Stringid(id,0)) then

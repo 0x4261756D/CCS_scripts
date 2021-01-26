@@ -113,12 +113,12 @@ function s.traptg(e,tp,eg,ep,ev,re,r,rp,chk)
 end
 
 function s.trapop(e,tp,eg,ep,ev,re,r,rp)
-	local tc1,tc2=table.unpack(e:GetLabelObject())
+	local c,tc1,tc2=e:GetHandler(),table.unpack(e:GetLabelObject())
 	Duel.Overlay(tc2,Group.FromCards(tc1)+tc1:GetOverlayGroup())
 	Duel.SpecialSummon(tc2,SUMMON_TYPE_XYZ,tp,tp,false,false,POS_FACEUP)
 	tc2:CompleteProcedure()
 	if Duel.SelectYesNo(tp,aux.Stringid(id,0)) then
-			Duel.Overlay(sc,c)
+			Duel.Overlay(tc2,c)
 			c:CancelToGrave()
 	end
 end

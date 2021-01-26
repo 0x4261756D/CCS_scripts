@@ -1,4 +1,9 @@
 Duel.LoadScript("customutility.lua")
+
+function Card.IsTrapspell(c)
+	return c:IsType(TYPE_SPELL) and c:IsType(TYPE_TRAP)
+end
+
 Bilighteral={}
 
 function Bilighteral.CreateActivation(c)

@@ -129,6 +129,10 @@ function s.atfilter(c,tc)
 	return (c:GetAttribute()&ATTRIBUTE_LIGHT==ATTRIBUTE_LIGHT or c:GetAttribute()&ATTRIBUTE_DARK==ATTRIBUTE_DARK) and c:IsCanBeXyzMaterial(tc)
 end
 
+function s.setfilter(c)
+	return c:IsSSetable() and c:IsTrapspell()
+end
+
 function s.cost(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsExistingMatchingCard(Card.IsDiscardable,tp,LOCATION_HAND,0,1,nil) end
 	Duel.DiscardHand(tp,Card.IsDiscardable,1,1,REASON_COST,nil)
@@ -150,5 +154,9 @@ function s.op(c)
 		if not tc or not cc then return end
 		Duel.Overlay(cc,tc)
 		Duel.SSet(tp,c)
+		if tc:GetAttribute()&ATTRIBUTE_LIGHT==ATTRIBUTE_LIGHT and Duel.IsExistingMatchingCard(s.setfilter,tp,LOCATION_DECK,0,1,nil) and aux.Stringid(id,1) then
+			tc=Duel.SelectMatchingCard(tp,s.setfilter,tp,LOCATION_DECK,0,1,1,nil)
+			Duel.SSet(tp,tc)
+		end
 	end
 end

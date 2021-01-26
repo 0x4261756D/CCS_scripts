@@ -58,7 +58,7 @@ function Timegear.TimeLeapTarget(c,f,min,max,...)
 	return function(e,tp,eg,ep,ev,re,r,rp)
 		local g=Duel.GetMatchingGroup(Card.IsLevel,tp,LOCATION_MZONE,0,nil,c:GetLevel()-1):Filter(Card.IsCanBeTimeleapMaterial,nil)
 		if #g>=min then
-			local mat=g:FilterSelect(tp,f,min,max,true,nil,table.unpack(params)):GetFirst()
+			local mat=g:FilterSelect(tp,f,min,max,true,nil,table.unpack(params))
 			e:SetLabelObject(mat)
 			return true
 			else return false
@@ -69,7 +69,7 @@ end
 function Timegear.TimeLeapOperation(c)
 	return function(e,tp,eg,ep,ev,re,r,rp)
 		local mat=e:GetLabelObject()
-		c:SetMaterial(Group.FromCards(mat))
+		c:SetMaterial(mat)
 		Duel.Remove(mat,POS_FACEUP,REASON_MATERIAL+REASON_FUSION+69)
 		Duel.RegisterFlagEffect(tp,3400,RESET_PHASE+PHASE_END,EFFECT_FLAG_OATH,1)
 		mat:RegisterFlagEffect(3401,RESET_PHASE+PHASE_END,0,1,EFFECT_FLAG_CLIENT_HINT,1,0,3401)

@@ -4,6 +4,11 @@ Duel.LoadScript("customutility.lua")
 --Explanation of params:
 --c=card which will be summoned, con=required conditions, f=filter for materials, min/max=how many materials are needed,
 --desc=optional description, tb=bool to specify whether to time banish in the end phase, extraparams=array containing all extraparams of "f".
+
+--constants
+SUMMON_TYPE_TIMELEAP=SUMMON_TYPE_LINK+69
+--SET_TIMEGEAR=
+
 Timegear={}
 Timegear.AddTimeLeapProcedure=aux.FunctionWithNamedArgs(
 	function Timegear.AddTimeLeapProcedure(c,con,f,min,max,desc,tb,extraparams)
@@ -23,7 +28,7 @@ Timegear.AddTimeLeapProcedure=aux.FunctionWithNamedArgs(
 		e1:SetCondition(Timegear.TimeLeapCondition(con))
 		e1:SetTarget(Timegear.TimeLeapTarget(c,f,min,max,table.unpack(extraparams)))
 		e1:SetOperation(Timegear.TimeLeapOperation(c))
-		e1:SetValue(SUMMON_TYPE_FUSION+69)
+		e1:SetValue(SUMMON_TYPE_TIMELEAP)
 		c:RegisterEffect(e1)
 			if tb==true then
 				local e2=Effect.CreateEffect(c)

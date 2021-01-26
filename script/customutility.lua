@@ -7,12 +7,15 @@ end
 
 --Function to select an option based on the condition on the same place as the option in the first table
 function aux.EffectCheck(tp,cons,strings)
-	local eff={}
+	local eff,sel={},{}
 	for i,con in ipairs(cons) do
-		if con then table.insert(eff,strings[i]) end
+		if con then 
+			table.insert(eff,strings[i])
+			table.insert(choice,i)
+		end
 	end
-	Duel.SelectOption(tp,table.unpack(eff))
-	return i
+	local choice=Duel.SelectOption(tp,table.unpack(eff))
+	return sel[choice+1]
 end
 
 --doccost detaches a specific amount of materials from an Xyz monster (min=<X=<max). min=nil -> detaches all materials.

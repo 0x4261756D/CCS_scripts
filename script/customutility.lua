@@ -5,6 +5,15 @@ function Card.CheckType(c,tp)
 	return (c:GetType()&tp)==tp
 end
 
+--Function to select an option based on the condition on the same place as the option in the first table
+function aux.EffectChoice(tp,cons,strings)
+	local eff={}
+	for i,con in ipairs(cons) do
+		if con then table.insert(eff,strings[i]) end
+	end
+	return Duel.SelectOption(tp,table.unpack(eff))
+end
+
 --doccost detaches a specific amount of materials from an Xyz monster (min=<X=<max). min=nil -> detaches all materials.
 --label=true -> the amount of detached materials will be saved as a label.
 --The function also supports another cost when passed as parameter 4.

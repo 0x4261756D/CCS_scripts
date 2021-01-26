@@ -9,6 +9,10 @@ Duel.LoadScript("customutility.lua")
 SUMMON_TYPE_TIMELEAP=SUMMON_TYPE_LINK+69
 --SET_TIMEGEAR=
 
+function Card.IsCanBeTimeleapMaterial(c)
+	return c:IsCanBeMaterial(SUMMON_TYPE_TIMELEAP)
+end
+
 Timegear={}
 Timegear.AddTimeLeapProcedure=aux.FunctionWithNamedArgs(
 	function Timegear.AddTimeLeapProcedure(c,con,f,min,max,desc,tb,extraparams)
@@ -52,8 +56,8 @@ end
 function Timegear.TimeLeapTarget(c,f,min,max,...)
 	local params={...}
 	return function(e,tp,eg,ep,ev,re,r,rp)
-		local g=Duel.GetMatchingGroup(Card.IsLevel,tp,LOCATION_MZONE,0,nil,c:GetLevel()-1)
-		if #g>=min and then
+		local g=Duel.GetMatchingGroup(Card.IsLevel,tp,LOCATION_MZONE,0,nil,c:GetLevel()-1):Filter(Card.IsCanBeTimeleapMaterial,nil)
+		if #g>=min then
 			local mat=g:FilterSelect(tp,f,min,max,true,nil,table.unpack(params)):GetFirst()
 			e:SetLabelObject(mat)
 			return true
@@ -78,8 +82,8 @@ function Timegear.TimeBanishTarget(c)
 	end
 end
 
-function Timegear.TimeBanishFilter(c,e,tp)
-	return c:GetFlagEffect(3401)~=0 and c:IsCanBeSpecialSummoned(e,0,tp,false,false)
+function Timegear.TimeBanishFilter(c)
+	return c:GetFlagEffect(3401)~=0
 end
 
 function Timegear.TimeBanishOperation(c)
@@ -92,7 +96,7 @@ function Timegear.TimeBanishOperation(c)
 		e1:SetRange(LOCATION_REMOVED)
 		e1:SetValue(1)
 		c:RegisterEffect(e1,true)
-		local tc=Duel.SelectMatchingCard(tp,Timegear.TimeBanishFilter,tp,LOCATION_REMOVED,0,1,1,nil,e,tp)
+		local tc=Duel.SelectMatchingCard(tp,aux.spfilter(e,tp,Timegear.TimeBanishFilter),tp,LOCATION_REMOVED,0,1,1,nil)
 		Duel.SpecialSummon(tc,0,tp,tp,false,false,POS_FACEUP)
 	end
 end

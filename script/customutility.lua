@@ -1,5 +1,10 @@
 --This file contains a useful list of functions which can be used for a lot of things. Each function should have a small description as well.
 
+--Function to check whether a card is EXACTLY the passed type (like a more strict version of Card.IsType)
+function Card.CheckType(c,tp)
+	return (c:GetType()&tp)==tp
+end
+
 --doccost detaches a specific amount of materials from an Xyz monster (min=<X=<max). min=nil -> detaches all materials.
 --label=true -> the amount of detached materials will be saved as a label.
 --The function also supports another cost when passed as parameter 4.

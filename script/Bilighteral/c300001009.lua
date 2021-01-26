@@ -152,11 +152,28 @@ function s.op(c)
 		local cc=e:GetHandler()
 		local tc=Duel.GetTargetCards(e):GetFirst()
 		if not tc or not cc then return end
+		local set,disc=tc:GetAttribute()&ATTRIBUTE_LIGHT==ATTRIBUTE_LIGHT and Duel.IsExistingMatchingCard(s.setfilter,tp,LOCATION_DECK,0,1,nil),tc:GetAttribute()&ATTRIBUTE_DARK==ATTRIBUTE_DARK and Duel.GetFieldGroup(tp,0,LOCATION_HAND):Filter(Card.IsDiscardable,nil)>0
+		local additional=set and disc
 		Duel.Overlay(cc,tc)
 		Duel.SSet(tp,c)
-		if tc:GetAttribute()&ATTRIBUTE_LIGHT==ATTRIBUTE_LIGHT and Duel.IsExistingMatchingCard(s.setfilter,tp,LOCATION_DECK,0,1,nil) and aux.Stringid(id,1) then
+		local choice=aux.EffectCheck(tp,{set,disc},{aux.Stringid(id,2),aux.Stringid(id,3)})
+		if choice==0 then
 			tc=Duel.SelectMatchingCard(tp,s.setfilter,tp,LOCATION_DECK,0,1,1,nil)
 			Duel.SSet(tp,tc)
+			if additional then
+				Duel.ConfirmCards(tp,Duel.GetFieldGroup(tp,0,LOCATION_HAND))
+				tc=Duel.GetFieldGroup(tp,0,LOCATION_HAND):FilterSelect(tp,Card.IsDiscardable,1,nil)
+				Duel.SendtoGrave(tc,REASON_EFFECT+REASON_DISCARD)
+			end
+		end
+		if choice==1 then
+			Duel.ConfirmCards(tp,Duel.GetFieldGroup(tp,0,LOCATION_HAND))
+			tc=Duel.GetFieldGroup(tp,0,LOCATION_HAND):FilterSelect(tp,Card.IsDiscardable,1,nil)
+			Duel.SendtoGrave(tc,REASON_EFFECT+REASON_DISCARD)
+			if additional then
+				tc=Duel.SelectMatchingCard(tp,s.setfilter,tp,LOCATION_DECK,0,1,1,nil)
+				Duel.SSet(tp,tc)
+			end
 		end
 	end
 end

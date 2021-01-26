@@ -152,7 +152,7 @@ function s.op(c)
 		local cc=e:GetHandler()
 		local tc=Duel.GetTargetCards(e):GetFirst()
 		if not tc or not cc then return end
-		local set,disc=tc:GetAttribute()&ATTRIBUTE_LIGHT==ATTRIBUTE_LIGHT and Duel.IsExistingMatchingCard(s.setfilter,tp,LOCATION_DECK,0,1,nil),tc:GetAttribute()&ATTRIBUTE_DARK==ATTRIBUTE_DARK and Duel.GetFieldGroupCount(tp,0,LOCATION_HAND):Filter(Card.IsDiscardable,nil)>0
+		local set,disc=tc:GetAttribute()&ATTRIBUTE_LIGHT==ATTRIBUTE_LIGHT and Duel.IsExistingMatchingCard(s.setfilter,tp,LOCATION_DECK,0,1,nil),tc:GetAttribute()&ATTRIBUTE_DARK==ATTRIBUTE_DARK and #(Duel.GetFieldGroup(tp,0,LOCATION_HAND):Filter(Card.IsDiscardable,nil))>0
 		local additional=set and disc
 		Duel.Overlay(cc,tc)
 		Duel.SSet(tp,c)

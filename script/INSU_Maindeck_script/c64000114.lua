@@ -45,7 +45,7 @@ function c64000114.initial_effect(c)
 	c:RegisterEffect(e6)
 	end
 	function c64000114.target(e,c)
-	return c:IsSetCard(0x6c) or c:IsSetCard(0x10a) or c:IsSetCard(0x44) or c:IsCode(55794644) or c:IsCode(18378582) or c:IsCode(59509952) and c:IsType(TYPE_MONSTER)
+	return c:IsSetCard(0xf10) or c:IsSetCard(0x10a) or c:IsSetCard(0x44) or c:IsCode(55794644) or c:IsCode(18378582) or c:IsCode(59509952) and c:IsType(TYPE_MONSTER)
 end
 function c64000114.indval(e,re,tp)
 	return tp~=e:GetHandlerPlayer()

@@ -63,7 +63,7 @@ function Timegear.TimeLeapOperation(c)
 		c:SetMaterial(Group.FromCards(mat))
 		Duel.Remove(mat,POS_FACEUP,REASON_MATERIAL+REASON_FUSION+69)
 		Duel.RegisterFlagEffect(tp,3400,RESET_PHASE+PHASE_END,EFFECT_FLAG_OATH,1)
-		mat:RegisterFlagEffect(3401,RESET_PHASE+PHASE_END,0,1)
+		mat:RegisterFlagEffect(3401,RESET_PHASE+PHASE_END,0,1,EFFECT_FLAG_CLIENT_HINT,1,0,3401)
 	end
 end
 

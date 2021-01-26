@@ -1,3 +1,4 @@
+Duel.LoadScript("customutility.lua")
 --Hier eine kleine Erläuterung wie man die Funktionen in dieser Datei verwenden kann:
 --1.) Die Karte die eine oder mehrere Funktionen aus dieser Datei verwenden will, braucht "Duel.LoadScript("timegearutility.lua")" vor dem initial_effect (ohne die äußeren Anführungszeichen).
 --2.) Die Extra Parameter, die die Filterfunktion "f" benötigt, werden in dem script der Karte als table zusammengefasst und als letztes Argument übergeben.

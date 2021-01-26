@@ -1,3 +1,4 @@
+Duel.LoadScript("customutility.lua")
 Bilighteral={}
 
 function Bilighteral.CreateActivation(c)

@@ -81,7 +81,7 @@ end
 
 --trap effect
 
-function s.tfilter(c,g)
+function s.tfilter(c,tp,g)
 	return Duel.IsExistingMatchingCard(s.rfilter,tp,LOCATION_EXTRA,0,1,nil,c,g) and c:IsType(TYPE_XYZ) and c:IsFaceup() --and c:IsSetCard(0x400)
 end
 
@@ -95,9 +95,9 @@ end
 
 function s.trapcost(e,tp,eg,ep,ev,re,r,rp,chk)
 	local g=Duel.GetMatchingGroup(s.remfilter,tp,LOCATION_GRAVE+LOCATION_HAND,0,nil)
-	if chk==0 then return Duel.IsExistingTarget(s.tfilter,tp,LOCATION_MZONE,0,1,nil,g) end
+	if chk==0 then return Duel.IsExistingTarget(s.tfilter,tp,LOCATION_MZONE,0,1,nil,tp,g) end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TARGET)
-	local tc1=Duel.SelectTarget(tp,s.tfilter,tp,LOCATION_MZONE,0,1,1,nil,g):GetFirst()
+	local tc1=Duel.SelectTarget(tp,s.tfilter,tp,LOCATION_MZONE,0,1,1,nil,tp,g):GetFirst()
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
 	local tc2=Duel.SelectMatchingCard(tp,aux.spfilter(e,tp,SUMMON_TYPE_XYZ,s.rfilter,tc1,g),tp,LOCATION_EXTRA,0,1,1,nil):GetFirst()
 	local ct=math.abs(tc:GetRank()-c:GetRank())

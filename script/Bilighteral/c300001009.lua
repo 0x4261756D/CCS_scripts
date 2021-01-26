@@ -150,7 +150,7 @@ end
 function s.op(c)
 	return function(e,tp,eg,ep,ev,re,r,rp)
 		local cc=e:GetHandler()
-		local tc=Duel.GetTargetCards(e)
+		local tc=Duel.GetTargetCards(e):GetFirst()
 		if not tc or not cc then return end
 		Duel.Overlay(cc,tc)
 		Duel.SSet(tp,c)

@@ -11,7 +11,8 @@ function aux.EffectCheck(tp,cons,strings)
 	for i,con in ipairs(cons) do
 		if con then table.insert(eff,strings[i]) end
 	end
-	return Duel.SelectOption(tp,table.unpack(eff))
+	Duel.SelectOption(tp,table.unpack(eff))
+	return i
 end
 
 --doccost detaches a specific amount of materials from an Xyz monster (min=<X=<max). min=nil -> detaches all materials.

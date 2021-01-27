@@ -156,23 +156,25 @@ function s.op(c)
 		local additional=set and disc
 		Duel.Overlay(cc,tc)
 		Duel.SSet(tp,c)
-		local choice=aux.EffectCheck(tp,{set,disc},{aux.Stringid(id,2),aux.Stringid(id,3)})
-		if choice==0 then
-			tc=Duel.SelectMatchingCard(tp,s.setfilter,tp,LOCATION_DECK,0,1,1,nil)
-			Duel.SSet(tp,tc)
-			if additional and Duel.SelectYesNo(tp,aux.Stringid(id,4)) then
-				Duel.ConfirmCards(tp,Duel.GetFieldGroup(tp,0,LOCATION_HAND))
-				tc=Duel.GetFieldGroup(tp,0,LOCATION_HAND):FilterSelect(tp,Card.IsDiscardable,1,nil)
-				Duel.SendtoGrave(tc,REASON_EFFECT+REASON_DISCARD)
-			end
-		end
-		if choice==1 then
-			Duel.ConfirmCards(tp,Duel.GetFieldGroup(tp,0,LOCATION_HAND))
-			tc=Duel.GetFieldGroup(tp,0,LOCATION_HAND):FilterSelect(tp,Card.IsDiscardable,1,nil)
-			Duel.SendtoGrave(tc,REASON_EFFECT+REASON_DISCARD)
-			if additional and Duel.SelectYesNo(tp,aux.Stringid(id,4)) then
+		if Duel.SelectYesNo(tp,aux.Stringid(id,5)) then
+			local choice=aux.EffectCheck(tp,{set,disc},{aux.Stringid(id,2),aux.Stringid(id,3)})
+			if choice==0 then
 				tc=Duel.SelectMatchingCard(tp,s.setfilter,tp,LOCATION_DECK,0,1,1,nil)
 				Duel.SSet(tp,tc)
+				if additional and Duel.SelectYesNo(tp,aux.Stringid(id,4)) then
+					Duel.ConfirmCards(tp,Duel.GetFieldGroup(tp,0,LOCATION_HAND))
+					tc=Duel.GetFieldGroup(tp,0,LOCATION_HAND):FilterSelect(tp,Card.IsDiscardable,1,nil)
+					Duel.SendtoGrave(tc,REASON_EFFECT+REASON_DISCARD)
+				end
+			end
+			if choice==1 then
+				Duel.ConfirmCards(tp,Duel.GetFieldGroup(tp,0,LOCATION_HAND))
+				tc=Duel.GetFieldGroup(tp,0,LOCATION_HAND):FilterSelect(tp,Card.IsDiscardable,1,1,nil)
+				Duel.SendtoGrave(tc,REASON_EFFECT+REASON_DISCARD)
+				if additional and Duel.SelectYesNo(tp,aux.Stringid(id,4)) then
+					tc=Duel.SelectMatchingCard(tp,s.setfilter,tp,LOCATION_DECK,0,1,1,nil)
+					Duel.SSet(tp,tc)
+				end
 			end
 		end
 	end

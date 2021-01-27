@@ -156,11 +156,19 @@ function s.op(c)
 		local additional=set and disc
 		Duel.Overlay(cc,tc)
 		Duel.SSet(tp,c)
+		local e1=Effect.CreateEffect(c)
+		e1:SetType(EFFECT_TYPE_SINGLE)
+		e1:SetCode(EFFECT_TRAP_ACT_IN_SET_TURN)
+		c:RegisterEffect(e1)
 		if Duel.SelectYesNo(tp,aux.Stringid(id,5)) then
 			local choice=aux.EffectCheck(tp,{set,disc},{aux.Stringid(id,2),aux.Stringid(id,3)})
 			if choice==0 then
 				tc=Duel.SelectMatchingCard(tp,s.setfilter,tp,LOCATION_DECK,0,1,1,nil)
 				Duel.SSet(tp,tc)
+				local e2=Effect.CreateEffect(c)
+				e2:SetType(EFFECT_TYPE_SINGLE)
+				e2:SetCode(EFFECT_TRAP_ACT_IN_SET_TURN)
+				tc:RegisterEffect(e2)
 				if additional and Duel.SelectYesNo(tp,aux.Stringid(id,4)) then
 					Duel.ConfirmCards(tp,Duel.GetFieldGroup(tp,0,LOCATION_HAND))
 					tc=Duel.GetFieldGroup(tp,0,LOCATION_HAND):FilterSelect(tp,Card.IsDiscardable,1,nil)
@@ -174,6 +182,10 @@ function s.op(c)
 				if additional and Duel.SelectYesNo(tp,aux.Stringid(id,4)) then
 					tc=Duel.SelectMatchingCard(tp,s.setfilter,tp,LOCATION_DECK,0,1,1,nil)
 					Duel.SSet(tp,tc)
+					local e3=Effect.CreateEffect(c)
+					e3:SetType(EFFECT_TYPE_SINGLE)
+					e3:SetCode(EFFECT_TRAP_ACT_IN_SET_TURN)
+					tc:RegisterEffect(e3)
 				end
 			end
 		end

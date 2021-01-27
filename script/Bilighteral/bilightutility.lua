@@ -14,7 +14,6 @@ function Bilighteral.CreateActivation(c)
 	local e1=e0:Clone()
 	e1:SetCode(EFFECT_TRAP_ACT_IN_SET_TURN)
 	c:RegisterEffect(e1)
-	return
 end
 
 function Bilighteral.spellcon(e,tp,eg,ep,ev,re,r,rp)

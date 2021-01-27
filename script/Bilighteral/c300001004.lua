@@ -5,8 +5,8 @@ function s.initial_effect(c)
 	--Act in za hando and on za fieldo
 	Bilighteral.CreateActivation(c)
 	--Spell Effect
-	local fusiontab={fusfilter=s.fusfilter,matfilter=s.matfilter,stage2=s.fstage2}
-	local ritualtab={filter=s.ritfilter,matfilter=s.matfilter,stage2=s.rstage2}
+	local fusiontab={fusfilter=s.fusfilter,matfilter=s.matfilter,extrafil=s.extrafil,extrop=s.fextraop,stage2=s.fstage2}
+	local ritualtab={filter=s.ritfilter,matfilter=s.matfilter,extrafil=s.extrafil,extrop=s.rextraop,stage2=s.rstage2}
 	local rittg=Ritual.Target(ritualtab)
 	local fustg=Fusion.SummonEffTG(fusiontab)
 	local e2=Bilighteral.AddSpellEffect({handler=c,cat=CATEGORY_SPECIAL_SUMMON,tg=s.spelltg(rittg,fustg),op=s.spellop(rittg,Ritual.Operation(ritualtab),fustg,Fusion.SummonEffOP(fusiontab))})
@@ -49,6 +49,24 @@ end
 
 function s.matfilter(c)
 	return c:IsAttribute(ATTRIBUTE_LIGHT) or c:IsAttribute(ATTRIBUTE_DARK)
+end
+
+function s.extrafil(e,tp,eg,ep,ev,re,r,rp,chk)
+	return Duel.GetMatchingGroup(s.matfilter,tp,LOCATION_GRAVE,0,nil):Filter(Card.IsAbleToRemove,nil)
+end
+
+function s.rextraop(mg,e,tp,eg,ep,ev,re,r,rp)
+	local mat2=mg:Filter(Card.IsLocation,nil,LOCATION_GRAVE)
+	mg:Sub(mat2)
+	Duel.ReleaseRitualMaterial(mg)
+	Duel.Remove(mat2,POS_FACEUP,REASON_EFFECT+REASON_MATERIAL+REASON_RITUAL)
+end
+
+function s.fextraop(mg,e,tp,eg,ep,ev,re,r,rp)
+	local mat2=mg:Filter(Card.IsLocation,nil,LOCATION_GRAVE)
+	mg:Sub(mat2)
+	Duel.SendtoGrave(mg,REASON_EFFECT+REASON_MATERIAL+REASON_FUSION)
+	Duel.Remove(mat2,POS_FACEUP,REASON_EFFECT+REASON_MATERIAL+REASON_FUSION)
 end
 
 function s.spelltg(rittg,fustg)

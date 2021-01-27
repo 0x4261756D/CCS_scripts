@@ -194,7 +194,7 @@ function s.traptg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 			ct,g=#d-#l,Duel.GetMatchingGroup(Card.IsAttribute,tp,LOCATION_GRAVE+LOCATION_REMOVED,0,nil,ATTRIBUTE_LIGHT)
 			else ct,g=0,nil
 	end
-	if chkc then return chkc:IsLocation(LOCATION_GRAVE+LOCATION_REMOVED) and s.filter(chkc,e,tp) end
+	if chkc then return (chkc:IsLocation(LOCATION_GRAVE) or chkc:IsLocation(LOCATION_REMOVED)) and s.filter(chkc,e,tp) end
 	if chk==0 then return g and ct>0 and Duel.IsExistingTarget(aux.spfilter(e,tp,0,s.matfilter),tp,LOCATION_GRAVE+LOCATION_REMOVED,0,ct,nil) and Duel.GetLocationCount(tp,LOCATION_MZONE)>=ct end
 	local tc=g:FilterSelect(tp,aux.spfilter(e,tp,0,s.matfilter),ct,ct,nil)
 	Duel.SetTargetCard(tc)

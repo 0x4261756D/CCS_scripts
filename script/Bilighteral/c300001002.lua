@@ -19,7 +19,7 @@ function s.tgfilter(c)
 end
 
 function s.spelltg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
-	if chkc then return (chkc:IsLocation(LOCATION_GRAVE) or chkc:IsLocation(LOCATION_REMOVED)) and aux.spfilter(e,tp,0,s.tgfilter(chkc)) end
+	if chkc then return (chkc:IsLocation(LOCATION_GRAVE) or chkc:IsLocation(LOCATION_REMOVED)) and aux.spfilter(e,tp,0,s.tgfilter,chkc) end
 	if chk==0 then return Duel.IsExistingTarget(aux.spfilter(e,tp,0,s.tgfilter),tp,LOCATION_GRAVE+LOCATION_REMOVED,0,1,nil) end
 	local tc=Duel.SelectMatchingCard(tp,aux.spfilter(e,tp,0,s.tgfilter),tp,LOCATION_GRAVE+LOCATION_REMOVED,0,1,1,nil)
 	Duel.SetTargetCard(tc)

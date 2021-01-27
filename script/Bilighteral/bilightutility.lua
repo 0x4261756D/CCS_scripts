@@ -1,5 +1,7 @@
 Duel.LoadScript("customutility.lua")
 
+SUMMON_TYPE_CHAOS_SYNCHRO=SUMMON_TYPE_SYNCHRO+69
+
 function Card.IsTrapspell(c)
 	return c:IsType(TYPE_SPELL) and c:IsType(TYPE_TRAP)
 end
@@ -29,7 +31,7 @@ end
 Bilighteral.AddSpellEffect=aux.FunctionWithNamedArgs(
 function(c,cat,prop,con,cost,tg,op)
 	local e=Effect.CreateEffect(c)
-	e:SetDescription(aux.Stringid(300001000,0))
+	e:SetDescription(3403)
 	if cat then
 		e:SetCategory(cat)
 	end
@@ -67,7 +69,7 @@ end
 Bilighteral.AddTrapEffect=aux.FunctionWithNamedArgs(
 	function(c,cat,prop,con,cost,tg,op) 
 		local e=Effect.CreateEffect(c)
-		e:SetDescription(aux.Stringid(300001000,1))
+		e:SetDescription(3404)
 		if cat then
 			e:SetCategory(cat)
 		end
@@ -99,14 +101,14 @@ function Bilighteral.AddChaosSynchroProcedure(c,f1,atmin,atmax,f2,antmin,antmax,
 	if desc then
 		e:SetDescription(desc)
 		else 
-			e:SetDescription(aux.Stringid(300001000,2))
+			e:SetDescription(3402)
 	end
 	e:SetCode(EFFECT_SPSUMMON_PROC)
 	e:SetProperty(EFFECT_FLAG_UNCOPYABLE+EFFECT_FLAG_IGNORE_IMMUNE)
 	e:SetRange(LOCATION_EXTRA)
 	e:SetTarget(Bilighteral.ChaosSynchroTarget(c,f1,atmin,atmax,f2,antmin,antmax))
 	e:SetOperation(Bilighteral.ChaosSynchroOperation(c))
-	e:SetValue(SUMMON_TYPE_SYNCHRO+69)
+	e:SetValue(SUMMON_TYPE_CHAOS_SYNCHRO)
 	c:RegisterEffect(e)
 end
 

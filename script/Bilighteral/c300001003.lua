@@ -34,50 +34,17 @@ function s.spellop(e,tp,eg,ep,ev,re,r,rp)
 	local tc=Duel.SelectMatchingCard(tp,s.remfilter,tp,LOCATION_HAND,0,1,1,nil)
 	Duel.Remove(tc,POS_FACEUP,REASON_EFFECT,tp)
 	local att=tc:GetFirst():GetAttribute()
-	if (((att&ATTRIBUTE_LIGHT)==ATTRIBUTE_LIGHT and Duel.IsExistingMatchingCard(s.tgfilter,tp,LOCATION_DECK,0,1,nil,ATTRIBUTE_DARK) and Duel.IsPlayerCanDraw(tp,1)) or ((att&ATTRIBUTE_DARK)==ATTRIBUTE_DARK and Duel.IsExistingMatchingCard(s.tgfilter,tp,LOCATION_DECK,0,1,nil,ATTRIBUTE_LIGHT) and Duel.IsExistingTarget(aux.TRUE,tp,0,LOCATION_MZONE,1,nil)))
-	and Duel.SelectYesNo(tp,aux.Stringid(id,7)) then
-		if att==ATTRIBUTE_LIGHT and Duel.IsExistingMatchingCard(s.tgfilter,tp,LOCATION_DECK,0,1,nil,ATTRIBUTE_DARK) and Duel.IsPlayerCanDraw(tp,1) then
+	local dnd,pab=c:IsAttribute(ATTRIBUTE_LIGHT) and Duel.IsExistingMatchingCard(s.tgfilter,tp,LOCATION_DECK,0,1,nil,ATTRIBUTE_DARK) and Duel.IsPlayerCanDraw(tp,1),c:IsAttribute(ATTRIBUTE_DARK) and Duel.IsExistingMatchingCard(s.tgfilter,tp,LOCATION_DECK,0,1,nil,ATTRIBUTE_LIGHT) and Duel.IsExistingTarget(Card.IsDestructable,tp,0,LOCATION_MZONE,1,nil)
+	local choice,additional=-1,dnd and pab
+	if Duel.SelectYesNo(tp,aux.Stringid(id,5)) then
+		choice=aux.EffectCheck(tp,{dnd,pab},{aux.Stringid(id,0),aux.Stringid(id,1)})
+		if choice==0 then
 			local tc=Duel.SelectMatchingCard(tp,s.tgfilter,tp,LOCATION_DECK,0,1,1,nil,ATTRIBUTE_DARK)
 			Duel.SendtoGrave(tc,REASON_COST,tp)
 			Duel.ShuffleDeck(tp)
 			Duel.Draw(tp,1,REASON_EFFECT)
 			Duel.DiscardHand(tp,Card.IsDiscardable,1,1,REASON_EFFECT,nil)
-		end
-		if att==ATTRIBUTE_DARK and Duel.IsExistingMatchingCard(s.tgfilter,tp,LOCATION_DECK,0,1,nil,ATTRIBUTE_LIGHT) and Duel.IsExistingTarget(aux.TRUE,tp,0,LOCATION_MZONE,1,nil) then
-			local tc=Duel.SelectMatchingCard(tp,s.tgfilter,tp,LOCATION_DECK,0,1,1,nil,ATTRIBUTE_LIGHT)
-			Duel.SendtoGrave(tc,REASON_COST,tp)
-			tc=Duel.SelectTarget(tp,aux.TRUE,tp,0,LOCATION_MZONE,1,1,nil):GetFirst()
-			Duel.Destroy(tc,REASON_EFFECT)
-			local val=(tc:GetTextAttack()+tc:GetTextDefense())/2
-			Duel.Damage(1-tp,val,REASON_EFFECT)
-			Duel.Recover(tp,val,REASON_EFFECT)
-		end
-		local choice,additional=-1,false
-		if att==ATTRIBUTE_LIGHT+ATTRIBUTE_DARK and Duel.IsExistingMatchingCard(s.tgfilter,tp,LOCATION_DECK,0,1,nil,ATTRIBUTE_DARK) and Duel.IsPlayerCanDraw(tp,1) and Duel.IsExistingMatchingCard(s.tgfilter,tp,LOCATION_DECK,0,1,nil,ATTRIBUTE_LIGHT) and Duel.IsExistingTarget(aux.TRUE,tp,0,LOCATION_MZONE,1,nil) then
-			additional=true
-			choice=Duel.SelectOption(tp,aux.Stringid(id,2),aux.Stringid(id,3))
-			elseif att==ATTRIBUTE_LIGHT+ATTRIBUTE_DARK and Duel.IsExistingMatchingCard(s.tgfilter,tp,LOCATION_DECK,0,1,nil,ATTRIBUTE_DARK) and Duel.IsPlayerCanDraw(tp,1) then
-				choice=Duel.SelectOption(tp,aux.Stringid(id,2))
-				elseif att==ATTRIBUTE_LIGHT+ATTRIBUTE_DARK and Duel.IsExistingMatchingCard(s.tgfilter,tp,LOCATION_DECK,0,1,nil,ATTRIBUTE_LIGHT) and Duel.IsExistingTarget(aux.TRUE,tp,0,LOCATION_MZONE,1,nil) then
-					choice=Duel.SelectOption(tp,aux.Stringid(id,3))+1
-		end
-			if choice==0 then
-				local tc=Duel.SelectMatchingCard(tp,s.tgfilter,tp,LOCATION_DECK,0,1,1,nil,ATTRIBUTE_DARK)
-				Duel.SendtoGrave(tc,REASON_COST,tp)
-				Duel.ShuffleDeck(tp)
-				Duel.Draw(tp,1,REASON_EFFECT)
-				Duel.DiscardHand(tp,Card.IsDiscardable,1,1,REASON_EFFECT,nil)
-				if additional==true and Duel.SelectYesNo(tp,aux.Stringid(id,6)) then
-					local tc=Duel.SelectMatchingCard(tp,s.tgfilter,tp,LOCATION_DECK,0,1,1,nil,ATTRIBUTE_LIGHT)
-					Duel.SendtoGrave(tc,REASON_COST,tp)
-					tc=Duel.SelectTarget(tp,aux.TRUE,tp,0,LOCATION_MZONE,1,1,nil):GetFirst()
-					Duel.Destroy(tc,REASON_EFFECT)
-					local val=(tc:GetTextAttack()+tc:GetTextDefense())/2
-					Duel.Damage(1-tp,val,REASON_EFFECT)
-					Duel.Recover(tp,val,REASON_EFFECT)
-				end
-			end
-			if choice==1 then
+			if additional then
 				local tc=Duel.SelectMatchingCard(tp,s.tgfilter,tp,LOCATION_DECK,0,1,1,nil,ATTRIBUTE_LIGHT)
 				Duel.SendtoGrave(tc,REASON_COST,tp)
 				tc=Duel.SelectTarget(tp,aux.TRUE,tp,0,LOCATION_MZONE,1,1,nil):GetFirst()
@@ -85,14 +52,24 @@ function s.spellop(e,tp,eg,ep,ev,re,r,rp)
 				local val=(tc:GetTextAttack()+tc:GetTextDefense())/2
 				Duel.Damage(1-tp,val,REASON_EFFECT)
 				Duel.Recover(tp,val,REASON_EFFECT)
-					if additional==true and Duel.SelectYesNo(tp,aux.Stringid(id,6)) then
-						local tc=Duel.SelectMatchingCard(tp,s.tgfilter,tp,LOCATION_DECK,0,1,1,nil,ATTRIBUTE_DARK)
-						Duel.SendtoGrave(tc,REASON_COSTT,tp)
-						Duel.ShuffleDeck(tp)
-						Duel.Draw(tp,1,REASON_EFFECT)
-						Duel.DiscardHand(tp,Card.IsDiscardable,1,1,REASON_EFFECT,nil)
-					end
 			end
+		end
+		if choice==1 then
+			local tc=Duel.SelectMatchingCard(tp,s.tgfilter,tp,LOCATION_DECK,0,1,1,nil,ATTRIBUTE_LIGHT)
+			Duel.SendtoGrave(tc,REASON_COST,tp)
+			tc=Duel.SelectTarget(tp,aux.TRUE,tp,0,LOCATION_MZONE,1,1,nil):GetFirst()
+			Duel.Destroy(tc,REASON_EFFECT)
+			local val=(tc:GetTextAttack()+tc:GetTextDefense())/2
+			Duel.Damage(1-tp,val,REASON_EFFECT)
+			Duel.Recover(tp,val,REASON_EFFECT)
+			if additional then
+				local tc=Duel.SelectMatchingCard(tp,s.tgfilter,tp,LOCATION_DECK,0,1,1,nil,ATTRIBUTE_DARK)
+				Duel.SendtoGrave(tc,REASON_COST,tp)
+				Duel.ShuffleDeck(tp)
+				Duel.Draw(tp,1,REASON_EFFECT)
+				Duel.DiscardHand(tp,Card.IsDiscardable,1,1,REASON_EFFECT,nil)
+			end
+		end
 	end
 end
 
@@ -124,26 +101,23 @@ function s.trapop(e,tp,eg,ep,ev,re,r,rp)
 	if not tc then return end
 	Duel.GetControl(tc,tp)
 	local g=Duel.GetMatchingGroup(aux.TRUE,tp,LOCATION_MZONE,0,nil)
-	local l=g:FilterCount(Card.IsAttribute,nil,ATTRIBUTE_LIGHT)
-	local d=g:FilterCount(Card.IsAttribute,nil,ATTRIBUTE_DARK)
-	if ((l>0 and Duel.IsExistingMatchingCard(s.remfilter2,tp,LOCATION_GRAVE,0,1,nil,ATTRIBUTE_DARK) and Duel.IsExistingMatchingCard(s.thfilter,tp,LOCATION_GRAVE+LOCATION_REMOVED,0,1,nil)) or (d>0 and Duel.GetFieldGroupCount(tp,0,LOCATION_HAND)>0 and Duel.IsExistingMatchingCard(s.remfilter2,tp,LOCATION_GRAVE,0,1,nil,ATTRIBUTE_LIGHT))) and Duel.SelectYesNo(tp,aux.Stringid(id,7)) then
-		if l>0 and d>0 and Duel.IsExistingMatchingCard(s.remfilter2,tp,LOCATION_GRAVE,0,1,nil,ATTRIBUTE_DARK) and Duel.IsExistingMatchingCard(s.thfilter,tp,LOCATION_GRAVE+LOCATION_REMOVED,0,1,nil) and Duel.GetFieldGroupCount(tp,0,LOCATION_HAND)>0 and Duel.IsExistingMatchingCard(s.remfilter2,tp,LOCATION_GRAVE,0,1,nil,ATTRIBUTE_LIGHT) then
-			additional=true
-			choice=Duel.SelectOption(tp,aux.Stringid(id,4),aux.Stringid(id,5))
-			elseif l>0 and Duel.IsExistingMatchingCard(s.remfilter2,tp,LOCATION_GRAVE,0,1,nil,ATTRIBUTE_DARK) and Duel.IsExistingMatchingCard(s.thfilter,tp,LOCATION_GRAVE+LOCATION_REMOVED,0,1,nil) then choice=Duel.SelectOption(tp,aux.Stringid(id,4))
-				elseif d>0 and Duel.GetFieldGroupCount(tp,0,LOCATION_HAND)>0 and Duel.IsExistingMatchingCard(s.remfilter2,tp,LOCATION_GRAVE,0,1,nil,ATTRIBUTE_LIGHT) then choice=Duel.SelectOption(tp,aux.Stringid(id,5))+1
-		end
+	local l=g:FilterCount(Card.IsAttribute,nil,ATTRIBUTE_LIGHT)>0
+	local d=g:FilterCount(Card.IsAttribute,nil,ATTRIBUTE_DARK)>0
+	local ath,shuf=l and Duel.IsExistingMatchingCard(s.remfilter2,tp,LOCATION_GRAVE,0,1,nil,ATTRIBUTE_DARK) and Duel.IsExistingMatchingCard(s.thfilter,tp,LOCATION_GRAVE+LOCATION_REMOVED,0,1,nil),d>0 and Duel.GetFieldGroupCount(tp,0,LOCATION_HAND)>0 and Duel.IsExistingMatchingCard(s.remfilter2,tp,LOCATION_GRAVE,0,1,nil,ATTRIBUTE_LIGHT)
+	local aditional=ath and shuf
+	if Duel.SelectYesNo(tp,aux.Stringid(id,5)) then
+		local choice=aux.EffectCheck(tp,{ath,shuf},{aux.Stringid(id,2),aux.Stringid(id,3)})
 		if choice==0 then
 			local rem=Duel.SelectMatchingCard(tp,s.remfilter2,tp,LOCATION_GRAVE,0,1,1,nil,ATTRIBUTE_DARK)
 			Duel.Remove(rem,POS_FACEUP,REASON_COST,tp)
 			local tc=Duel.SelectMatchingCard(tp,s.thfilter,tp,LOCATION_GRAVE+LOCATION_REMOVED,0,1,1,nil)
 			Duel.SendtoHand(tc,REASON_EFFECT,tp)
 			Duel.ConfirmCards(1-tp,tc)
-			if additional==true and Duel.SelectYesNo(tp,aux.Stringid(id,6)) then
+			if additional and Duel.SelectYesNo(tp,aux.Stringid(id,4)) then
 				local rem=Duel.SelectMatchingCard(tp,s.remfilter2,tp,LOCATION_GRAVE,0,1,1,nil,ATTRIBUTE_LIGHT)
 				Duel.Remove(rem,POS_FACEUP,REASON_COST,tp)
 				Duel.ConfirmCards(tp,Duel.GetFieldGroup(tp,0,LOCATION_HAND))
-				local tc=Duel.GetFieldGroup(tp,0,LOCATION_HAND):FilterSelect(tp,Card.IsAbleToRemove,1,1,nil)
+				local tc=Duel.GetFieldGroup(tp,0,LOCATION_HAND):FilterSelect(tp,Card.IsAbleToDeck,1,1,nil)
 				Duel.SendtoDeck(tc,2,REASON_EFFECT,1-tp)
 			end
 		end
@@ -151,9 +125,9 @@ function s.trapop(e,tp,eg,ep,ev,re,r,rp)
 			local rem=Duel.SelectMatchingCard(tp,s.remfilter2,tp,LOCATION_GRAVE,0,1,1,nil,ATTRIBUTE_LIGHT)
 			Duel.Remove(rem,POS_FACEUP,REASON_COST,tp)
 			Duel.ConfirmCards(tp,Duel.GetFieldGroup(tp,0,LOCATION_HAND))
-			local tc=Duel.GetFieldGroup(tp,0,LOCATION_HAND):FilterSelect(tp,Card.IsAbleToRemove,1,1,nil)
+			local tc=Duel.GetFieldGroup(tp,0,LOCATION_HAND):FilterSelect(tp,Card.IsAbleToDeck,1,1,nil)
 			Duel.SendtoDeck(tc,2,REASON_EFFECT,1-tp)
-			if additional==true and Duel.SelectYesNo(tp,aux.Stringid(id,6)) then
+			if additional and Duel.SelectYesNo(tp,aux.Stringid(id,4)) then
 				local rem=Duel.SelectMatchingCard(tp,s.remfilter2,tp,LOCATION_GRAVE,0,1,1,nil,ATTRIBUTE_DARK)
 				Duel.Remove(rem,POS_FACEUP,REASON_COST,tp)
 				local tc=Duel.SelectMatchingCard(tp,s.thfilter,tp,LOCATION_GRAVE+LOCATION_REMOVED,0,1,1,nil)

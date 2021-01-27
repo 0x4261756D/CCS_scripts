@@ -48,16 +48,13 @@ function s.fusfilter(c)
 end
 
 function s.matfilter(c)
-	return c:GetAttribute()&ATTRIBUTE_LIGHT==ATTRIBUTE_LIGHT or c:GetAttribute()&ATTRIBUTE_DARK==ATTRIBUTE_DARK
+	return c:IsAttribute(ATTRIBUTE_LIGHT) or c:IsAttribute(ATTRIBUTE_DARK)
 end
 
 function s.spelltg(rittg,fustg)
 	return function(e,tp,eg,ep,ev,re,r,rp,chk)
 		if chk==0 then return (rittg(e,tp,eg,ep,ev,re,r,rp,0) or fustg(e,tp,eg,ep,ev,re,r,rp,0)) and Duel.GetLocationCount(tp,LOCATION_MZONE)>0 end
-		local additional=0
-		if Duel.IsExistingMatchingCard(Card.IsType,tp,LOCATION_MZONE,0,1,nil,TYPE_SYNCHRO) and Duel.IsExistingMatchingCard(Card.IsType,tp,LOCATION_MZONE,0,1,nil,TYPE_XYZ) then
-			additional=1
-		end
+		local additional=Duel.IsExistingMatchingCard(Card.IsType,tp,LOCATION_MZONE,0,1,nil,TYPE_SYNCHRO) and Duel.IsExistingMatchingCard(Card.IsType,tp,LOCATION_MZONE,0,1,nil,TYPE_XYZ)
 		e:SetLabel(additional)
 	end
 end
@@ -65,24 +62,17 @@ end
 function s.spellop(rittg,ritop,fustg,fusop)
 	return function(e,tp,eg,ep,ev,re,r,rp)
 		if Duel.GetLocationCount(tp,LOCATION_MZONE)==0 then return end
-		local additional,choice=e:GetLabel(),-1
-		if rittg(e,tp,eg,ep,ev,re,r,rp,0) and fustg(e,tp,eg,ep,ev,re,r,rp,0) then
-			choice=Duel.SelectOption(tp,aux.Stringid(id,6),aux.Stringid(id,7))
-			elseif rittg(e,tp,eg,ep,ev,re,r,rp,0) then
-				choice=Duel.SelectOption(tp,aux.Stringid(id,6))
-				elseif fustg(e,tp,eg,ep,ev,re,r,rp,0) then
-					choice=Duel.SelectOption(tp,aux.Stringid(id,7))+1
-					else return
-		end
+		local additional=e:GetLabel()
+		local choice=aux.EffectCheck(tp,{rittg(e,tp,eg,ep,ev,re,r,rp,0),fustg(e,tp,eg,ep,ev,re,r,rp,0)},{aux.Stringid(id,4),aux.Stringid(id,5)})
 		if choice==0 then
 			ritop(e,tp,eg,ep,ev,re,r,rp)
 			elseif choice==1 then
 			fusop(e,tp,eg,ep,ev,re,r,rp)
 			else return
 		end
-		if choice==0 and additional==1 and Duel.GetLocationCount(tp,LOCATION_MZONE)>0 and Duel.SelectYesNo(tp,aux.Stringid(id,8)) then
+		if choice==0 and additional and Duel.GetLocationCount(tp,LOCATION_MZONE)>0 and Duel.SelectYesNo(tp,aux.Stringid(id,6)) then
 			fusop(e,tp,eg,ep,ev,re,r,rp)
-			elseif choice==1 and additional==1 and Duel.GetLocationCount(tp,LOCATION_MZONE)>0 and Duel.SelectYesNo(tp,aux.Stringid(id,8)) then
+			elseif choice==1 and additional and Duel.GetLocationCount(tp,LOCATION_MZONE)>0 and Duel.SelectYesNo(tp,aux.Stringid(id,6)) then
 				ritop(e,tp,eg,ep,ev,re,r,rp)
 				else return
 		end
@@ -130,50 +120,38 @@ function s.cost(e,tp,eg,ep,ev,re,r,rp,chk)
 	Duel.Remove(e:GetHandler(),POS_FACEUP,REASON_COST)
 end
 
-function s.spfilter(c,e,tp)
-	return c:IsLocation(LOCATION_DECK) and c:IsCanBeSpecialSummoned(e,0,tp,false,false) -- and c:IsSetCard(0x400)
-end
-
 function s.tg(e,tp,eg,ep,ev,re,r,rp,chk)
 	local mat=Group.CreateGroup()
 	for tc in aux.Next(eg) do
 		mat:Merge(tc:GetMaterial())
 	end
-	local l,d,choice,additional=false,false,-1,0
-	if mat:IsExists(Card.IsAttribute,1,nil,ATTRIBUTE_LIGHT) then l=true end
-	if mat:IsExists(Card.IsAttribute,1,nil,ATTRIBUTE_DARK) then d=true end
-	local l2,d2=(l==true and Duel.GetLocationCount(tp,LOCATION_MZONE)>0 and Duel.IsExistingMatchingCard(s.spfilter,tp,LOCATION_DECK,0,1,nil,e,tp)),(d==true and Duel.IsExistingTarget(aux.TRUE,tp,0,LOCATION_ONFIELD,1,nil))
+	local l,d=mat:IsExists(Card.IsAttribute,1,nil,ATTRIBUTE_LIGHT),mat:IsExists(Card.IsAttribute,1,nil,ATTRIBUTE_DARK)
+	local l2,d2=(l and Duel.GetLocationCount(tp,LOCATION_MZONE)>0 and Duel.IsExistingMatchingCard(aux.spfilter(e,tp,0,Card.IsSetCard,0x400),tp,LOCATION_DECK,0,1,nil)),(d and Duel.IsExistingTarget(Card.IsDestructable,tp,0,LOCATION_ONFIELD,1,nil))
+	local additional=l2 and d2
 	if chk==0 then return l2 or d2 end
-	if l2 and d2 then
-			choice=Duel.SelectOption(tp,aux.Stringid(id,2),aux.Stringid(id,3))
-			elseif l2 then
-				choice=Duel.SelectOption(tp,aux.Stringid(id,2))
-				elseif d2 then
-					choice=Duel.SelectOption(tp,aux.Stringid(id,3))+1
-					else return
-	end
-	if Duel.SelectYesNo(tp,aux.Stringid(id,4)) then additional=1 end
+	local choice=aux.EffectCheck(tp,{l2,d2},{aux.Stringid(id,2),aux.Stringid(id,3})
 	if choice==0 then 
-		local tc=Duel.SelectMatchingCard(tp,s.spfilter,tp,LOCATION_DECK,0,1,1,nil,e,tp)
+		local tc=Duel.SelectMatchingCard(tp,aux.spfilter(e,tp,0,Card.IsSetCard,0x400),tp,LOCATION_DECK,0,1,1,nil)
 		Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,tc,1,tp,LOCATION_DECK)
 		e:SetLabelObject(tc)
 		tc:KeepAlive()
-		if additional==1 then
-			local tc=Duel.SelectMatchingCard(tp,aux.TRUE,tp,0,LOCATION_ONFIELD,1,#mat,nil)
+		if additional and Duel.SelectYesNo(tp,aux.Stringid(id,4)) then
+			local tc=Duel.SelectMatchingCard(tp,Card.IsDestructable,tp,0,LOCATION_ONFIELD,1,#mat,nil)
 			Duel.SetOperationInfo(0,CATEGORY_DESTROY,tc,#tc,1-tp,LOCATION_ONFIELD)
 			Duel.SetTargetCard(tc)
 		end
 		elseif choice==1 then
-			if additional==1 then
-				local tc=Duel.SelectMatchingCard(tp,s.spfilter,tp,LOCATION_DECK,0,1,1,nil,e,tp)
-				Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,tc,1,tp,LOCATION_DECK)
-				e:SetLabelObject(tc)
-				tc:KeepAlive()
-			end
-			local tc=Duel.SelectMatchingCard(tp,aux.TRUE,tp,0,LOCATION_ONFIELD,1,#mat,nil)
-			Duel.SetOperationInfo(0,CATEGORY_DESTROY,tc,#tc,1-tp,LOCATION_ONFIELD)
-			Duel.SetTargetCard(tc)
-			else return
+				local tc=Duel.SelectMatchingCard(tp,Card.IsDestructable,tp,0,LOCATION_ONFIELD,1,#mat,nil)
+				Duel.SetOperationInfo(0,CATEGORY_DESTROY,tc,#tc,1-tp,LOCATION_ONFIELD)
+				Duel.SetTargetCard(tc)
+				if additional and Duel.SelectYesNo(tp,aux.Stringid(id,4)) then
+					local tc=Duel.SelectMatchingCard(tp,aux.spfilter(e,tp,0,Card.IsSetCard,0x400),tp,LOCATION_DECK,0,1,1,nil)
+					Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,tc,1,tp,LOCATION_DECK)
+					e:SetLabelObject(tc)
+					tc:KeepAlive()
+				end
+		end
+		else return 
 	end
 	e:SetLabel(choice,additional)
 end
@@ -202,10 +180,6 @@ end
 
 --Trap Effect
 
-function s.filter(c,e,tp)
-	return c:IsCanBeSpecialSummoned(e,0,tp,false,false) and (c:GetAttribute()&ATTRIBUTE_LIGHT==ATTRIBUTE_LIGHT or c:GetAttribute()&ATTRIBUTE_DARK==ATTRIBUTE_DARK)
-end
-
 function s.trapcon(e,tp,eg,ep,ev,re,r,rp)
 	local l,d=Duel.GetMatchingGroupCount(Card.IsAttribute,tp,LOCATION_MZONE,0,nil,ATTRIBUTE_LIGHT),Duel.GetMatchingGroupCount(Card.IsAttribute,tp,LOCATION_MZONE,0,nil,ATTRIBUTE_DARK)
 	return l~=d
@@ -221,8 +195,8 @@ function s.traptg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 			else ct,g=0,nil
 	end
 	if chkc then return chkc:IsLocation(LOCATION_GRAVE+LOCATION_REMOVED) and s.filter(chkc,e,tp) end
-	if chk==0 then return g and ct>0 and Duel.IsExistingTarget(s.filter,tp,LOCATION_GRAVE+LOCATION_REMOVED,0,ct,nil,e,tp) and Duel.GetLocationCount(tp,LOCATION_MZONE)>=ct end
-	local tc=g:FilterSelect(tp,s.filter,ct,ct,nil,e,tp)
+	if chk==0 then return g and ct>0 and Duel.IsExistingTarget(aux.spfilter(e,tp,0,s.matfilter),tp,LOCATION_GRAVE+LOCATION_REMOVED,0,ct,nil) and Duel.GetLocationCount(tp,LOCATION_MZONE)>=ct end
+	local tc=g:FilterSelect(tp,aux.spfilter(e,tp,0,s.matfilter),ct,ct,nil)
 	Duel.SetTargetCard(tc)
 	tc:KeepAlive()
 	e:SetLabel(ct)

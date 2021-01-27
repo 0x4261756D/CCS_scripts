@@ -75,18 +75,14 @@ function s.trapcost(e,tp,eg,ep,ev,re,r,rp,chk)
 end
 
 function s.traptg(e,tp,eg,ep,ev,re,r,rp,chk)
-	local choice=0
 	local g=Duel.GetMatchingGroup(s.thfilter,tp,LOCATION_DECK,0,nil)
-	if #g>0 and aux.SelectUnselectGroup(g,e,tp,1,2,aux.dncheck,0) and not (Duel.IsPlayerCanDraw(tp,3) or Duel.GetMatchingGroupCount(Card.IsDiscardable,tp,LOCATION_HAND,0,nil)>0) then choice=choice+1 end
-	if not (#g>0 or aux.SelectUnselectGroup(g,e,tp,1,2,aux.dncheck,0)) and Duel.IsPlayerCanDraw(tp,3) and Duel.GetMatchingGroupCount(Card.IsDiscardable,tp,LOCATION_HAND,0,nil)>0 then choice=choice+2 end
-	if #g>0 and aux.SelectUnselectGroup(g,e,tp,1,2,aux.dncheck,0) and Duel.IsPlayerCanDraw(tp,3) and Duel.GetMatchingGroupCount(Card.IsDiscardable,tp,LOCATION_HAND,0,nil)>0 then choice=choice+3 end
-	if chk==0 then return choice~=0 end
-	if choice==1 then choice=Duel.SelectOption(tp,aux.Stringid(id,2))
-	Duel.SetOperationInfo(0,CATEGORY_TOHAND+CATEGORY_SEARCH,nil,nil,tp,LOCATION_DECK) end
-	if choice==2 then choice=Duel.SelectOption(tp,aux.Stringid(id,3))+1 
-	Duel.SetOperationInfo(0,CATEGORY_TOHAND+CATEGORY_DRAW,nil,2,tp,LOCATION_DECK)
-	Duel.SetOperationInfo(0,CATEGORY_TOGRAVE,nil,1,tp,LOCATION_HAND) end
-	if choice==3 then choice=Duel.SelectOption(tp,aux.Stringid(id,2),aux.Stringid(id,3)) end
+	local add,draw=#g>0 and aux.SelectUnselectGroup(g,e,tp,1,2,aux.dncheck,0),#g>0 and Duel.IsPlayerCanDraw(tp,3) and Duel.GetMatchingGroupCount(Card.IsDiscardable,tp,LOCATION_HAND,0,nil)>0
+	if chk==0 then return add or draw end
+	local choice=aux.EffectCheck(tp,{add,draw},{aux.Stringid(id,0),aux.Stringid(id,1)})
+	if choice==0 then Duel.SetOperationInfo(0,CATEGORY_TOHAND+CATEGORY_SEARCH,nil,nil,tp,LOCATION_DECK) end
+	if choice==1 then
+		Duel.SetOperationInfo(0,CATEGORY_TOHAND+CATEGORY_DRAW,nil,2,tp,LOCATION_DECK)
+		Duel.SetOperationInfo(0,CATEGORY_TOGRAVE,nil,1,tp,LOCATION_HAND) end
 	e:SetLabel(choice)
 end
 

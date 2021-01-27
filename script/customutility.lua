@@ -6,7 +6,7 @@ function Card.CheckType(c,tp)
 end
 
 --Function to select an option based on the condition on the same place as the option in the first table
-function aux.EffectCheck(tp,cons,strings)
+function Auxiliary.EffectCheck(tp,cons,strings)
 	local eff,sel={},{}
 	for i,con in ipairs(cons) do
 		if con then 

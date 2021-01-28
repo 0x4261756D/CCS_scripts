@@ -32,7 +32,7 @@ function s.initial_effect(c)
 	e3:SetRange(LOCATION_FZONE)
 	e3:SetTargetRange(LOCATION_MZONE,0)
 	e3:SetTarget(aux.TargetBoolFunction(s.atkboost))
-	e3:SetValue(s.aval)
+	e3:SetValue(s.atkval)
 	c:RegisterEffect(e3)
 	local e4=Effect.CreateEffect(c)
 	e4:SetType(EFFECT_TYPE_FIELD)
@@ -83,7 +83,7 @@ function s.initial_effect(c)
 	e11:SetType(EFFECT_TYPE_QUICK_O)
 	e11:SetCode(EVENT_FREE_CHAIN)
 	e11:SetRange(LOCATION_FZONE)
-	e11:SetTarget(s.rccost)
+	e11:SetCost(s.rccost)
 	e11:SetTarget(s.rctg)
 	e11:SetOperation(s.rcop)
 	c:RegisterEffect(e11)
@@ -93,7 +93,7 @@ s.counter_place_list={0x1000}
 
 --Boost
 
-function s.atkboost(e,c)
+function s.atkboost(c)
 	return c:IsAttribute(ATTRIBUTE_LIGHT) and c:IsAttackPos() and c:IsFaceup()
 end
 
@@ -101,7 +101,7 @@ function s.atkval(e,c)
 	return c:GetDefense()
 end
 
-function s.defboost(e,c)
+function s.defboost(c)
 	return c:IsAttribute(ATTRIBUTE_LIGHT) and c:IsDefensePos() and c:IsFaceup()
 end
 
@@ -147,7 +147,6 @@ end
 function s.fumfilter(c,ct,lv)
 	return c:IsAbleToDeck() and c:IsFaceup() and c:IsSetCard(0x400) and c:IsMonster() and ct>=lv and ct>=2*c:GetLevel()
 end
-
 
 function s.rccost(e,tp,eg,ep,ev,re,r,rp,chk)
 	local ct=e:GetHandler():GetCounter(0x1000)

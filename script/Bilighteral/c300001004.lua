@@ -72,7 +72,10 @@ end
 function s.spelltg(rittg,fustg)
 	return function(e,tp,eg,ep,ev,re,r,rp,chk)
 		if chk==0 then return (rittg(e,tp,eg,ep,ev,re,r,rp,0) or fustg(e,tp,eg,ep,ev,re,r,rp,0)) and Duel.GetLocationCount(tp,LOCATION_MZONE)>0 end
-		local additional=Duel.IsExistingMatchingCard(Card.IsType,tp,LOCATION_MZONE,0,1,nil,TYPE_SYNCHRO) and Duel.IsExistingMatchingCard(Card.IsType,tp,LOCATION_MZONE,0,1,nil,TYPE_XYZ)
+		local additional=0
+		if Duel.IsExistingMatchingCard(Card.IsType,tp,LOCATION_MZONE,0,1,nil,TYPE_SYNCHRO) and Duel.IsExistingMatchingCard(Card.IsType,tp,LOCATION_MZONE,0,1,nil,TYPE_XYZ) then
+			additional=1
+		end
 		e:SetLabel(additional)
 	end
 end
@@ -88,9 +91,9 @@ function s.spellop(rittg,ritop,fustg,fusop)
 			fusop(e,tp,eg,ep,ev,re,r,rp)
 			else return
 		end
-		if choice==0 and additional and Duel.GetLocationCount(tp,LOCATION_MZONE)>0 and Duel.SelectYesNo(tp,aux.Stringid(id,6)) then
+		if choice==0 and additional and Duel.GetLocationCount(tp,LOCATION_MZONE)>0 and fustg(e,tp,eg,ep,ev,re,r,rp,0) and Duel.SelectYesNo(tp,aux.Stringid(id,6)) then
 			fusop(e,tp,eg,ep,ev,re,r,rp)
-			elseif choice==1 and additional and Duel.GetLocationCount(tp,LOCATION_MZONE)>0 and Duel.SelectYesNo(tp,aux.Stringid(id,6)) then
+			elseif choice==1 and additional and Duel.GetLocationCount(tp,LOCATION_MZONE)>0 and rittg(e,tp,eg,ep,ev,re,r,rp,0) and Duel.SelectYesNo(tp,aux.Stringid(id,6)) then
 				ritop(e,tp,eg,ep,ev,re,r,rp)
 				else return
 		end

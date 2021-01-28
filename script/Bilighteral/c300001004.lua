@@ -147,7 +147,7 @@ function s.tg(e,tp,eg,ep,ev,re,r,rp,chk)
 	local l2,d2=(l and Duel.GetLocationCount(tp,LOCATION_MZONE)>0 and Duel.IsExistingMatchingCard(aux.spfilter(e,tp,0,Card.IsSetCard,0x400),tp,LOCATION_DECK,0,1,nil)),(d and Duel.IsExistingTarget(Card.IsDestructable,tp,0,LOCATION_ONFIELD,1,nil))
 	local additional=l2 and d2
 	if chk==0 then return l2 or d2 end
-	local choice=aux.EffectCheck(tp,{l2,d2},{aux.Stringid(id,2),aux.Stringid(id,3})
+	local choice=aux.EffectCheck(tp,{l2,d2},{aux.Stringid(id,2),aux.Stringid(id,3)})
 	if choice==0 then 
 		local tc=Duel.SelectMatchingCard(tp,aux.spfilter(e,tp,0,Card.IsSetCard,0x400),tp,LOCATION_DECK,0,1,1,nil)
 		Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,tc,1,tp,LOCATION_DECK)
@@ -158,18 +158,17 @@ function s.tg(e,tp,eg,ep,ev,re,r,rp,chk)
 			Duel.SetOperationInfo(0,CATEGORY_DESTROY,tc,#tc,1-tp,LOCATION_ONFIELD)
 			Duel.SetTargetCard(tc)
 		end
-		elseif choice==1 then
-				local tc=Duel.SelectMatchingCard(tp,Card.IsDestructable,tp,0,LOCATION_ONFIELD,1,#mat,nil)
-				Duel.SetOperationInfo(0,CATEGORY_DESTROY,tc,#tc,1-tp,LOCATION_ONFIELD)
-				Duel.SetTargetCard(tc)
-				if additional and Duel.SelectYesNo(tp,aux.Stringid(id,4)) then
-					local tc=Duel.SelectMatchingCard(tp,aux.spfilter(e,tp,0,Card.IsSetCard,0x400),tp,LOCATION_DECK,0,1,1,nil)
-					Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,tc,1,tp,LOCATION_DECK)
-					e:SetLabelObject(tc)
-					tc:KeepAlive()
-				end
-		end
-		else return 
+	elseif choice==1 then
+			local tc=Duel.SelectMatchingCard(tp,Card.IsDestructable,tp,0,LOCATION_ONFIELD,1,#mat,nil)
+			Duel.SetOperationInfo(0,CATEGORY_DESTROY,tc,#tc,1-tp,LOCATION_ONFIELD)
+			Duel.SetTargetCard(tc)
+			if additional and Duel.SelectYesNo(tp,aux.Stringid(id,4)) then
+				local tc=Duel.SelectMatchingCard(tp,aux.spfilter(e,tp,0,Card.IsSetCard,0x400),tp,LOCATION_DECK,0,1,1,nil)
+				Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,tc,1,tp,LOCATION_DECK)
+				e:SetLabelObject(tc)
+				tc:KeepAlive()
+			end
+	else return 
 	end
 	e:SetLabel(choice,additional)
 end

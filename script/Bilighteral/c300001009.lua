@@ -24,15 +24,15 @@ end
 --Spell Effect
 
 function s.filter1(c,e,tp)
-	local rk,att=c:GetRank(),c:GetAttribute()
+	local rk=c:GetRank()
 	local pg=aux.GetMustBeMaterialGroup(tp,Group.FromCards(c),tp,nil,nil,REASON_XYZ)
 	return (#pg<=0 or (#pg==1 and pg:IsContains(c))) and (c:GetAttribute()&ATTRIBUTE_LIGHT==ATTRIBUTE_LIGHT or c:GetAttribute()&ATTRIBUTE_DARK==ATTRIBUTE_DARK) and c:IsFaceup()
 		and Duel.IsExistingMatchingCard(s.filter2,tp,LOCATION_EXTRA,0,1,nil,e,tp,c,rk,pg,att) --and c:IsSetCard(0x400)
 end
 
-function s.filter2(c,e,tp,mc,rk,pg,att)
+function s.filter2(c,e,tp,mc,rk,pg)
 	if c.rum_limit and not c.rum_limit(mc,e) then return false end
-	return mc:IsType(TYPE_XYZ,c,SUMMON_TYPE_XYZ,tp) and not c:IsRank(rk) and not c:IsAttribute(att) and mc:IsCanBeXyzMaterial(c,tp)
+	return mc:IsType(TYPE_XYZ,c,SUMMON_TYPE_XYZ,tp) and not c:IsRank(rk) and mc:IsCanBeXyzMaterial(c,tp)
 		and Duel.GetLocationCountFromEx(tp,tp,mc,c)>0 and c:IsCanBeSpecialSummoned(e,SUMMON_TYPE_XYZ,tp,false,false)
 end
 
@@ -86,7 +86,7 @@ function s.tfilter(c,tp,g)
 end
 
 function s.rfilter(c,tc,g)
-	return c:GetAttribute()~=tc:GetAttribute() and c:GetRank()~=tc:GetRank() and not c:IsPublic() and #g>=math.abs(tc:GetRank()-c:GetRank()) and c:IsType(TYPE_XYZ) --and c:IsSetCard(0x400)
+	return c:GetRank()~=tc:GetRank() and not c:IsPublic() and #g>=math.abs(tc:GetRank()-c:GetRank()) and c:IsType(TYPE_XYZ) --and c:IsSetCard(0x400)
 end
 
 function s.remfilter(c)

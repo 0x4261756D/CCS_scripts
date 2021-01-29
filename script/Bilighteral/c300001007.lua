@@ -133,7 +133,7 @@ function s.filter1(c,ct)
 end
 
 function s.filter2(c,ct)
-	return c:IsAbleToGrave() and c:IsFaceup() and c:IsMonster() and (ct>=c:GetLevel() or ct>=c:GetRank() or ct>=2*c:GetLink())
+	return c:IsAbleToGrave() and c:IsFaceup() and ((c:HasLevel() and ct>=c:GetLevel()) or (c:HasRank() and ct>=c:GetRank()) or (c:IsLinkMonster() and ct>=2*c:GetLink()))
 end
 
 function s.rccost(e,tp,eg,ep,ev,re,r,rp,chk)

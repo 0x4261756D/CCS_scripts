@@ -157,7 +157,6 @@ function s.rccost(e,tp,eg,ep,ev,re,r,rp,chk)
 	else return
 	end
 	e:GetHandler():RemoveCounter(tp,0x1001,ct,REASON_EFFECT)
-	e:SetLabelObject(tc)
 end
 
 function s.rctg(e,tp,eg,ep,ev,re,r,rp,chk)
@@ -166,7 +165,7 @@ function s.rctg(e,tp,eg,ep,ev,re,r,rp,chk)
 end
 
 function s.rcop(e,tp,eg,ep,ev,re,r,rp)
-	local tc=e:GetLabelObject()
+	local tc=Duel.GetFirstTarget()
 	local atk,def
 	Duel.SendtoGrave(tc,REASON_EFFECT)
 	if tc:IsMonster() then

@@ -129,7 +129,7 @@ end
 --Remove Counters
 
 function s.filter1(c,ct)
-	return c:IsAbleToGrave() and (c:IsFacedown() or c:IsType(TYPE_SPELL+TYPE_TRAP) and c:IsFaceup()) and ct>=2
+	return c:IsAbleToGrave() and (c:IsFacedown() or (c:IsType(TYPE_SPELL+TYPE_TRAP) and c:IsFaceup())) and ct>=2
 end
 
 function s.filter2(c,ct)
@@ -138,14 +138,14 @@ end
 
 function s.rccost(e,tp,eg,ep,ev,re,r,rp,chk)
 	local ct=e:GetHandler():GetCounter(0x1001)
-	local fdst,fum=Duel.IsExistingTarget(s.filter1,tp,0,LOCATION_ONFIELD,1,nil,ct),Duel.IsExistingTarget(s.filter2,tp,0,LOCATION_ONFIELD,1,nil,ct)
+	local fdst,fum=Duel.IsExistingTarget(s.filter1,tp,0,LOCATION_MZONE+LOCATION_SZONE,1,nil,ct),Duel.IsExistingTarget(s.filter2,tp,0,LOCATION_MZONE,1,nil,ct)
 	if chk==0 then return fdst or fum end
 	local choice=aux.EffectCheck(tp,{fdst,fum},{aux.Stringid(id,1),aux.Stringid(id,2)})
 	if choice==0 then
-		local tc=Duel.SelectTarget(tp,s.filter1,tp,0,LOCATION_ONFIELD,1,1,nil,ct):GetFirst()
+		local tc=Duel.SelectTarget(tp,s.filter1,tp,0,LOCATION_MZONE+LOCATION_SZONE,1,1,nil,ct):GetFirst()
 		ct=2
 	elseif choice==1 then
-		local tc=Duel.SelectTarget(tp,s.filter2,tp,0,LOCATION_ONFIELD,1,1,nil,ct):GetFirst()
+		local tc=Duel.SelectTarget(tp,s.filter2,tp,0,LOCATION_MZONE,1,1,nil,ct):GetFirst()
 		if tc:HasLevel() then
 			ct=tc:GetLevel()
 		elseif tc:HasRank() then
@@ -161,7 +161,7 @@ end
 
 function s.rctg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return true end
-	Duel.SetOperationInfo(0,CATEGORY_TOGRAVE+CATEGORY_DAMAGE,nil,1,1-tp,LOCATION_ONFIELD)
+	Duel.SetOperationInfo(0,CATEGORY_TOGRAVE+CATEGORY_DAMAGE,nil,1,1-tp,LOCATION_MZONE+LOCATION_SZONE)
 end
 
 function s.rcop(e,tp,eg,ep,ev,re,r,rp)

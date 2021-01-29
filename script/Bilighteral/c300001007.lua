@@ -174,6 +174,6 @@ function s.rcop(e,tp,eg,ep,ev,re,r,rp)
 		else atk,def=tc:GetTextAttack(),tc:GetTextDefense()
 		end
 		Duel.BreakEffect()
-		Duel.Damage(1-tp,(atk+def)/2)
+		Duel.Damage(1-tp,(atk+def)/2,REASON_EFFECT)
 	end
 end

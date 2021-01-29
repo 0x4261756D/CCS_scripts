@@ -178,8 +178,17 @@ end
 function s.rcop(e,tp,eg,ep,ev,re,r,rp)
 	local ct,choice=table.unpack(e:GetLabelObject())
 	local tc
-	if choice==0 then tc=Duel.SelectMatchingCard(tp,s.fdfilter,tp,LOCATION_GRAVE+LOCATION_REMOVED,0,1,1,nil,ct) end
-	if choice==1 then tc=Duel.SelectMatchingCard(tp,s.stfilter,tp,LOCATION_GRAVE+LOCATION_REMOVED,0,1,1,nil,ct) end
-	if choice==2 then tc=Duel.SelectMatchingCard(tp,s.fumfilter,tp,LOCATION_GRAVE+LOCATION_REMOVED,0,1,1,nil,ct,ct/2) end
+	if choice==0 then 
+		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TODECK)
+		tc=Duel.SelectMatchingCard(tp,s.fdfilter,tp,LOCATION_GRAVE+LOCATION_REMOVED,0,1,1,nil,ct)
+	end
+	if choice==1 then 
+		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TODECK)
+		tc=Duel.SelectMatchingCard(tp,s.stfilter,tp,LOCATION_GRAVE+LOCATION_REMOVED,0,1,1,nil,ct)
+	end
+	if choice==2 then
+		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TODECK)
+		tc=Duel.SelectMatchingCard(tp,s.fumfilter,tp,LOCATION_GRAVE+LOCATION_REMOVED,0,1,1,nil,ct,ct/2)
+		end
 	Duel.SendtoDeck(tc,tp,2,REASON_EFFECT)
 end

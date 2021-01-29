@@ -98,6 +98,7 @@ end
 function s.discon(e,tp,eg,ep,ev,re,r,rp)
 	local a=Duel.GetAttacker()
 	local at=Duel.GetAttackTarget()
+	if a:IsControler(1-tp) then a,at=at,a end
 	return at and a:IsSetCard(0x400)
 end
 
@@ -133,7 +134,7 @@ function s.filter1(c,ct)
 end
 
 function s.filter2(c,ct)
-	return c:IsAbleToGrave() and c:IsFaceup() and ((c:HasLevel() and ct>=c:GetLevel()) or (c:HasRank() and ct>=c:GetRank()) or (c:IsLinkMonster() and ct>=2*c:GetLink()))
+	return c:IsAbleToGrave() and c:IsFaceup() and ((c:HasLevel() and ct>=c:GetLevel()) or (c:IsType(TYPE_XYZ) and ct>=c:GetRank()) or (c:IsLinkMonster() and ct>=2*c:GetLink()))
 end
 
 function s.rccost(e,tp,eg,ep,ev,re,r,rp,chk)
@@ -142,9 +143,11 @@ function s.rccost(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return fdst or fum end
 	local choice=aux.EffectCheck(tp,{fdst,fum},{aux.Stringid(id,1),aux.Stringid(id,2)})
 	if choice==0 then
+		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TOGRAVE)
 		local tc=Duel.SelectTarget(tp,s.filter1,tp,0,LOCATION_MZONE+LOCATION_SZONE,1,1,nil,ct):GetFirst()
 		ct=2
 	elseif choice==1 then
+		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TOGRAVE)
 		local tc=Duel.SelectTarget(tp,s.filter2,tp,0,LOCATION_MZONE,1,1,nil,ct):GetFirst()
 		if tc:HasLevel() then
 			ct=tc:GetLevel()

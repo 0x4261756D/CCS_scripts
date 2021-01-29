@@ -115,7 +115,7 @@ end
 
 --Place Counters
 
-function s.discon(e,tp,eg,ep,ev,re,r,rp)
+function s.accon(e,tp,eg,ep,ev,re,r,rp)
 	return eg:IsExists(Card.IsControler,1,nil,1-tp)
 end
 

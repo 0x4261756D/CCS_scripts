@@ -9,6 +9,7 @@ function s.initial_effect(c)
 	local e0=Effect.CreateEffect(c)
 	e0:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
 	e0:SetCode(EVENT_CHAIN_SOLVED)
+	e0:SetRange(LOCATION_ALL)
 	e0:SetOperation(s.flagop)
 	c:RegisterEffect(e0)
 	--Activate

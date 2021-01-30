@@ -36,6 +36,7 @@ function s.initial_effect(c)
 	--Remove Counters + send + burn
 	local e4=Effect.CreateEffect(c)
 	e4:SetDescription(aux.Stringid(id,0))
+	e4:SetCategory(CATEGORY_TOGRAVE+CATEGORY_TOHAND+CATEGORY_TODECK+CATEGORY_SPECIAL_SUMMON)
 	e4:SetProperty(EFFECT_FLAG_CARD_TARGET)
 	e4:SetType(EFFECT_TYPE_QUICK_O)
 	e4:SetCode(EVENT_FREE_CHAIN)
@@ -93,16 +94,16 @@ end
 
 --Remove Counters
 
-function s.filter1(c,ct)
-	return c:IsAbleToGrave() and (c:IsFacedown() or (c:IsType(TYPE_SPELL+TYPE_TRAP) and c:IsFaceup())) and ct>=2
+function s.stfilter(c,ct)
+	return (c:IsAbleToGrave() or c:IsAbleToDeck() or c:IsAbleToHand()) and (c:IsType(TYPE_SPELL+TYPE_TRAP) and c:IsFaceup()) and ct>=2
 end
 
-function s.filter2(c,ct)
-	return c:IsAbleToGrave() and c:IsFaceup() and ((c:HasLevel() and ct>=c:GetLevel()) or (c:IsType(TYPE_XYZ) and ct>=c:GetRank()) or (c:IsLinkMonster() and ct>=2*c:GetLink()))
+function s.fumfilter(c,ct)
+	return (c:IsAbleToGrave() or c:IsAbleToDeck() or c:IsAbleToHand()) and c:IsFaceup() and ((c:HasLevel() and ct>=c:GetLevel()) or (c:IsType(TYPE_XYZ) and ct>=c:GetRank()) or (c:IsLinkMonster() and ct>=2*c:GetLink()))
 end
 
 function s.rccost(e,tp,eg,ep,ev,re,r,rp,chk)
-	local ct=e:GetHandler():GetCounter(0x1001)
+	local cel,inf,cha=e:GetHandler():GetCounter(0x1000),e:GetHandler():GetCounter(0x1001),e:GetHandler():GetCounter(0x13)
 	local fdst,fum=Duel.IsExistingTarget(s.filter1,tp,0,LOCATION_MZONE+LOCATION_SZONE,1,nil,ct),Duel.IsExistingTarget(s.filter2,tp,0,LOCATION_MZONE,1,nil,ct)
 	if chk==0 then return fdst or fum end
 	local choice=aux.EffectCheck(tp,{fdst,fum},{aux.Stringid(id,1),aux.Stringid(id,2)})

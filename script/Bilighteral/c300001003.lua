@@ -34,7 +34,7 @@ function s.spellop(e,tp,eg,ep,ev,re,r,rp)
 	local tc=Duel.SelectMatchingCard(tp,s.remfilter,tp,LOCATION_HAND,0,1,1,nil)
 	Duel.Remove(tc,POS_FACEUP,REASON_EFFECT,tp)
 	local att=tc:GetFirst():GetAttribute()
-	local dnd,pab=c:IsAttribute(ATTRIBUTE_LIGHT) and Duel.IsExistingMatchingCard(s.tgfilter,tp,LOCATION_DECK,0,1,nil,ATTRIBUTE_DARK) and Duel.IsPlayerCanDraw(tp,1),c:IsAttribute(ATTRIBUTE_DARK) and Duel.IsExistingMatchingCard(s.tgfilter,tp,LOCATION_DECK,0,1,nil,ATTRIBUTE_LIGHT) and Duel.IsExistingTarget(Card.IsDestructable,tp,0,LOCATION_MZONE,1,nil)
+	local dnd,pab=tc:IsAttribute(ATTRIBUTE_LIGHT) and Duel.IsExistingMatchingCard(s.tgfilter,tp,LOCATION_DECK,0,1,nil,ATTRIBUTE_DARK) and Duel.IsPlayerCanDraw(tp,1),tc:IsAttribute(ATTRIBUTE_DARK) and Duel.IsExistingMatchingCard(s.tgfilter,tp,LOCATION_DECK,0,1,nil,ATTRIBUTE_LIGHT) and Duel.IsExistingTarget(Card.IsDestructable,tp,0,LOCATION_MZONE,1,nil)
 	local choice,additional=-1,dnd and pab
 	if Duel.SelectYesNo(tp,aux.Stringid(id,5)) then
 		choice=aux.EffectCheck(tp,{dnd,pab},{aux.Stringid(id,0),aux.Stringid(id,1)})

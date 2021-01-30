@@ -151,7 +151,7 @@ function s.rccost(e,tp,eg,ep,ev,re,r,rp,chk)
 		local tc=Duel.SelectTarget(tp,s.filter2,tp,0,LOCATION_MZONE,1,1,nil,ct):GetFirst()
 		if tc:HasLevel() then
 			ct=tc:GetLevel()
-		elseif tc:HasRank() then
+		elseif tc:GetRank()>0 then
 			ct=tc:GetRank()
 		elseif tc:IsLinkMonster() then
 			ct=2*tc:GetLink()
@@ -159,7 +159,7 @@ function s.rccost(e,tp,eg,ep,ev,re,r,rp,chk)
 		end
 	else return
 	end
-	e:GetHandler():RemoveCounter(tp,0x1001,ct,REASON_EFFECT)
+	e:GetHandler():RemoveCounter(tp,0x1001,ct,REASON_COST)
 end
 
 function s.rctg(e,tp,eg,ep,ev,re,r,rp,chk)

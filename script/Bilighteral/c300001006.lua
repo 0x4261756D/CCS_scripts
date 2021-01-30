@@ -115,8 +115,8 @@ function s.acop(e,tp,eg,ep,ev,re,r,rp)
 	local g=eg:Filter(Card.IsAttribute,nil,ATTRIBUTE_LIGHT)
 	local ct=0
 	for tc in g:Iter() do
-		if tc:HasLevel() then ct=ct+2*tc:GetLevel()
-			elseif tc:HasRank() then ct=ct+2*tc:GetRank()
+		if tc:HasLevel() then ct=ct+tc:GetLevel()
+			elseif tc:GetRank()>0 then ct=ct+tc:GetRank()
 				elseif tc:IsLinkMonster() then ct=ct+2*tc:GetLink()
 					else return
 		end
@@ -132,42 +132,37 @@ end
 
 --Remove Counters
 
-function s.tdfilter(c,ct)
-	return c:IsAbleToDeck() and ((ct>=4 and c:IsFacedown()) or (ct>=4 and c:IsType(TYPE_SPELL+TYPE_TRAP) and c:IsFaceup() and c:IsSetCard(0x400)) or (c:IsFaceup() and c:IsSetCard(0x400) and c:IsMonster() and ct>=2*c:GetLevel()))
+function s.filter1(c,ct)
+	return c:IsAbleToDeck() and c:IsType(TYPE_SPELL+TYPE_TRAP) and c:IsFaceup() and ct>=2
 end
 
-function s.fdfilter(c,ct)
-	return c:IsAbleToDeck() and ct>=4 and c:IsFacedown()
-end
-
-function s.stfilter(c,ct)
-	return c:IsAbleToDeck() and ct>=4 and c:IsType(TYPE_SPELL+TYPE_TRAP) and c:IsFaceup() and c:IsSetCard(0x400)
-end
-
-function s.fumfilter(c,ct,lv)
-	return c:IsAbleToDeck() and c:IsFaceup() and c:IsSetCard(0x400) and c:IsMonster() and ct>=lv and ct>=2*c:GetLevel()
+function s.filter2(c,ct)
+	return c:IsAbleToDeck() and c:IsFaceup() and ((c:HasLevel() and ct>=c:GetLevel()) or (c:GetRank()>0 and ct>=c:GetRank()) or (c:IsLinkMonster() and ct>=2*c:GetLink()))
 end
 
 function s.rccost(e,tp,eg,ep,ev,re,r,rp,chk)
 	local ct=e:GetHandler():GetCounter(0x1000)
-	local g=Duel.GetMatchingGroup(s.tdfilter,tp,LOCATION_GRAVE+LOCATION_REMOVED,0,nil,ct)
-	local fd,st,lv2m,fum=g:IsExists(s.fdfilter,1,nil,ct),g:IsExists(s.stfilter,1,nil,ct),g:IsExists(s.fumfilter,1,nil,ct,4),false
-	if chk==0 then return #g>0 end
-	local a={}
-	for i=2,24,2 do
-		if i==4 then 
-			if fd or st or lv2m then table.insert(a,4) end
-			break
+	local st,fum=Duel.IsExistingTarget(s.filter1,tp,LOCATION_GRAVE+LOCATION_REMOVED,0,1,nil,ct),Duel.IsExistingTarget(s.filter2,tp,LOCATION_GRAVE+LOCATION_REMOVED,0,1,nil,ct)
+	if chk==0 then return st or fum end
+	local choice=aux.EffectCheck(tp,{st,fum},{aux.Stringid(id,1),aux.Stringid(id,2)})
+	if choice==0 then
+		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TODECK)
+		local tc=Duel.SelectTarget(tp,s.filter1,tp,LOCATION_GRAVE+LOCATION_REMOVED,0,1,1,nil,ct):GetFirst()
+		ct=2
+	elseif choice==1 then
+		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TODECK)
+		local tc=Duel.SelectTarget(tp,s.filter2,tp,LOCATION_GRAVE+LOCATION_REMOVED,0,1,1,nil,ct):GetFirst()
+		if tc:HasLevel() then
+			ct=tc:GetLevel()
+		elseif tc:GetRank()>0 then
+			ct=tc:GetRank()
+		elseif tc:IsLinkMonster() then
+			ct=2*tc:GetLink()
+		else return
 		end
-		if g:IsExists(s.fumfilter,1,nil,ct,i) then 
-			table.insert(a,i)
-			fum=true
-		end
+	else return
 	end
-	local choice=aux.EffectCheck(tp,{fd,st,fum},{aux.Stringid(id,1),aux.Stringid(id,2),aux.Stringid(id,3)})
-	ct=Duel.AnnounceNumber(tp,table.unpack(a))
-	e:GetHandler():RemoveCounter(tp,0x1000,ct,REASON_EFFECT)
-	e:SetLabelObject({ct,choice})
+	e:GetHandler():RemoveCounter(tp,0x1000,ct,REASON_COST)
 end
 
 function s.rctg(e,tp,eg,ep,ev,re,r,rp,chk)
@@ -176,19 +171,6 @@ function s.rctg(e,tp,eg,ep,ev,re,r,rp,chk)
 end
 
 function s.rcop(e,tp,eg,ep,ev,re,r,rp)
-	local ct,choice=table.unpack(e:GetLabelObject())
-	local tc
-	if choice==0 then 
-		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TODECK)
-		tc=Duel.SelectMatchingCard(tp,s.fdfilter,tp,LOCATION_GRAVE+LOCATION_REMOVED,0,1,1,nil,ct)
-	end
-	if choice==1 then 
-		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TODECK)
-		tc=Duel.SelectMatchingCard(tp,s.stfilter,tp,LOCATION_GRAVE+LOCATION_REMOVED,0,1,1,nil,ct)
-	end
-	if choice==2 then
-		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TODECK)
-		tc=Duel.SelectMatchingCard(tp,s.fumfilter,tp,LOCATION_GRAVE+LOCATION_REMOVED,0,1,1,nil,ct,ct/2)
-		end
+	local tc=Duel.GetFirstTarget()
 	Duel.SendtoDeck(tc,tp,2,REASON_EFFECT)
 end

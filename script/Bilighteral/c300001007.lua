@@ -170,13 +170,13 @@ end
 function s.rcop(e,tp,eg,ep,ev,re,r,rp)
 	local tc=Duel.GetFirstTarget()
 	local atk,def
-	Duel.SendtoGrave(tc,REASON_EFFECT)
-	if tc:IsMonster() then
-		if tc:IsLinkMonster() then
-			atk,def=tc:GetTextAttack(),0
-		else atk,def=tc:GetTextAttack(),tc:GetTextDefense()
+	if Duel.SendtoGrave(tc,REASON_EFFECT)>0 then
+		if tc:IsMonster() then
+			if tc:IsLinkMonster() then
+				atk,def=tc:GetTextAttack(),0
+			else atk,def=tc:GetTextAttack(),tc:GetTextDefense()
+			end
+			Duel.Damage(1-tp,(atk+def)/2,REASON_EFFECT)
 		end
-		Duel.BreakEffect()
-		Duel.Damage(1-tp,(atk+def)/2,REASON_EFFECT)
 	end
 end

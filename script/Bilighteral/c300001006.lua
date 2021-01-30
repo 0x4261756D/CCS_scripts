@@ -80,6 +80,8 @@ function s.initial_effect(c)
 	c:RegisterEffect(e10)
 	--Remove Counters + return
 	local e11=Effect.CreateEffect(c)
+	e11:SetCategory(CATEGORY_TODECK+CATEGORY_RECOVER)
+	e11:SetProperty(EFFECT_FLAG_CARD_TARGET)
 	e11:SetType(EFFECT_TYPE_QUICK_O)
 	e11:SetCode(EVENT_FREE_CHAIN)
 	e11:SetRange(LOCATION_FZONE)
@@ -172,5 +174,14 @@ end
 
 function s.rcop(e,tp,eg,ep,ev,re,r,rp)
 	local tc=Duel.GetFirstTarget()
-	Duel.SendtoDeck(tc,tp,2,REASON_EFFECT)
+	local atk,def
+	if Duel.SendtoDeck(tc,tp,2,REASON_EFFECT)>0 then
+		if tc:IsMonster() then
+			if tc:IsLinkMonster() then
+				atk,def=tc:GetTextAttack(),0
+			else atk,def=tc:GetTextAttack(),tc:GetTextDefense()
+			end
+			Duel.Recover(tp,(atk+def)/2,REASON_EFFECT)
+		end
+	end
 end

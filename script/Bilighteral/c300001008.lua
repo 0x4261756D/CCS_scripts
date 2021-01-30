@@ -144,10 +144,10 @@ function s.rccost(e,tp,eg,ep,ev,re,r,rp,chk)
 	local ss,set,th,td,tg=tc:IsCanBeSpecialSummoned(e,0,tp,false,false) and Duel.GetLocationCount(tp,LOCATION_MZONE)>0,tc:IsSSetable() and Duel.GetLocationCount(tp,LOCATION_SZONE)>0,tc:IsAbleToHand(),tc:IsAbleToDeck(),tc:IsAbleToGrave()
 	choice=aux.EffectCheck(tp,{ss,set,th,td,tg},{aux.Stringid(id,5),aux.Stringid(id,6),aux.Stringid(id,7),aux.Stringid(id,8),aux.Stringid(id,9)})
 	for i=math.min(ctr-2*cha-cel-inf,cha),math.min(ctr,cha) do
-		table.insert(charcr,i)
+		table.insert(chacr,i)
 	end
 	Duel.Hint(HINT_SELECTMSG,tp,aux.Stringid(id,2))
-	cha=Duel.AnnounceNumber(tp,table.unpack(charcr))
+	cha=Duel.AnnounceNumber(tp,table.unpack(chacr))
 	ctr=ctr-2*cha
 	for i=math.min(ctr-inf,cha),math.min(ctr,cel) do
 		table.insert(celcr,i)

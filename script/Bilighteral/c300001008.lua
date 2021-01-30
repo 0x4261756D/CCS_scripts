@@ -123,13 +123,14 @@ function s.rccost(e,tp,eg,ep,ev,re,r,rp,chk)
 	local st,fum=Duel.IsExistingTarget(s.stfilter,tp,LOCATION_GRAVE+LOCATION_REMOVED,0,1,nil,tp,ct),Duel.IsExistingTarget(s.fumfilter,tp,LOCATION_GRAVE+LOCATION_REMOVED,0,1,nil,e,tp,ct)
 	if chk==0 then return st or fum end
 	local choice=aux.EffectCheck(tp,{st,fum},{aux.Stringid(id,10),aux.Stringid(id,11)})
+	local tc
 	if choice==0 then
 		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TARGET)
-		local tc=Duel.SelectTarget(tp,s.stfilter,tp,LOCATION_GRAVE+LOCATION_REMOVED,0,1,1,nil,tp,ct):GetFirst()
+		tc=Duel.SelectTarget(tp,s.stfilter,tp,LOCATION_GRAVE+LOCATION_REMOVED,0,1,1,nil,tp,ct):GetFirst()
 		ctr=2
 	elseif choice==1 then
 		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TARGET)
-		local tc=Duel.SelectTarget(tp,s.fumfilter,tp,0,LOCATION_MZONE,1,1,nil,e,tp,ct):GetFirst()
+		tc=Duel.SelectTarget(tp,s.fumfilter,tp,0,LOCATION_MZONE,1,1,nil,e,tp,ct):GetFirst()
 		if tc:HasLevel() then
 			ctr=tc:GetLevel()
 		elseif tc:GetRank()>0 then

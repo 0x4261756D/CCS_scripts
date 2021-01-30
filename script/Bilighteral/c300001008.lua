@@ -107,7 +107,7 @@ function s.stfilter(c,tp,ct)
 end
 
 function s.fumfilter(c,e,tp,ct)
-	return (c:IsAbleToGrave() or c:IsAbleToDeck() or c:IsAbleToHand() or (c:IsCanBeSpecialSummoned(e,0,tp,false,false) and Duel.GetLocationCount(tp,LOCATION_MZONE)>0)) and c:IsFaceup() and ((c:HasLevel() and ct>=c:GetLevel()) or (c:IsType(TYPE_XYZ) and ct>=c:GetRank()) or (c:IsLinkMonster() and ct>=2*c:GetLink()))
+	return (c:IsAbleToGrave() or c:IsAbleToDeck() or c:IsAbleToHand() or (c:IsCanBeSpecialSummoned(e,0,tp,false,false) and Duel.GetLocationCount(tp,LOCATION_MZONE)>0) and c:IsFaceup()) and ((c:HasLevel() and ct>=c:GetLevel()) or (c:IsType(TYPE_XYZ) and ct>=c:GetRank()) or (c:IsLinkMonster() and ct>=2*c:GetLink()))
 end
 
 function s.rccost(e,tp,eg,ep,ev,re,r,rp,chk)
@@ -143,7 +143,7 @@ function s.rccost(e,tp,eg,ep,ev,re,r,rp,chk)
 	end
 	local ss,set,th,td,tg=tc:IsCanBeSpecialSummoned(e,0,tp,false,false) and Duel.GetLocationCount(tp,LOCATION_MZONE)>0,tc:IsSSetable() and Duel.GetLocationCount(tp,LOCATION_SZONE)>0,tc:IsAbleToHand(),tc:IsAbleToDeck(),tc:IsAbleToGrave()
 	choice=aux.EffectCheck(tp,{ss,set,th,td,tg},{aux.Stringid(id,5),aux.Stringid(id,6),aux.Stringid(id,7),aux.Stringid(id,8),aux.Stringid(id,9)})
-	for i=math.min(ctr-2*cha-cel-inf,cha),math.min(ctr,cha) do
+	for i=math.min(ctr-(2*cha)-cel-inf,cha),math.min(ctr,cha) do
 		table.insert(chacr,i)
 	end
 	Duel.Hint(HINT_SELECTMSG,tp,aux.Stringid(id,2))

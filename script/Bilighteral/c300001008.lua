@@ -90,7 +90,7 @@ end
 
 function s.acop(e,tp,eg,ep,ev,re,r,rp)
 	local ct=0
-	for tc in g:Iter() do
+	for tc in eg:Iter() do
 		if tc:HasLevel() then ct=ct+tc:GetLevel()
 			elseif tc:GetRank()>0 then ct=ct+tc:GetRank()
 				elseif tc:IsLinkMonster() then ct=ct+2*tc:GetLink()

@@ -51,8 +51,8 @@ s.counter_place_list={0x1000,0x1001,0x13}
 --Flags
 
 function s.flagop(e,tp,eg,ep,ev,re,r,rp)
-	if eg:IsContains(Card.IsCode,1,nil,id-2) then Duel.RegisterFlagEffect(tp,id-2,0,0,0) end
-	if eg:IsContains(Card.IsCode,1,nil,id-1) then Duel.RegisterFlagEffect(tp,id-1,0,0,0) end
+	if eg:IsExists(Card.IsCode,1,nil,id-2) then Duel.RegisterFlagEffect(tp,id-2,0,0,0) end
+	if eg:IsExists(Card.IsCode,1,nil,id-1) then Duel.RegisterFlagEffect(tp,id-1,0,0,0) end
 end
 
 --Xyz Materials

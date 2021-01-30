@@ -89,59 +89,104 @@ end
 --Place Counters
 
 function s.acop(e,tp,eg,ep,ev,re,r,rp)
-	e:GetHandler():AddCounter(0x13,#eg)
+	local ct=0
+	for tc in g:Iter() do
+		if tc:HasLevel() then ct=ct+tc:GetLevel()
+			elseif tc:GetRank()>0 then ct=ct+tc:GetRank()
+				elseif tc:IsLinkMonster() then ct=ct+2*tc:GetLink()
+					else return
+		end
+	end
+	e:GetHandler():AddCounter(0x1000,ct)
 end
 
 --Remove Counters
 
-function s.stfilter(c,ct)
-	return (c:IsAbleToGrave() or c:IsAbleToDeck() or c:IsAbleToHand()) and (c:IsType(TYPE_SPELL+TYPE_TRAP) and c:IsFaceup()) and ct>=2
+function s.stfilter(c,tp,ct)
+	return (c:IsAbleToGrave() or c:IsAbleToDeck() or c:IsAbleToHand() or (c:IsSSetable() and Duel.GetLocationCount(tp,LOCATION_SZONE)>0)) and (c:IsType(TYPE_SPELL+TYPE_TRAP) and c:IsFaceup()) and ct>=2
 end
 
-function s.fumfilter(c,ct)
-	return (c:IsAbleToGrave() or c:IsAbleToDeck() or c:IsAbleToHand()) and c:IsFaceup() and ((c:HasLevel() and ct>=c:GetLevel()) or (c:IsType(TYPE_XYZ) and ct>=c:GetRank()) or (c:IsLinkMonster() and ct>=2*c:GetLink()))
+function s.fumfilter(c,e,tp,ct)
+	return (c:IsAbleToGrave() or c:IsAbleToDeck() or c:IsAbleToHand() or (c:IsCanBeSpecialSummoned(e,0,tp,false,false) and Duel.GetLocationCount(tp,LOCATION_MZONE)>0)) and c:IsFaceup() and ((c:HasLevel() and ct>=c:GetLevel()) or (c:IsType(TYPE_XYZ) and ct>=c:GetRank()) or (c:IsLinkMonster() and ct>=2*c:GetLink()))
 end
 
 function s.rccost(e,tp,eg,ep,ev,re,r,rp,chk)
 	local cel,inf,cha=e:GetHandler():GetCounter(0x1000),e:GetHandler():GetCounter(0x1001),e:GetHandler():GetCounter(0x13)
-	local fdst,fum=Duel.IsExistingTarget(s.filter1,tp,0,LOCATION_MZONE+LOCATION_SZONE,1,nil,ct),Duel.IsExistingTarget(s.filter2,tp,0,LOCATION_MZONE,1,nil,ct)
-	if chk==0 then return fdst or fum end
-	local choice=aux.EffectCheck(tp,{fdst,fum},{aux.Stringid(id,1),aux.Stringid(id,2)})
+	local celcr,infcr,chacr={},{},{}
+	for i=0,cel do
+		table.insert(celcr,i)
+	end
+	for i=0,inf do
+		table.insert(infcr,i)
+	end
+	local ct,ctr=cel+inf+2*cha,0
+	local st,fum=Duel.IsExistingTarget(s.stfilter,tp,LOCATION_GRAVE+LOCATION_REMOVED,0,1,nil,ct),Duel.IsExistingTarget(s.fumfilter,tp,LOCATION_GRAVE+LOCATION_REMOVED,0,1,nil,e,tp,ct)
+	if chk==0 then return st or fum end
+	local choice=aux.EffectCheck(tp,{st,fum},{aux.Stringid(id,10),aux.Stringid(id,11)})
 	if choice==0 then
-		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TOGRAVE)
-		local tc=Duel.SelectTarget(tp,s.filter1,tp,0,LOCATION_MZONE+LOCATION_SZONE,1,1,nil,ct):GetFirst()
-		ct=2
+		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TARGET)
+		local tc=Duel.SelectTarget(tp,s.stfilter,tp,LOCATION_GRAVE+LOCATION_REMOVED,0,1,1,nil,tp,ct):GetFirst()
+		ctr=2
 	elseif choice==1 then
-		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TOGRAVE)
-		local tc=Duel.SelectTarget(tp,s.filter2,tp,0,LOCATION_MZONE,1,1,nil,ct):GetFirst()
+		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TARGET)
+		local tc=Duel.SelectTarget(tp,s.fumfilter,tp,0,LOCATION_MZONE,1,1,nil,e,tp,ct):GetFirst()
 		if tc:HasLevel() then
-			ct=tc:GetLevel()
+			ctr=tc:GetLevel()
 		elseif tc:GetRank()>0 then
-			ct=tc:GetRank()
+			ctr=tc:GetRank()
 		elseif tc:IsLinkMonster() then
-			ct=2*tc:GetLink()
+			ctr=2*tc:GetLink()
 		else return
 		end
 	else return
 	end
-	e:GetHandler():RemoveCounter(tp,0x1001,ct,REASON_COST)
+	local ss,set,th,td,tg=tc:IsCanBeSpecialSummoned(e,0,tp,false,false) and Duel.GetLocationCount(tp,LOCATION_MZONE)>0,tc:IsSSetable() and Duel.GetLocationCount(tp,LOCATION_SZONE)>0,tc:IsAbleToHand(),tc:IsAbleToDeck(),tc:IsAbleToGrave()
+	choice=aux.EffectCheck(tp,{ss,set,th,td,tg},{aux.Stringid(id,5),aux.Stringid(id,6),aux.Stringid(id,7),aux.Stringid(id,8),aux.Stringid(id,9)})
+	for i=math.min(ctr-2*cha-cel-inf,cha),math.min(ctr,cha) do
+		table.insert(charcr,i)
+	end
+	Duel.Hint(HINT_SELECTMSG,tp,aux.Stringid(id,2))
+	cha=Duel.AnnounceNumber(tp,table.unpack(charcr))
+	ctr=ctr-2*cha
+	for i=math.min(ctr-inf,cha),math.min(ctr,cel) do
+		table.insert(celcr,i)
+	end
+	Duel.Hint(HINT_SELECTMSG,tp,aux.Stringid(id,3))
+	cel=Duel.AnnounceNumber(tp,table.unpack(celcr))
+	ctr=ctr-cel
+	for i=math.min(ctr,inf),math.min(ctr,inf) do
+		table.insert(infcr,i)
+	end
+	Duel.Hint(HINT_SELECTMSG,tp,aux.Stringid(id,4))
+	inf=Duel.AnnounceNumber(tp,table.unpack(infcr))
+	e:GetHandler():RemoveCounter(tp,0x13,cha,REASON_COST)
+	e:GetHandler():RemoveCounter(tp,0x1000,cel,REASON_COST)
+	e:GetHandler():RemoveCounter(tp,0x1001,inf,REASON_COST)
+	e:SetLabel(choice)
 end
 
 function s.rctg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return true end
-	Duel.SetOperationInfo(0,CATEGORY_TOGRAVE+CATEGORY_DAMAGE,nil,1,1-tp,LOCATION_MZONE+LOCATION_SZONE)
+	Duel.SetOperationInfo(0,CATEGORY_TOGRAVE+CATEGORY_TODECK+CATEGORY_TOHAND+CATEGORY_SPECIAL_SUMMON,nil,1,tp,LOCATION_GRAVE+LOCATION_REMOVED)
 end
 
 function s.rcop(e,tp,eg,ep,ev,re,r,rp)
-	local tc=Duel.GetFirstTarget()
+	local tc,choice=Duel.GetFirstTarget(),e:GetLabel()
 	local atk,def
-	if Duel.SendtoGrave(tc,REASON_EFFECT)>0 then
-		if tc:IsMonster() then
-			if tc:IsLinkMonster() then
-				atk,def=tc:GetTextAttack(),0
-			else atk,def=tc:GetTextAttack(),tc:GetTextDefense()
-			end
-			Duel.Damage(1-tp,(atk+def)/2,REASON_EFFECT)
-		end
+	if (choice==0 and (not tc:IsCanBeSpecialSummoned(e,0,tp,false,false) or Duel.GetLocationCount(tp,LOCATION_MZONE)==0)) or (choice==1 and (not tc:IsSSetable() or Duel.GetLocationCount(tp,LOCATION_SZONE)==0)) or (choice==2 and not tc:IsAbleToHand()) or (choice==3 and not tc:IsAbleToDeck()) or (choice==4 and not tc:IsAbleToGrave()) then
+		return
+	end
+	if choice==0 then
+		Duel.SpecialSummon(tc,0,tp,tp,false,false,POS_FACEUP)
+	elseif choice==1 then
+		Duel.SSet(tc,tp)
+	elseif choice==2 then
+		Duel.SendtoHand(tc,tp,REASON_EFFECT)
+	elseif choice==3 then
+		Duel.SendtoDeck(tc,2,REASON_EFFECT)
+	elseif choice==4 then
+		Duel.SendtoGrave(tc,REASON_EFFECT)
+	else return
 	end
 end
+

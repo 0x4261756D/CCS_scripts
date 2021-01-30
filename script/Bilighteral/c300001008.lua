@@ -5,17 +5,16 @@ function s.initial_effect(c)
 	c:EnableCounterPermit(0x13)
 	c:EnableCounterPermit(0x1000)
 	c:EnableCounterPermit(0x1001)
-	aux.GlobalCheck(s,function()
-		local ge=Effect.CreateEffect(c)
-		ge:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
-		ge:SetCode(EVENT_ADJUST)
-		ge:SetOperation(s.checkop)
-		Duel.RegisterEffect(ge,0)
-	end)
+	--Flags
+	local e0=Effect.CreateEffect(c)
+	e0:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
+	e0:SetCode(EVENT_CHAIN_SOLVED)
+	e0:SetOperation(s.flagop)
+	c:RegisterEffect(e0)
+	--Activate
 	local e1=Effect.CreateEffect(c)
 	e1:SetType(EFFECT_TYPE_ACTIVATE)
 	e1:SetCode(EVENT_FREE_CHAIN)
-	e1:SetLabelObject(ge)
 	e1:SetCondition(s.actcon)
 	e1:SetOperation(s.actop)
 	c:RegisterEffect(e1)
@@ -48,25 +47,22 @@ end
 
 s.counter_place_list={0x1000,0x1001,0x13}
 
---Xyz Materials
+--Flags
 
-function s.checkop(e,tp,eg,ep,ev,re,r,rp)
-	local lr,dr=false,false
-	for tc in aux.Next(eg) do
-		if tc:IsCode(300001006) then lr=true end
-		if tc:IsCode(300001007) then dr=true end
-	end
-	e:SetLabelObject({lr,dr})
+function s.flagop(e,tp,eg,ep,ev,re,r,rp)
+	if eg:IsContains(Card.IsCode,1,nil,id-2) then Duel.RegisterFlagEffect(tp,id-2,0,0,0) end
+	if eg:IsContains(Card.IsCode,1,nil,id-1) then Duel.RegisterFlagEffect(tp,id-1,0,0,0) end
 end
 
+--Xyz Materials
+
 function s.actcon(e,tp,eg,ep,ev,re,r,rp)
-	local lr,dr=table.unpack({e:GetLabelObject():GetLabelObject()})
-	return lr and dr
+	return Duel.GetFlagEffect(tp,id-2)>0 and Duel.GetFlagEffect(tp,id-1)>0
 end
 
 function s.actop(e,tp,eg,ep,ev,re,r,rp)
 	if not e:GetHandler():IsRelateToEffect(e) then return end
-	local g1,g2=Duel.GetMatchingGroup(Card.IsCode,tp,LOCATION_HAND+LOCATION_GRAVE+LOCATION_REMOVED,0,nil,300001006),Duel.GetMatchingGroup(Card.IsCode,tp,LOCATION_HAND+LOCATION_GRAVE+LOCATION_REMOVED,0,nil,300001007)
+	local g1,g2=Duel.GetMatchingGroup(Card.IsCode,tp,LOCATION_HAND+LOCATION_GRAVE+LOCATION_REMOVED,0,nil,id-2),Duel.GetMatchingGroup(Card.IsCode,tp,LOCATION_HAND+LOCATION_GRAVE+LOCATION_REMOVED,0,nil,id-1)
 	if #g1>0 and #g2>0 and Duel.SelectYesNo(tp,aux.Stringid(id,0)) then
 		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_XMATERIAL)
 		local sg1,sg2=g1:Select(tp,1,1,nil),g2:Select(tp,1,1,nil)

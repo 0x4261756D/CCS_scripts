@@ -16,7 +16,7 @@ Wenn ein neuer Archetype oder ein neuer Counter Type hinzugefügt wird, soll die
 
 **How to upload new cards:**
 Here's a little info on how to upload new files (scripts, databases or pics) via PR.
-Scripts belong in "script/archetype subfolder" oder "script/set subfolder" (depending on whether a custom archetype or a "custom booster pack" is uploaded).
+Scripts belong in "script/archetype"- or "script/set"- subfolder (depending on whether a custom archetype or a "custom booster pack" is uploaded).
 cdb files belong in the root and the entry "ot" should be 32 (or 0x20).
 Pics belong in "pics" and NOT in "pics/subfolder", since "pics" doesn't support subfolders.
 If an archetype is extended, the cdb is supposed to *exclusively* contain the new cards of said archetype. The file should also have a name which makes it easy to know what is expanded (like VirtualWorldExtension.cdb for example).
@@ -28,9 +28,19 @@ An archetype/counter is added by editing "strings.conf" from the root:
 
 !setname fee hex ID archetype name (for archetypes)
 
-**Automatic Cleint Updates:**
-For keeping the cards up-to-date you should add the following lines in /config/configs.json in your ProjectIgnis folder:
-
+**Automatic Client Updates:**
+For keeping the cards up-to-date you should add 
+```json
+        {
+            "url": "https://github.com/0x4261756D/CCS_scripts",
+            "repo_name": "CCS Scripts",
+            "repo_path": "./repositories/ccs",
+            "script_path": "script",
+            "should_update": true,
+            "should_read": true
+        },
+``` 
+/config/configs.json in your ProjectIgnis folder after this part
 ```json
 {
     "repos": [
@@ -46,14 +56,3 @@ For keeping the cards up-to-date you should add the following lines in /config/c
             "should_read": true
         },
 ```
-empty line
-```json
-        {
-            "url": "https://github.com/0x4261756D/CCS_scripts",
-            "repo_name": "CCS Scripts",
-            "repo_path": "./repositories/ccs",
-            "script_path": "script",
-            "should_update": true,
-            "should_read": true
-        },
-``` 

@@ -35,7 +35,7 @@ function s.initial_effect(c)
 	c:RegisterEffect(e3)
 	--Remove Counters + send + burn
 	local e4=Effect.CreateEffect(c)
-	e4:SetDescription(aux.Stringid(id,0))
+	e4:SetDescription(aux.Stringid(id,12))
 	e4:SetCategory(CATEGORY_TOGRAVE+CATEGORY_TOHAND+CATEGORY_TODECK+CATEGORY_SPECIAL_SUMMON)
 	e4:SetProperty(EFFECT_FLAG_CARD_TARGET)
 	e4:SetType(EFFECT_TYPE_QUICK_O)
@@ -103,23 +103,17 @@ end
 --Remove Counters
 
 function s.stfilter(c,tp,ct)
-	return (c:IsAbleToGrave() or c:IsAbleToDeck() or c:IsAbleToHand() or (c:IsSSetable() and Duel.GetLocationCount(tp,LOCATION_SZONE)>0)) and (c:IsType(TYPE_SPELL+TYPE_TRAP) and c:IsFaceup()) and ct>=2
+	return ((c:IsAbleToGrave() and not c:IsLocation(LOCATION_GRAVE)) or c:IsAbleToDeck() or c:IsAbleToHand() or (c:IsSSetable() and Duel.GetLocationCount(tp,LOCATION_SZONE)>0)) and c:IsType(TYPE_SPELL+TYPE_TRAP) and c:IsFaceup() and ct>=2
 end
 
 function s.fumfilter(c,e,tp,ct)
-	return (c:IsAbleToGrave() or c:IsAbleToDeck() or c:IsAbleToHand() or (c:IsCanBeSpecialSummoned(e,0,tp,false,false) and Duel.GetLocationCount(tp,LOCATION_MZONE)>0) and c:IsFaceup()) and ((c:HasLevel() and ct>=c:GetLevel()) or (c:IsType(TYPE_XYZ) and ct>=c:GetRank()) or (c:IsLinkMonster() and ct>=2*c:GetLink()))
+	return ((c:IsAbleToGrave() and not c:IsLocation(LOCATION_GRAVE)) or c:IsAbleToDeck() or c:IsAbleToHand() or (c:IsCanBeSpecialSummoned(e,0,tp,false,false) and Duel.GetLocationCount(tp,LOCATION_MZONE)>0)) and c:IsFaceup() and ((c:HasLevel() and ct>=c:GetLevel()) or (c:IsType(TYPE_XYZ) and ct>=c:GetRank()) or (c:IsLinkMonster() and ct>=2*c:GetLink()))
 end
 
 function s.rccost(e,tp,eg,ep,ev,re,r,rp,chk)
 	local cel,inf,cha=e:GetHandler():GetCounter(0x1000),e:GetHandler():GetCounter(0x1001),e:GetHandler():GetCounter(0x13)
-	local celcr,infcr,chacr={},{},{}
-	for i=0,cel do
-		table.insert(celcr,i)
-	end
-	for i=0,inf do
-		table.insert(infcr,i)
-	end
 	local ct,ctr=cel+inf+2*cha,0
+	local celcr,infcr,chacr={},{},{}
 	local st,fum=Duel.IsExistingTarget(s.stfilter,tp,LOCATION_GRAVE+LOCATION_REMOVED,0,1,nil,tp,ct),Duel.IsExistingTarget(s.fumfilter,tp,LOCATION_GRAVE+LOCATION_REMOVED,0,1,nil,e,tp,ct)
 	if chk==0 then return st or fum end
 	local choice=aux.EffectCheck(tp,{st,fum},{aux.Stringid(id,10),aux.Stringid(id,11)})
@@ -130,7 +124,7 @@ function s.rccost(e,tp,eg,ep,ev,re,r,rp,chk)
 		ctr=2
 	elseif choice==1 then
 		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TARGET)
-		tc=Duel.SelectTarget(tp,s.fumfilter,tp,0,LOCATION_MZONE,1,1,nil,e,tp,ct):GetFirst()
+		tc=Duel.SelectTarget(tp,s.fumfilter,tp,LOCATION_GRAVE+LOCATION_REMOVED,0,1,1,nil,e,tp,ct):GetFirst()
 		if tc:HasLevel() then
 			ctr=tc:GetLevel()
 		elseif tc:GetRank()>0 then
@@ -143,13 +137,13 @@ function s.rccost(e,tp,eg,ep,ev,re,r,rp,chk)
 	end
 	local ss,set,th,td,tg=tc:IsCanBeSpecialSummoned(e,0,tp,false,false) and Duel.GetLocationCount(tp,LOCATION_MZONE)>0,tc:IsSSetable() and Duel.GetLocationCount(tp,LOCATION_SZONE)>0,tc:IsAbleToHand(),tc:IsAbleToDeck(),tc:IsAbleToGrave()
 	choice=aux.EffectCheck(tp,{ss,set,th,td,tg},{aux.Stringid(id,5),aux.Stringid(id,6),aux.Stringid(id,7),aux.Stringid(id,8),aux.Stringid(id,9)})
-	for i=math.min(ctr-(2*cha)-cel-inf,cha),math.min(ctr,cha) do
+	for i=math.min(math.abs(ctr-2*cha-cel-inf),cha),math.min(ctr,cha) do
 		table.insert(chacr,i)
 	end
 	Duel.Hint(HINT_SELECTMSG,tp,aux.Stringid(id,2))
 	cha=Duel.AnnounceNumber(tp,table.unpack(chacr))
 	ctr=ctr-2*cha
-	for i=math.min(ctr-inf,cha),math.min(ctr,cel) do
+	for i=math.min(math.abs(ctr-inf),cel),math.min(ctr,cel) do
 		table.insert(celcr,i)
 	end
 	Duel.Hint(HINT_SELECTMSG,tp,aux.Stringid(id,3))
@@ -173,14 +167,13 @@ end
 
 function s.rcop(e,tp,eg,ep,ev,re,r,rp)
 	local tc,choice=Duel.GetFirstTarget(),e:GetLabel()
-	local atk,def
 	if (choice==0 and (not tc:IsCanBeSpecialSummoned(e,0,tp,false,false) or Duel.GetLocationCount(tp,LOCATION_MZONE)==0)) or (choice==1 and (not tc:IsSSetable() or Duel.GetLocationCount(tp,LOCATION_SZONE)==0)) or (choice==2 and not tc:IsAbleToHand()) or (choice==3 and not tc:IsAbleToDeck()) or (choice==4 and not tc:IsAbleToGrave()) then
 		return
 	end
 	if choice==0 then
 		Duel.SpecialSummon(tc,0,tp,tp,false,false,POS_FACEUP)
 	elseif choice==1 then
-		Duel.SSet(tc,tp)
+		Duel.SSet(tp,tc)
 	elseif choice==2 then
 		Duel.SendtoHand(tc,tp,REASON_EFFECT)
 	elseif choice==3 then

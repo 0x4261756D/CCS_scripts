@@ -80,6 +80,7 @@ function s.initial_effect(c)
 	c:RegisterEffect(e10)
 	--Remove Counters + return
 	local e11=Effect.CreateEffect(c)
+	e1:SetDescription(aux.Stringid(id,3))
 	e11:SetCategory(CATEGORY_TODECK+CATEGORY_RECOVER)
 	e11:SetProperty(EFFECT_FLAG_CARD_TARGET)
 	e11:SetType(EFFECT_TYPE_QUICK_O)

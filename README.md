@@ -26,7 +26,7 @@ An archetype/counter is added by editing "strings.conf" from the root:
 
 !counter free hex ID counter name (for counters)
 
-!setname fee hex ID archetype name (for archetypes)
+!setname free hex ID archetype name (for archetypes)
 
 **Automatic Client Updates:**
 For keeping the cards up-to-date you should add 

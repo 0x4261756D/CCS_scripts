@@ -8,7 +8,7 @@ Bilder kommen in "pics" und NICHT in "pics/Unterordner", da der pics Ordner das 
 Wenn ein Archetype erweitert wird, sollen in der cdb *ausschließlich* die neuen Karten dieses Archetypes stehen und die cdb sollte so heißen, dass man sofort weiß um welchen Archetype es sich handelt (VirtualWorldExtension.cdb z.B.).
 
 **Neue Archetypes/Counter hinzufügen:**
-Wenn ein neuer Archetype oder ein neuer Counter Type hinzugefügt wird, soll die Datei "strings.conf" aus der Root im PR editiert werden:
+Wenn ein neuer Archetype oder ein neuer Counter-Typ hinzugefügt wird, soll die Datei "strings.conf" aus der Root im PR editiert werden:
 
 !counter freie hex ID Counter Name (für Counter)
 

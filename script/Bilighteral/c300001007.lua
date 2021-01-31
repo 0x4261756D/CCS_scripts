@@ -62,7 +62,7 @@ function s.initial_effect(c)
 	c:RegisterEffect(e8)
 	--Remove Counters + send + burn
 	local e9=Effect.CreateEffect(c)
-	e9:SetDescription(aux.Stringid(id,3))
+	e9:SetDescription(aux.Stringid(300001007,0))
 	e9:SetProperty(EFFECT_FLAG_CARD_TARGET)
 	e9:SetType(EFFECT_TYPE_QUICK_O)
 	e9:SetCode(EVENT_FREE_CHAIN)

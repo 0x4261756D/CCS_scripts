@@ -94,10 +94,11 @@ function s.acop(e,tp,eg,ep,ev,re,r,rp)
 		if tc:HasLevel() then ct=ct+tc:GetLevel()
 			elseif tc:GetRank()>0 then ct=ct+tc:GetRank()
 				elseif tc:IsLinkMonster() then ct=ct+2*tc:GetLink()
-					else return
+					elseif tc:IsType(TYPE_SPELL+TYPE_TRAP) then ct=ct+2
+						else return
 		end
 	end
-	e:GetHandler():AddCounter(0x1000,ct)
+	e:GetHandler():AddCounter(0x13,ct)
 end
 
 --Remove Counters
@@ -135,7 +136,7 @@ function s.rccost(e,tp,eg,ep,ev,re,r,rp,chk)
 		end
 	else return
 	end
-	local ss,set,th,td,tg=tc:IsCanBeSpecialSummoned(e,0,tp,false,false) and Duel.GetLocationCount(tp,LOCATION_MZONE)>0,tc:IsSSetable() and Duel.GetLocationCount(tp,LOCATION_SZONE)>0,tc:IsAbleToHand(),tc:IsAbleToDeck(),tc:IsAbleToGrave()
+	local ss,set,th,td,tg=tc:IsCanBeSpecialSummoned(e,0,tp,false,false) and Duel.GetLocationCount(tp,LOCATION_MZONE)>0,tc:IsSSetable() and Duel.GetLocationCount(tp,LOCATION_SZONE)>0,tc:IsAbleToHand(),tc:IsAbleToDeck(),tc:IsAbleToGrave() and not tc:IsLocation(LOCATION_GRAVE)
 	choice=aux.EffectCheck(tp,{ss,set,th,td,tg},{aux.Stringid(id,5),aux.Stringid(id,6),aux.Stringid(id,7),aux.Stringid(id,8),aux.Stringid(id,9)})
 	for i=math.min(math.abs(ctr-2*cha-cel-inf),cha),math.min(ctr,cha) do
 		table.insert(chacr,i)
@@ -177,7 +178,7 @@ function s.rcop(e,tp,eg,ep,ev,re,r,rp)
 	elseif choice==2 then
 		Duel.SendtoHand(tc,tp,REASON_EFFECT)
 	elseif choice==3 then
-		Duel.SendtoDeck(tc,2,REASON_EFFECT)
+		Duel.SendtoDeck(tc,tp,2,REASON_EFFECT)
 	elseif choice==4 then
 		Duel.SendtoGrave(tc,REASON_EFFECT)
 	else return

@@ -91,10 +91,11 @@ REASON_CHAOS_SYNCHRO=REASON_SYNCHRO+69
 --f1: A filter to further specify the legal Tuners with extraparams1 as a table of needed extraparameters.
 --atmin/atmax: minimum/maximum amount of Tuners
 --f2,extraparams2,antmin/antmax: the same but for Nontuners
+--specialcheck1,specialcheck2: Filters to handle what the groups of selected Tuners/Nontuners must include
 --desc: an optional descrption
 Auxiliary.AddChaosSynchroProcedure=aux.FunctionWithNamedArgs(
-	function(c,f1,extraparams1,atmin,atmax,f2,extraparams2,antmin,antmax,desc)
-	local atmin,atmax,antmin,antmax=(atmin,atmax,antmin,antmax) or (1,99,1,99)
+	function(c,f1,extraparams1,specialcheck1,atmin,atmax,f2,extraparams2,specialcheck2,antmin,antmax,desc)
+	atmin,atmax,antmin,antmax=atmin or 1,atmax or 99,antmin or 1,antmax or 99
 	local e=Effect.CreateEffect(c)
 	e:SetType(EFFECT_TYPE_FIELD)
 	if desc then
@@ -105,11 +106,11 @@ Auxiliary.AddChaosSynchroProcedure=aux.FunctionWithNamedArgs(
 	e:SetCode(EFFECT_SPSUMMON_PROC)
 	e:SetProperty(EFFECT_FLAG_UNCOPYABLE+EFFECT_FLAG_IGNORE_IMMUNE)
 	e:SetRange(LOCATION_EXTRA)
-	e:SetTarget(Auxiliary.ChaosSynchroTarget(c,f1,extraparams1,atmin,atmax,f2,extraparams2,antmin,antmax))
-	e:SetOperation(Auxiliary.ChaosSynchroOperation(c))
+	e:SetTarget(aux.ChaosSynchroTarget(c,f1,extraparams1,specialcheck1,atmin,atmax,f2,extraparams2,specialcheck2,antmin,antmax))
+	e:SetOperation(aux.ChaosSynchroOperation(c))
 	e:SetValue(SUMMON_TYPE_CHAOS_SYNCHRO)
 	c:RegisterEffect(e)
-end,"handler","tunerfilter","extraparams1","atmin","atmax","nontunerfilter","extraparams2","antmin","antmax","desc")
+end,"handler","tfilter","extraparams1","specialchk1","atmin","atmax","ntfilter","extraparams2","specialchk2","antmin","antmax","desc")
 
 function Auxiliary.cstfilter(c,tc)
 	return c:IsCanBeSynchroMaterial(tc) and c:IsType(TYPE_TUNER) and c:IsAbleToRemove()
@@ -119,19 +120,19 @@ function Auxiliary.csntfilter(c,tc)
 	return c:IsCanBeSynchroMaterial(tc) and not c:IsType(TYPE_TUNER) and c:IsAbleToRemove()
 end
 
-function Auxiliary.csrescon(lv,gt,atmin,atmax,gnt,antmin,antmax)
+function Auxiliary.csrescon(lv,gt,atmin,atmax,specialcheck1,gnt,antmin,antmax,specialcheck2)
 	return function(sg,e,tp,mg)
-		return sg:GetSum(Card.GetLevel)==lv and atmin<=#(sg-gnt) and #(sg-gnt)<=atmax and antmin<=#(sg-gt) and #(sg-gt)<=antmax,sg:GetSum(Card.GetLevel)>lv or atmin>#(sg-gnt) or #(sg-gnt)>atmax or antmin>#(sg-gt) or #(sg-gt)>antmax
+		return sg:GetSum(Card.GetLevel)==lv and atmin<=#(sg-gnt) and #(sg-gnt)<=atmax and antmin<=#(sg-gt) and #(sg-gt)<=antmax and (not specialcheck1 or specialcheck1(sg-gnt)) and (not specialcheck2 or specialcheck2(sg-gt)),sg:GetSum(Card.GetLevel)>lv or atmin>#(sg-gnt) or #(sg-gnt)>atmax or antmin>#(sg-gt) or #(sg-gt)>antmax
 	end
 end
 
-function Auxiliary.ChaosSynchroTarget(c,f1,extraparams1,atmin,atmax,f2,extraparams2,antmin,antmax)
+function Auxiliary.ChaosSynchroTarget(c,f1,extraparams1,specialcheck1,atmin,atmax,f2,extraparams2,specialcheck2,antmin,antmax)
 	return function(e,tp,eg,ep,ev,re,r,rp)
 		local lv=c:GetLevel()
-		local gt=Duel.GetMatchingGroup(Auxiliary.cstfilter,tp,LOCATION_GRAVE,0,nil,c):Filter(f1,nil,table.unpack(extraparams1))
-		local gnt=Duel.GetMatchingGroup(Auxiliary.csntfilter,tp,LOCATION_GRAVE,0,nil,c):Filter(f2,nil,table.unpack(extraparams2))
-		if Duel.GetLocationCount(tp,LOCATION_MZONE)>0 and aux.SelectUnselectGroup(gt+gnt,e,tp,atmin+antmin,atmax+antmax,Auxiliary.csrescon(lv,gt,atmin,atmax,gnt,antmin,antmax),0) then
-			local mat=aux.SelectUnselectGroup(gt+gnt,e,tp,atmin+antmin,atmax+antmax,Auxiliary.csrescon(lv,gt,atmin,atmax,gnt,antmin,antmax),1,tp,nil,Auxiliary.csrescon(lv,gt,atmin,atmax,gnt,antmin,antmax),Auxiliary.csrescon(lv,gt,atmin,atmax,gnt,antmin,antmax),true)
+		local gt=Duel.GetMatchingGroup(aux.cstfilter,tp,LOCATION_GRAVE,0,nil,c):Filter(f1,nil,table.unpack(extraparams1))
+		local gnt=Duel.GetMatchingGroup(aux.csntfilter,tp,LOCATION_GRAVE,0,nil,c):Filter(f2,nil,table.unpack(extraparams2))
+		if Duel.GetLocationCount(tp,LOCATION_MZONE)>0 and aux.SelectUnselectGroup(gt+gnt,e,tp,atmin+antmin,atmax+antmax,aux.csrescon(lv,gt,atmin,atmax,specialcheck1,gnt,antmin,antmax,specialcheck2),0) then
+			local mat=aux.SelectUnselectGroup(gt+gnt,e,tp,atmin+antmin,atmax+antmax,aux.csrescon(lv,gt,atmin,atmax,specialcheck1,gnt,antmin,antmax,specialcheck2),1,tp,nil,nil,nil,true)
 			e:SetLabelObject(mat)
 			mat:KeepAlive()
 			return true

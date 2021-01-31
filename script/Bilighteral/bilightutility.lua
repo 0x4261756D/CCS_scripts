@@ -1,7 +1,5 @@
 Duel.LoadScript("customutility.lua")
 
-SUMMON_TYPE_CHAOS_SYNCHRO=SUMMON_TYPE_SYNCHRO+69
-
 function Card.IsTrapspell(c)
 	return c:IsType(TYPE_SPELL) and c:IsType(TYPE_TRAP)
 end
@@ -94,58 +92,3 @@ Bilighteral.AddTrapEffect=aux.FunctionWithNamedArgs(
 		end
 		return e
 end,"handler","cat","prop","con","cost","tg","op")
-
-function Bilighteral.AddChaosSynchroProcedure(c,f1,atmin,atmax,f2,antmin,antmax,desc)
-	local e=Effect.CreateEffect(c)
-	e:SetType(EFFECT_TYPE_FIELD)
-	if desc then
-		e:SetDescription(desc)
-		else 
-			e:SetDescription(3402)
-	end
-	e:SetCode(EFFECT_SPSUMMON_PROC)
-	e:SetProperty(EFFECT_FLAG_UNCOPYABLE+EFFECT_FLAG_IGNORE_IMMUNE)
-	e:SetRange(LOCATION_EXTRA)
-	e:SetTarget(Bilighteral.ChaosSynchroTarget(c,f1,atmin,atmax,f2,antmin,antmax))
-	e:SetOperation(Bilighteral.ChaosSynchroOperation(c))
-	e:SetValue(SUMMON_TYPE_CHAOS_SYNCHRO)
-	c:RegisterEffect(e)
-end
-
-function Bilighteral.tfilter(c,tc,att)
-	return c:IsCanBeSynchroMaterial(tc) and c:IsType(TYPE_TUNER) and c:IsAttribute(att) and c:IsAbleToRemove()
-end
-
-function Bilighteral.ntfilter(c,tc,att)
-	return c:IsCanBeSynchroMaterial(tc) and not c:IsType(TYPE_TUNER) and c:IsAttribute(att) and c:IsAbleToRemove()
-end
-
-function Bilighteral.rescon(lv,gt,atmin,atmax,gnt,antmin,antmax)
-	return function(sg,e,tp,mg)
-		return sg:GetSum(Card.GetLevel)==lv and atmin<=#(sg-gnt) and #(sg-gnt)<=atmax and antmin<=#(sg-gt) and #(sg-gt)<=antmax,sg:GetSum(Card.GetLevel)>lv or atmin>#(sg-gnt) or #(sg-gnt)>atmax or antmin>#(sg-gt) or #(sg-gt)>antmax
-	end
-end
-
-function Bilighteral.ChaosSynchroTarget(c,f1,atmin,atmax,f2,antmin,antmax)
-	return function(e,tp,eg,ep,ev,re,r,rp)
-		local lv=c:GetLevel()
-		local gt=Duel.GetMatchingGroup(Bilighteral.tfilter,tp,LOCATION_GRAVE,0,nil,c,ATTRIBUTE_LIGHT|ATTRIBUTE_DARK):Filter(f1,nil)
-		local gnt=Duel.GetMatchingGroup(Bilighteral.ntfilter,tp,LOCATION_GRAVE,0,nil,c,ATTRIBUTE_LIGHT|ATTRIBUTE_DARK):Filter(f2,nil)
-		if Duel.GetLocationCount(tp,LOCATION_MZONE)>0 and aux.SelectUnselectGroup(gt+gnt,e,tp,atmin+antmin,atmax+antmax,Bilighteral.rescon(lv,gt,atmin,atmax,gnt,antmin,antmax),0) then
-			local mat=aux.SelectUnselectGroup(gt+gnt,e,tp,atmin+antmin,atmax+antmax,Bilighteral.rescon(lv,gt,atmin,atmax,gnt,antmin,antmax),1,tp,nil,Bilighteral.rescon(lv,gt,atmin,atmax,gnt,antmin,antmax),Bilighteral.rescon(lv,gt,atmin,atmax,gnt,antmin,antmax),true)
-			e:SetLabelObject(mat)
-			mat:KeepAlive()
-			return true
-			else return false
-		end
-	end
-end
-
-function Bilighteral.ChaosSynchroOperation(c)
-	return function(e,tp,eg,ep,ev,re,r,rp)
-		local g=e:GetLabelObject()
-		c:SetMaterial(g)
-		Duel.Remove(g,POS_FACEUP,REASON_MATERIAL+REASON_SYNCHRO+69)
-		g:DeleteGroup()
-	end
-end

@@ -141,7 +141,7 @@ function Auxiliary.ChaosSynchroTarget(c,f1,extraparams1,specialcheck1,atmin,atma
 	end
 end
 
-function Bilighteral.ChaosSynchroOperation(c)
+function Auxiliary.ChaosSynchroOperation(c)
 	return function(e,tp,eg,ep,ev,re,r,rp)
 		local g=e:GetLabelObject()
 		c:SetMaterial(g)

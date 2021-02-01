@@ -134,7 +134,7 @@ function Auxiliary.ChaosSynchroTarget(c,f1,extraparams1,specialcheck1,atmin,atma
 		gnt=Duel.GetMatchingGroup(aux.csntfilter,tp,LOCATION_GRAVE,0,nil,c)
 		if f1 then gt=gt:Filter(f1,nil,table.unpack(extraparams1)) end
 		if f2 then gnt=gnt:Filter(f2,nil,table.unpack(extraparams2)) end
-		if Duel.GetLocationCount(tp,LOCATION_MZONE)>0 and aux.SelectUnselectGroup(gt+gnt,e,tp,atmin+antmin,atmax+antmax,aux.csrescon(lv,gt,atmin,atmax,specialcheck1,gnt,antmin,antmax,specialcheck2),0) then
+		if Duel.GetLocationCountFromEx(tp)>0 and aux.SelectUnselectGroup(gt+gnt,e,tp,atmin+antmin,atmax+antmax,aux.csrescon(lv,gt,atmin,atmax,specialcheck1,gnt,antmin,antmax,specialcheck2),0) then
 			local mat=aux.SelectUnselectGroup(gt+gnt,e,tp,atmin+antmin,atmax+antmax,aux.csrescon(lv,gt,atmin,atmax,specialcheck1,gnt,antmin,antmax,specialcheck2),1,tp,nil,nil,nil,true)
 			e:SetLabelObject(mat)
 			mat:KeepAlive()

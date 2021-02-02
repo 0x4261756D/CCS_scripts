@@ -122,7 +122,7 @@ end
 
 function Auxiliary.csrescon(lv,gt,atmin,atmax,specialcheck1,gnt,antmin,antmax,specialcheck2)
 	return function(sg,e,tp,mg)
-		return sg:GetSum(Card.GetLevel)==lv and atmin<=#(sg-gnt) and #(sg-gnt)<=atmax and antmin<=#(sg-gt) and #(sg-gt)<=antmax and (not specialcheck1 or specialcheck1(sg-gnt)) and (not specialcheck2 or specialcheck2(sg-gt)),sg:GetSum(Card.GetLevel)>lv or atmin>#(sg-gnt) or #(sg-gnt)>atmax or antmin>#(sg-gt) or #(sg-gt)>antmax
+		return sg:GetSum(Card.GetLevel)==lv and atmin<=#(sg-gnt) and #(sg-gnt)<=atmax and antmin<=#(sg-gt) and #(sg-gt)<=antmax and (not specialcheck1 or specialcheck1(sg-gnt)) and (not specialcheck2 or specialcheck2(sg-gt))
 	end
 end
 
@@ -136,6 +136,7 @@ function Auxiliary.ChaosSynchroTarget(c,f1,extraparams1,specialcheck1,atmin,atma
 		if f2 then gnt=gnt:Filter(f2,nil,table.unpack(extraparams2)) end
 		if Duel.GetLocationCountFromEx(tp)>0 and aux.SelectUnselectGroup(gt+gnt,e,tp,atmin+antmin,atmax+antmax,aux.csrescon(lv,gt,atmin,atmax,specialcheck1,gnt,antmin,antmax,specialcheck2),0) then
 			local mat=aux.SelectUnselectGroup(gt+gnt,e,tp,atmin+antmin,atmax+antmax,aux.csrescon(lv,gt,atmin,atmax,specialcheck1,gnt,antmin,antmax,specialcheck2),1,tp,nil,nil,nil,true)
+			if #mat<atmin+antmin then return false end
 			e:SetLabelObject(mat)
 			mat:KeepAlive()
 			return true

@@ -85,7 +85,7 @@ end
 --Shortcut function to register the same effect on different events. (Useful for something like "If this card is summoned" to take care of all summon events).
 --Like with all fwna's, the arguments are passed as a table where "codes" is a table of all events which should be used.
 Auxiliary.MultiRegister=aux.FunctionWithNamedArgs(
-	function(c,codes,desc,cat,prop,typ,range,con,cost,tg,op)
+	function(c,codes,desc,cat,prop,typ,range,con,cost,tg,op,opt)
 	local effs={}
 	local e=Effect.CreateEffect(c)
 	if desc then e:SetDescription(desc) end
@@ -97,12 +97,18 @@ Auxiliary.MultiRegister=aux.FunctionWithNamedArgs(
 	if cost then e:SetCost(cost) end
 	if tg then e:SetTarget(tg) end
 	e:SetOperation(op)
+	if opt then
+		if opt=="sopt" then e:SetCountLimit(1)
+		elseif type(opt)=="number" and opt>0 then e:SetCountLimit(opt)
+		elseif opt=="hopt" then e:SetCountLimit(1,c:GetOriginalCode())
+		end
+	end
 	for i=1,#codes do
 		e:SetCode(codes[i])
 		c:RegisterEffect(e:Clone())
 	end
 	e:Reset()
-end,"handler","codes","desc","cat","prop","typ","range","con","cost","tg","op")
+end,"handler","codes","desc","cat","prop","typ","range","con","cost","tg","op","opt")
 
 SUMMON_TYPE_CHAOS_SYNCHRO=SUMMON_TYPE_SYNCHRO+69
 REASON_CHAOS_SYNCHRO=REASON_SYNCHRO+69

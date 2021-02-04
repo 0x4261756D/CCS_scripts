@@ -82,6 +82,28 @@ function Auxiliary.spfilter(e,tp,sumtype,f,...)
 	end
 end
 
+--Shortcut function to register the same effect on different events. (Useful for something like "If this card is summoned" to take care of all summon events).
+--Like with all fwna's, the arguments are passed as a table where "codes" is a table of all events which should be used.
+Auxiliary.MultiRegister=aux.FunctionWithNamedArgs(
+	function(c,codes,desc,cat,prop,typ,range,con,cost,tg,op)
+	local effs={}
+	local e=Effect.CreateEffect(c)
+	if desc then e:SetDescription(desc) end
+	if cat then e:SetCategory(cat) end
+	if prop then e:SetProperty(prop) end
+	if range then e:SetRange(range) end
+	e:SetType(typ)
+	if con then e:SetCondition(con) end
+	if cost then e:SetCost(cost) end
+	if tg then e:SetTarget(tg) end
+	e:SetOperation(op)
+	for i=1,#codes do
+		e:SetCode(codes[i])
+		c:RegisterEffect(e:Clone())
+	end
+	e:Reset()
+end,"handler","codes","desc","cat","prop","typ","range","con","cost","tg","op")
+
 SUMMON_TYPE_CHAOS_SYNCHRO=SUMMON_TYPE_SYNCHRO+69
 REASON_CHAOS_SYNCHRO=REASON_SYNCHRO+69
 

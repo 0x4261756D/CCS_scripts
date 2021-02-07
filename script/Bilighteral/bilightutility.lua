@@ -92,3 +92,13 @@ Bilighteral.AddTrapEffect=aux.FunctionWithNamedArgs(
 		end
 		return e
 end,"handler","cat","prop","con","cost","tg","op")
+
+function Bilighteral.remfilter(c)
+	return c:IsAbleToRemoveAsCost() and c:IsSetCard(0x400) and c:IsMonster()
+end
+
+function Bilighteral.bmcost(e,tp,eg,ep,ev,re,r,rp,chk)
+	if chk==0 then return Duel.IsExistingMatchingCard(Bilighteral.remfilter,tp,LOCATION_HAND+LOCATION_GRAVE,0,1,nil) end
+	local tc=Duel.SelectMatchingCard(tp,Bilighteral.remfilter,tp,LOCATION_HAND+LOCATION_GRAVE,0,1,1,nil)
+	Duel.Remove(tc,POS_FACEUP,REASON_COST)
+end

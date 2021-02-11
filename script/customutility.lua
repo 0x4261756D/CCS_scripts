@@ -12,16 +12,21 @@ function Card.CheckType(c,tp)
 end
 
 --Function to select an option based on the condition on the same place as the option in the first table
-function Auxiliary.EffectCheck(tp,cons,strings)
-	local eff,sel={},{}
-	for i,con in ipairs(cons) do
-		if con then 
-			table.insert(eff,strings[i])
-			table.insert(sel,i)
+--If the third table isn't nil, the corresponding operation will be executed.
+--Example Call: local x=aux.EffectCheck(tp,cons,strings,ops)(e,tp,eg,ep,ev,re,r,rp)
+function Auxiliary.EffectCheck(tp,cons,strings,ops)
+	return function(e,tp,eg,ep,ev,re,r,rp)
+		local eff,sel={},{}
+		for i,con in ipairs(cons) do
+			if con then
+				table.insert(eff,strings[i])
+				table.insert(sel,i)
+			end
 		end
+		local choice=Duel.SelectOption(tp,table.unpack(eff))
+		if ops then ops[sel[choice+1]](e,tp,eg,ep,ev,re,r,rp) end
+		return sel[choice+1]
 	end
-	local choice=Duel.SelectOption(tp,table.unpack(eff))
-	return sel[choice+1]-1
 end
 
 --doccost detaches a specific amount of materials from an Xyz monster (min=<X=<max). min=nil -> detaches all materials.

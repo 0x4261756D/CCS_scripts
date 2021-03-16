@@ -99,6 +99,7 @@ end
 
 function Bilighteral.bmcost(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsExistingMatchingCard(Bilighteral.remfilter,tp,LOCATION_HAND+LOCATION_GRAVE,0,1,nil) end
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_REMOVE)
 	local tc=Duel.SelectMatchingCard(tp,Bilighteral.remfilter,tp,LOCATION_HAND+LOCATION_GRAVE,0,1,1,nil)
 	Duel.Remove(tc,POS_FACEUP,REASON_COST)
 end

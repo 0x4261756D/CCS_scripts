@@ -36,8 +36,11 @@ function s.spellcost(e,tp,eg,ep,ev,re,r,rp,chk)
 		Duel.IsExistingMatchingCard(s.dcfilter,tp,LOCATION_HAND,0,1,e:GetHandler()) and
 		Duel.IsExistingMatchingCard(s.remfilter,tp,LOCATION_GRAVE,0,1,nil)
 	end
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_REMOVE)
 	local c1=Duel.SelectMatchingCard(tp,s.remfilter,tp,LOCATION_GRAVE,0,1,1,nil)
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_DISCARD)
 	local c2=Duel.SelectMatchingCard(tp,s.dcfilter,tp,LOCATION_HAND,0,1,1,nil)
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TOGRAVE)
 	local c3=Duel.SelectMatchingCard(tp,s.tgfilter,tp,LOCATION_DECK,0,1,1,nil)
 	Duel.Remove(c1,POS_FACEUP,REASON_COST,tp)
 	Duel.SendtoGrave(c2,REASON_COST+REASON_DISCARD,tp)
@@ -47,14 +50,14 @@ end
 function s.spelltg(e,tp,eg,ep,ev,re,r,rp,chk)
 	local g=Duel.GetMatchingGroup(s.thfilter,tp,LOCATION_DECK,0,nil)
 	if chk==0 then return #g>0 and aux.SelectUnselectGroup(g,e,tp,1,3,aux.dncheck,0) end
-	Duel.SetOperationInfo(0,CATEGORY_TOHAND+CATEGORY_SEARCH,nil,nil,tp,LOCATION_DECK)
+	Duel.SetOperationInfo(0,CATEGORY_TOHAND+CATEGORY_SEARCH,nil,0,tp,LOCATION_DECK)
 end
 
 function s.spellop(e,tp,eg,ep,ev,re,r,rp)
 	local g=Duel.GetMatchingGroup(s.thfilter,tp,LOCATION_DECK,0,nil)
 	if #g==0 then return end
 	local tc=aux.SelectUnselectGroup(g,e,tp,1,3,aux.dncheck,1,tp,nil,nil,nil,true)
-	Duel.SendtoHand(tc,REASON_EFFECT,tp)
+	Duel.SendtoHand(tc,tp,REASON_EFFECT)
 	Duel.ConfirmCards(1-tp,tc)
 end
 

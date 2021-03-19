@@ -83,13 +83,13 @@ function Auxiliary.doccost(min,max,label,cost,order)
 	end
 end
 
---aux.spfilter is a shortcut to check for legally special summonable. It has to be called with e,tp and the summon type and also supports another filter which has to be fullfilled along with all its extraparams.
+--aux.spfilter is a shortcut to check for legally special summonable. It has to be called with e,tp,the summon type and bools whether summon conditions and revive limit are ignored and also supports another filter which has to be fullfilled along with all its extraparams.
 --Example: Duel.IsExistingMatchingCard(aux.spfilter(e,tp,s.filter,a,b),tp,LOCATION_GRAVE,0,1,nil) where a and b are the extraparams of s.filter.
-function Auxiliary.spfilter(e,tp,sumtype,f,...)
+function Auxiliary.spfilter(e,tp,sumtype,nocheck,nolimit,f,...)
 	local params={...}
 	return function(c)
-		if f then return c:IsCanBeSpecialSummoned(e,sumtype,tp,false,false) and f(c,table.unpack(params))
-		else return c:IsCanBeSpecialSummoned(e,sumtype,tp,false,false) end
+		if f then return c:IsCanBeSpecialSummoned(e,sumtype,tp,nocheck,nolimit) and f(c,table.unpack(params))
+		else return c:IsCanBeSpecialSummoned(e,sumtype,tp,nocheck,nolimit) end
 	end
 end
 

@@ -38,7 +38,7 @@ function c65000014.activate(e,tp,eg,ep,ev,re,r,rp)
 	Duel.RegisterEffect(e1,tp)
 	Duel.RegisterFlagEffect(tp,65000014,RESET_PHASE+PHASE_END,0,1)
 end
-function c65000014.efilter(e,re,ct)
+function c65000014.efilter(e,ct)
 	local te=Duel.GetChainInfo(ct,CHAININFO_TRIGGERING_EFFECT)
 	local tc=te:GetHandler()
 	return te:IsActiveType(TYPE_MONSTER) and tc:IsSetCard(0x800)

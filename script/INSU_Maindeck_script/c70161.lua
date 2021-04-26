@@ -1,11 +1,12 @@
 --Plagiatism of Greed
-function c70161.initial_effect(c)
+local s, id = GetID()
+function s.initial_effect(c)
 	--Activate
 	local e1=Effect.CreateEffect(c)
 	e1:SetCategory(CATEGORY_TODECK)
 	e1:SetType(EFFECT_TYPE_ACTIVATE)
 	e1:SetCode(EVENT_FREE_CHAIN)
-	e1:SetOperation(c70161.activate)
+	e1:SetOperation(s.activate)
 	c:RegisterEffect(e1)
 	--change name
 	local e2=Effect.CreateEffect(c)
@@ -16,7 +17,7 @@ function c70161.initial_effect(c)
 	e2:SetValue(55144522)
 	c:RegisterEffect(e2)	
 end
-function c70161.activate(e,tp,eg,ep,ev,re,r,rp)
+function s.activate(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	if c:IsRelateToEffect(e) then
 		c:CancelToGrave()

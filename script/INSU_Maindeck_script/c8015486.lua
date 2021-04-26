@@ -1,5 +1,6 @@
 --Forbidden Collection
-function c8015486.initial_effect(c)
+local s, id = GetID()
+function s.initial_effect(c)
 	--destroy
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(8015486,0))
@@ -8,9 +9,9 @@ function c8015486.initial_effect(c)
 	e1:SetCode(EVENT_FREE_CHAIN)
 	e1:SetProperty(EFFECT_FLAG_CARD_TARGET)
 	e1:SetCountLimit(1,8015486)
-	e1:SetCost(c8015486.reg)
-	e1:SetTarget(c8015486.target)
-	e1:SetOperation(c8015486.activate)
+	e1:SetCost(s.reg)
+	e1:SetTarget(s.target)
+	e1:SetOperation(s.activate)
 	c:RegisterEffect(e1)
 	--search
 	local e2=Effect.CreateEffect(c)
@@ -21,14 +22,14 @@ function c8015486.initial_effect(c)
 	e2:SetRange(LOCATION_GRAVE)
 	e2:SetCountLimit(1,8015487)
 	e2:SetCost(aux.bfgcost)
-	e2:SetTarget(c8015486.thtg)
-	e2:SetOperation(c8015486.thop)
+	e2:SetTarget(s.thtg)
+	e2:SetOperation(s.thop)
 	c:RegisterEffect(e2)
 end
-function c8015486.reg(e,tp,eg,ep,ev,re,r,rp,chk)
+function s.reg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return true end
 end
-function c8015486.target(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
+function s.target(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chkc then return chkc:IsLocation(LOCATION_MZONE) and chkc:IsFaceup() end
 	if chk==0 then return Duel.IsExistingTarget(Card.IsFaceup,tp,LOCATION_MZONE,LOCATION_MZONE,1,nil) end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_FACEUP)
@@ -36,7 +37,7 @@ function c8015486.target(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	e:SetLabelObject(g:GetFirst())
 	Duel.SetOperationInfo(0,CATEGORY_DISABLE,g,1,0,0)
 end
-function c8015486.activate(e,tp,eg,ep,ev,re,r,rp)
+function s.activate(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	local tc=Duel.GetFirstTarget()
 	if tc:IsRelateToEffect(e) and tc:IsFaceup() then
@@ -57,7 +58,7 @@ function c8015486.activate(e,tp,eg,ep,ev,re,r,rp)
 		e3:SetCode(EFFECT_IMMUNE_EFFECT)
 		e3:SetProperty(EFFECT_FLAG_SINGLE_RANGE)
 		e3:SetRange(LOCATION_MZONE)
-		e3:SetValue(c8015486.efilter)
+		e3:SetValue(s.efilter)
 		tc:RegisterEffect(e3)
 		c:RegisterFlagEffect(8015486,RESET_EVENT+0x17a0000+RESET_PHASE+PHASE_END,0,1)
 		local v=Effect.CreateEffect(c)
@@ -66,42 +67,42 @@ function c8015486.activate(e,tp,eg,ep,ev,re,r,rp)
 		v:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_IGNORE_IMMUNE)
 		v:SetReset(RESET_PHASE+PHASE_END)
 		v:SetLabelObject(c)
-		v:SetOperation(c8015486.vo)
+		v:SetOperation(s.vo)
 		tc:RegisterEffect(v)
 	end
 end
-function c8015486.efilter(e,te)
+function s.efilter(e,te)
 	return te:GetOwner()~=e:GetOwner()
 end
-function c8015486.vo(e,tp)
+function s.vo(e,tp)
 	local ec=e:GetLabelObject()
 	if ec:GetFlagEffect(8015486)==0 then e:Reset() return end
 	Duel.RaiseSingleEvent(ec,8015486,nil,nil,nil,nil,nil)
 	e:Reset()
 end
-function c8015486.thfilter(c)
+function s.thfilter(c)
 	return c:IsCode(25789292,27243130,53778229,54773234,96864811) and c:IsAbleToHand()
 end
-function c8015486.thtg(e,tp,eg,ep,ev,re,r,rp,chk)
+function s.thtg(e,tp,eg,ep,ev,re,r,rp,chk)
 	local c=e:GetHandler()
-	if chk==0 then return Duel.IsExistingMatchingCard(c8015486.thfilter,tp,LOCATION_DECK,0,1,nil) end
+	if chk==0 then return Duel.IsExistingMatchingCard(s.thfilter,tp,LOCATION_DECK,0,1,nil) end
 	Duel.SetOperationInfo(0,CATEGORY_TOHAND,nil,1,tp,LOCATION_DECK)
 end
-function c8015486.setfilter(c)
+function s.setfilter(c)
 	return c:IsCode(8015486) and c:IsSSetable()
 end
-function c8015486.thop(e,tp,eg,ep,ev,re,r,rp)
+function s.thop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_ATOHAND)
-	local g=Duel.SelectMatchingCard(tp,c8015486.thfilter,tp,LOCATION_DECK,0,1,1,nil)
+	local g=Duel.SelectMatchingCard(tp,s.thfilter,tp,LOCATION_DECK,0,1,1,nil)
 	if Duel.SendtoHand(g,nil,REASON_EFFECT)~=0 then
 		Duel.ConfirmCards(1-tp,g)
 		if Duel.GetLocationCount(tp,LOCATION_SZONE)>0
-		and Duel.IsExistingMatchingCard(c8015486.setfilter,tp,LOCATION_DECK,0,1,nil) 
+		and Duel.IsExistingMatchingCard(s.setfilter,tp,LOCATION_DECK,0,1,nil) 
 		and Duel.SelectYesNo(tp,aux.Stringid(8015486,0)) then
 			Duel.BreakEffect()
 			Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SET)
-			local h=Duel.SelectMatchingCard(tp,c8015486.setfilter,tp,LOCATION_DECK,0,1,1,nil)
+			local h=Duel.SelectMatchingCard(tp,s.setfilter,tp,LOCATION_DECK,0,1,1,nil)
 			Duel.SSet(tp,h:GetFirst())
 			Duel.ConfirmCards(1-tp,h)
 		end

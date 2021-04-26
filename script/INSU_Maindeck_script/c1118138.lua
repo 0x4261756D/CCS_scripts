@@ -1,5 +1,6 @@
 --Super Sonic Train Hyloop
-function c1118138.initial_effect(c)
+local s, id = GetID()
+function s.initial_effect(c)
 	--spsummon
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(1118138,0))
@@ -9,9 +10,9 @@ function c1118138.initial_effect(c)
 	e1:SetRange(LOCATION_GRAVE)
 	e1:SetProperty(EFFECT_FLAG_DELAY)
 	e1:SetCountLimit(1,1118138)
-	e1:SetCondition(c1118138.spcon)
-	e1:SetTarget(c1118138.sptg)
-	e1:SetOperation(c1118138.spop)
+	e1:SetCondition(s.spcon)
+	e1:SetTarget(s.sptg)
+	e1:SetOperation(s.spop)
 	c:RegisterEffect(e1)
 	local e2=e1:Clone()
 	e2:SetCode(EVENT_SPSUMMON_SUCCESS)
@@ -23,23 +24,23 @@ function c1118138.initial_effect(c)
 	e3:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
 	e3:SetCode(EVENT_TO_GRAVE)
 	e3:SetProperty(EFFECT_FLAG_CARD_TARGET+EFFECT_FLAG_DAMAGE_STEP+EFFECT_FLAG_DELAY)
-	e3:SetCondition(c1118138.condition)
-	e3:SetTarget(c1118138.rthtg)
-	e3:SetOperation(c1118138.rthop)
+	e3:SetCondition(s.condition)
+	e3:SetTarget(s.rthtg)
+	e3:SetOperation(s.rthop)
 	c:RegisterEffect(e3)
 end
-function c1118138.spfilter(c,tp)
+function s.spfilter(c,tp)
 	return c:IsFaceup() and c:IsControler(tp) and c:IsRace(RACE_MACHINE) and c:IsAttribute(ATTRIBUTE_EARTH)
 end
-function c1118138.spcon(e,tp,eg,ep,ev,re,r,rp)
-	return eg:IsExists(c1118138.spfilter,1,nil,tp)
+function s.spcon(e,tp,eg,ep,ev,re,r,rp)
+	return eg:IsExists(s.spfilter,1,nil,tp)
 end
-function c1118138.sptg(e,tp,eg,ep,ev,re,r,rp,chk)
+function s.sptg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.GetLocationCount(tp,LOCATION_MZONE)>0
 		and e:GetHandler():IsCanBeSpecialSummoned(e,0,tp,false,false) end
 	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,e:GetHandler(),1,0,0)
 end
-function c1118138.spop(e,tp,eg,ep,ev,re,r,rp)
+function s.spop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	if not c:IsRelateToEffect(e) then return end
 	if Duel.SpecialSummonStep(c,0,tp,tp,false,false,POS_FACEUP) then
@@ -58,19 +59,19 @@ function c1118138.spop(e,tp,eg,ep,ev,re,r,rp)
 		Duel.SpecialSummonComplete()
 	end
 end
-function c1118138.condition(e,tp,eg,ep,ev,re,r,rp)
+function s.condition(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	return c:IsReason(REASON_COST) and re:IsHasType(0x7e0) and re:IsActiveType(TYPE_MONSTER)
 		and c:IsPreviousLocation(LOCATION_OVERLAY)
 end
-function c1118138.rthtg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
+function s.rthtg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
     if chkc then return chkc:IsControler(1-tp) and chkc:IsLocation(LOCATION_ONFIELD) and chkc:IsAbleToHand() end
     if chk==0 then return Duel.IsExistingTarget(Card.IsAbleToHand,tp,0,LOCATION_ONFIELD,1,nil) end
     Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_RTOHAND)
     local g=Duel.SelectTarget(tp,Card.IsAbleToHand,tp,0,LOCATION_ONFIELD,1,1,nil)
     Duel.SetOperationInfo(0,CATEGORY_TOHAND,g,1,0,0)
 end
-function c1118138.rthop(e,tp,eg,ep,ev,re,r,rp)
+function s.rthop(e,tp,eg,ep,ev,re,r,rp)
     local tc=Duel.GetFirstTarget()
     if tc:IsRelateToEffect(e) then
         Duel.SendtoHand(tc,nil,REASON_EFFECT)

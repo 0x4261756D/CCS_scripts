@@ -1,12 +1,13 @@
-function c64000160.initial_effect(c)
+local s, id = GetID()
+function s.initial_effect(c)
     --fusion material
 	c:EnableReviveLimit()
 	Fusion.AddProcMixRep(c,true,true,aux.FilterBoolFunction(Card.IsCode,79575620,5519829),1,1,77585513)--77585513,79575620)
-	Fusion.AddContactProc(c,c64000160.contactfil,c64000160.contactop,c64000160.splimit)
+	Fusion.AddContactProc(c,s.contactfil,s.contactop,s.splimit)
 	--fusion material
 --	c:EnableReviveLimit()
 --	aux.AddFusionProcMix(c,true,true,77585513,5519829)
---	aux.AddContactFusion(c,c64000160.contactfil,c64000160.contactop,c64000160.splimit)
+--	aux.AddContactFusion(c,s.contactfil,s.contactop,s.splimit)
 	--attack up
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(64000160,0))
@@ -14,9 +15,9 @@ function c64000160.initial_effect(c)
 	e1:SetType(EFFECT_TYPE_QUICK_O)
 	e1:SetRange(LOCATION_MZONE)
 	e1:SetCode(EVENT_PRE_DAMAGE_CALCULATE)
-	e1:SetCondition(c64000160.con)
-	e1:SetCost(c64000160.cost)
-	e1:SetOperation(c64000160.op)
+	e1:SetCondition(s.con)
+	e1:SetCost(s.cost)
+	e1:SetOperation(s.op)
 	c:RegisterEffect(e1)
 	--summon
 	local e2=Effect.CreateEffect(c)
@@ -28,8 +29,8 @@ function c64000160.initial_effect(c)
 	local e3=Effect.CreateEffect(c)
 	e3:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_CONTINUOUS)
     e3:SetCode(EVENT_SPSUMMON_SUCCESS)
-	e3:SetCondition(c64000160.limcon)
-	e3:SetOperation(c64000160.sumsuc)
+	e3:SetCondition(s.limcon)
+	e3:SetOperation(s.sumsuc)
 	c:RegisterEffect(e3)
 	--disable
 	local e4=Effect.CreateEffect(c)
@@ -45,7 +46,7 @@ function c64000160.initial_effect(c)
 	e5:SetCode(EVENT_CHAIN_SOLVING)
 	e5:SetRange(LOCATION_MZONE)
 	e5:SetTargetRange(0,LOCATION_SZONE)
-	e5:SetOperation(c64000160.disop)
+	e5:SetOperation(s.disop)
 	c:RegisterEffect(e5)
 	--disable trap monster
 	local e6=Effect.CreateEffect(c)
@@ -63,27 +64,27 @@ function c64000160.initial_effect(c)
 	e7:SetCode(3682106)
 	c:RegisterEffect(e7)
 end
---function c64000160.matfilter(
-function c64000160.contactfil(tp)
+--function s.matfilter(
+function s.contactfil(tp)
 	return Duel.GetMatchingGroup(function(c) return c:IsType(TYPE_MONSTER) and c:IsAbleToDeckOrExtraAsCost() end,tp,LOCATION_ONFIELD+LOCATION_GRAVE,0,nil)
 end
-function c64000160.contactop(g,tp)
+function s.contactop(g,tp)
 	Duel.ConfirmCards(1-tp,g)
 	Duel.SendtoDeck(g,nil,2,REASON_COST+REASON_MATERIAL)
 end
-function c64000160.splimit(e,se,sp,st)
+function s.splimit(e,se,sp,st)
 	return e:GetHandler():GetLocation()~=LOCATION_EXTRA
 end
-function c64000160.con(e,tp,eg,ep,ev,re,r,rp)
+function s.con(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	return c:GetFlagEffect(64000160)==0 and (Duel.GetAttacker()==c or Duel.GetAttackTarget()==c)
 end
-function c64000160.cost(e,tp,eg,ep,ev,re,r,rp,chk)
+function s.cost(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.CheckLPCost(tp,500) end
 	Duel.PayLPCost(tp,500)
 	e:GetHandler():RegisterFlagEffect(64000160,RESET_PHASE+PHASE_DAMAGE_CAL,0,1)
 end
-function c64000160.op(e,tp,eg,ep,ev,re,r,rp)
+function s.op(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	local e1=Effect.CreateEffect(c)
 	e1:SetType(EFFECT_TYPE_SINGLE)
@@ -92,13 +93,13 @@ function c64000160.op(e,tp,eg,ep,ev,re,r,rp)
 	e1:SetValue(1000)
 	c:RegisterEffect(e1)
 end
-function c64000160.limcon(e,tp,eg,ep,ev,re,r,rp)
+function s.limcon(e,tp,eg,ep,ev,re,r,rp)
 	return e:GetHandler():IsSummonType(SUMMON_TYPE_FUSION)
 end
-function c64000160.sumsuc(e,tp,eg,ep,ev,re,r,rp)
+function s.sumsuc(e,tp,eg,ep,ev,re,r,rp)
 	Duel.SetChainLimitTillChainEnd(aux.FALSE)
 end
-function c64000160.disop(e,tp,eg,ep,ev,re,r,rp)
+function s.disop(e,tp,eg,ep,ev,re,r,rp)
 	local p,loc=Duel.GetChainInfo(ev,CHAININFO_TRIGGERING_CONTROLER,CHAININFO_TRIGGERING_LOCATION)
 	if re:GetActiveType()==TYPE_TRAP and p~=tp and bit.band(loc,LOCATION_SZONE)~=0 then
 		Duel.NegateEffect(ev)

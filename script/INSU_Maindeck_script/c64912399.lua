@@ -1,5 +1,6 @@
-function c64912399.initial_effect(c)
-	aux.AddEquipProcedure(c,0,c64912399.filter)
+local s, id = GetID()
+function s.initial_effect(c)
+	aux.AddEquipProcedure(c,0,s.filter)
 	--Atk up
 	local e1=Effect.CreateEffect(c)
 	e1:SetType(EFFECT_TYPE_EQUIP)
@@ -18,6 +19,6 @@ function c64912399.initial_effect(c)
 	e3:SetValue(1)
 	c:RegisterEffect(e3)
 end
-function c64912399.filter(c)
+function s.filter(c)
 	return c:IsCode(76922029) or (c:IsSetCard(0x1a))
 end

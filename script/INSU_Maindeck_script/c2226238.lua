@@ -1,6 +1,7 @@
 --Mask of Emunity
 --Aubertin
-function c2226238.initial_effect(c)
+local s, id = GetID()
+function s.initial_effect(c)
          aux.AddEquipProcedure(c)
          --unaffected
          local e2=Effect.CreateEffect(c)
@@ -8,7 +9,7 @@ function c2226238.initial_effect(c)
 	     e2:SetCode(EFFECT_IMMUNE_EFFECT)
       	 e2:SetProperty(EFFECT_FLAG_SINGLE_RANGE)
 	     e2:SetRange(LOCATION_MZONE)
-	     e2:SetValue(c2226238.efilter)
+	     e2:SetValue(s.efilter)
          c:RegisterEffect(e2)
          --cannot attack directly
          local e3=Effect.CreateEffect(c)
@@ -21,7 +22,7 @@ function c2226238.initial_effect(c)
 	     e4:SetCode(EFFECT_IMMUNE_EFFECT)
 	     e4:SetProperty(EFFECT_FLAG_SINGLE_RANGE)
 	     e4:SetRange(LOCATION_SZONE)
-	     e4:SetValue(c2226238.filter)
+	     e4:SetValue(s.filter)
          c:RegisterEffect(e4)
          --add to hand
          local e5=Effect.CreateEffect(c)
@@ -30,22 +31,22 @@ function c2226238.initial_effect(c)
 	     e5:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_F)
 	     e5:SetCode(EVENT_TO_GRAVE)
 	     e5:SetCountLimit(1,2226238+EFFECT_COUNT_CODE_DUEL)
-	     e5:SetTarget(c2226238.target)
-	     e5:SetOperation(c2226238.operation)
+	     e5:SetTarget(s.target)
+	     e5:SetOperation(s.operation)
 	     c:RegisterEffect(e5)
 end
-function c2226238.target(e,tp,eg,ep,ev,re,r,rp,chk)
+function s.target(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return true end
 	Duel.SetOperationInfo(0,CATEGORY_TOHAND,e:GetHandler(),1,0,0)
 end
-function c2226238.operation(e,tp,eg,ep,ev,re,r,rp)
+function s.operation(e,tp,eg,ep,ev,re,r,rp)
 	if e:GetHandler():IsRelateToEffect(e) then
 		Duel.SendtoHand(e:GetHandler(),nil,2,REASON_EFFECT)
 		end       
 end
-    function c2226238.efilter(e,re)
+    function s.efilter(e,re)
 	return e:GetHandler()~=re:GetOwner()
 end
-function c2226238.filter(e,te)
+function s.filter(e,te)
 	return te:IsActiveType(TYPE_SPELL) and te:GetOwner()~=e:GetOwner()
 end

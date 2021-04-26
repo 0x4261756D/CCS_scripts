@@ -1,5 +1,6 @@
 --Injection Room früher -- hospital
-function c64000154.initial_effect(c)
+local s, id = GetID()
+function s.initial_effect(c)
 	--Activate
 	local e1=Effect.CreateEffect(c)
 	e1:SetType(EFFECT_TYPE_ACTIVATE)
@@ -72,26 +73,26 @@ function c64000154.initial_effect(c)
 	e8:SetType(EFFECT_TYPE_IGNITION)
 	e8:SetRange(LOCATION_FZONE)
 	e8:SetCountLimit(1)
-	e8:SetCost(c64000154.cost)
-	e8:SetTarget(c64000154.target)
-	e8:SetOperation(c64000154.operation)
+	e8:SetCost(s.cost)
+	e8:SetTarget(s.target)
+	e8:SetOperation(s.operation)
 	c:RegisterEffect(e8)
 	end
-	function c64000154.cost(e,tp,eg,ep,ev,re,r,rp,chk)
+	function s.cost(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.CheckLPCost(tp,500) end
 	Duel.PayLPCost(tp,500)
 end
-function c64000154.filter(c)
+function s.filter(c)
 	return c:IsSetCard(0x19e) and not c:IsCode(64000154) and c:IsAbleToHand()
 end
-function c64000154.target(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return Duel.IsExistingMatchingCard(c64000154.filter,tp,LOCATION_DECK,0,1,nil) end
+function s.target(e,tp,eg,ep,ev,re,r,rp,chk)
+	if chk==0 then return Duel.IsExistingMatchingCard(s.filter,tp,LOCATION_DECK,0,1,nil) end
 	Duel.SetOperationInfo(0,CATEGORY_TOHAND,nil,1,tp,LOCATION_DECK)
 end
-function c64000154.operation(e,tp,eg,ep,ev,re,r,rp)
+function s.operation(e,tp,eg,ep,ev,re,r,rp)
 	if not e:GetHandler():IsRelateToEffect(e) then return end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_ATOHAND)
-	local g=Duel.SelectMatchingCard(tp,c64000154.filter,tp,LOCATION_DECK,0,1,1,nil)
+	local g=Duel.SelectMatchingCard(tp,s.filter,tp,LOCATION_DECK,0,1,1,nil)
 	if g:GetCount()>0 then
 		Duel.SendtoHand(g,nil,REASON_EFFECT)
 		Duel.ConfirmCards(1-tp,g)

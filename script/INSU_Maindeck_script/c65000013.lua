@@ -56,7 +56,7 @@ end
 function s.shfilter(c,tp)
 	return c:IsFaceup() and c:IsSetCard(0x800) and c:IsType(TYPE_MONSTER) and c:GetSummonPlayer()==tp
 end
-function c65000013.shcon(e,tp,eg,ep,ev,re,r,rp)
+function s.shcon(e,tp,eg,ep,ev,re,r,rp)
 	return eg:IsExists(s.shfilter,1,nil,tp)
 end
 function s.cfilter(c)

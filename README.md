@@ -40,7 +40,7 @@ For keeping the cards up-to-date you should add
             "should_read": true
         },
 ``` 
-/config/configs.json in your ProjectIgnis folder after this part
+to /config/configs.json in your ProjectIgnis folder after this part
 ```json
 {
     "repos": [
@@ -55,4 +55,27 @@ For keeping the cards up-to-date you should add
             "should_update": true,
             "should_read": true
         },
+```
+
+**Playing with other people using Custom Cards:**
+Add
+```json
+		{
+            "name": "CCS",
+            "address": "85.214.233.223",
+            "duelport": 7911,
+            "roomaddress": "85.214.233.223",
+            "roomlistport": 7922
+    	},
+```
+to /config/configs.json in your ProjectIgnis folder after this part
+```json
+	"servers": [
+		{
+			"name": "EU Central (Casual)",
+			"address": "185.227.110.90",
+			"duelport": 7912,
+			"roomaddress": "185.227.110.90",
+			"roomlistport": 7923
+		},
 ```

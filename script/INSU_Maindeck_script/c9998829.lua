@@ -21,11 +21,10 @@ function s.initial_effect(c)
 end
 
 function s.hdfilter(c)
-	return not (c:IsType(TYPE_Gemini) or c:IsSetCard(0x29A))
+	return not (c:IsType(TYPE_GEMINI) or c:IsSetCard(0x29A))
 end
 function s.handcon(e)
-	local g=Duel.GetMatchingGroup(Card.IsType,e:GetHandlerPlayer(),LOCATION_GRAVE,0,nil,TYPE_MONSTER)
-	return g:GetCount()>0 and not g:IsExists(s.hdfilter,1,nil)
+	return not Duel.IsExistingMatchingCard(s.hdfilter, e:GetHandlerPlayer(), LOCATION_GRAVE, 0, 1, nil)
 end
 
 function s.cfilter2(c)
@@ -49,7 +48,7 @@ function s.filter(c)
 	return c:IsRace(RACE_FAIRY) and c:IsAbleToGrave()
 end
 function s.filter2(c)
-	return c:IsFaceup() and c:IsType(TYPE_Gemini) and c:IsAbleToDeck()
+	return c:IsFaceup() and c:IsType(TYPE_GEMINI) and c:IsAbleToDeck()
 end
 function s.target(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsExistingMatchingCard(s.filter,tp,LOCATION_DECK,0,1,nil) 

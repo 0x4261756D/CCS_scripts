@@ -58,16 +58,16 @@ function s.spellop(e,tp,eg,ep,ev,re,r,rp)
 		local tc=Duel.SelectMatchingCard(tp,s.thfilter,tp,LOCATION_DECK,0,1,1,nil)
 		Duel.SendtoHand(tc,tp,REASON_EFFECT)
 		Duel.ConfirmCards(1-tp,tc)
-		if additional and Duel.SelectYesNo(tp,aux.Stringid(id,4) then
-			tc=Duel.SelectTarget(tp,s.dfilter,tp,0,LOCATION_MZONE,1,1,nil)):GetFirst()
+		if additional and Duel.SelectYesNo(tp,aux.Stringid(id,4)) then
+			tc=Duel.SelectTarget(tp,s.dfilter,tp,0,LOCATION_MZONE,1,1,nil):GetFirst()
 			Duel.Destroy(tc,REASON_EFFECT)
 			Duel.Damage(1-tp,(tc:GetTextAttack()+tc:GetTextDefense()+tc2:GetTextAttack()+tc2:GetTextDefense())/2,REASON_EFFECT)
 		end
 		elseif choice==1 then
-			local tc=Duel.SelectTarget(tp,s.dfilter,tp,0,LOCATION_MZONE,1,1,nil)):GetFirst()
+			local tc=Duel.SelectTarget(tp,s.dfilter,tp,0,LOCATION_MZONE,1,1,nil):GetFirst()
 			Duel.Destroy(tc,REASON_EFFECT)
 			Duel.Damage(1-tp,(tc:GetTextAttack()+tc:GetTextDefense()+tc2:GetTextAttack()+tc2:GetTextDefense())/2,REASON_EFFECT)
-			if additional and Duel.SelectYesNo(tp,aux.Stringid(id,4) then
+			if additional and Duel.SelectYesNo(tp,aux.Stringid(id,4)) then
 				tc=Duel.SelectMatchingCard(tp,s.thfilter,tp,LOCATION_DECK,0,1,1,nil)
 				Duel.SendtoHand(tc,tp,REASON_EFFECT)
 				Duel.ConfirmCards(1-tp,tc)
@@ -115,7 +115,7 @@ function s.trapop(e,tp,eg,ep,ev,re,r,rp)
 			local tc2=Duel.SelectMatchingCard(tp,s.matfilter,tp,LOCATION_DECK,0,1,1,nil):GetFirst()
 			Duel.Overlay(tc,tc2)
 			Duel.Recover(tp,(tc:GetTextAttack()+tc:GetTextDefense()+tc2:GetTextAttack()+tc2:GetTextDefense())/2,REASON_EFFECT)
-			if additional and and Duel.SelectYesNo(tp,aux.Stringid(id,4)) then
+			if additional and Duel.SelectYesNo(tp,aux.Stringid(id,4)) then
 				local g=Duel.SelectMatchingCard(tp,aux.FilterFaceupFunction(Card.IsType,TYPE_EFFECT),tp,1,#mat,nil)
 				for tc3 in g:Iter() do
 					Duel.NegateRelatedChain(tc3,RESET_TURN_SET)
@@ -148,7 +148,7 @@ function s.trapop(e,tp,eg,ep,ev,re,r,rp)
 					e2:SetReset(RESET_EVENT+RESETS_STANDARD)
 					tc3:RegisterEffect(e2)
 				end
-				if additional and and Duel.SelectYesNo(tp,aux.Stringid(id,4)) then
+				if additional and Duel.SelectYesNo(tp,aux.Stringid(id,4)) then
 					local tc2=Duel.SelectMatchingCard(tp,s.matfilter,tp,LOCATION_DECK,0,1,1,nil):GetFirst()
 					Duel.Overlay(tc,tc2)
 					Duel.Recover(tp,(tc:GetTextAttack()+tc:GetTextDefense()+tc2:GetTextAttack()+tc2:GetTextDefense())/2,REASON_EFFECT)

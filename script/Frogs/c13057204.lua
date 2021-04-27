@@ -52,23 +52,18 @@ function s.initial_effect(c)
 	e5:SetOperation(s.drop)
 	c:RegisterEffect(e5)
 end
-local s, id = GetID()
 function s.targeta(e,c)
 	return c:IsType(TYPE_FUSION) and c:IsSetCard(0x12)
 end
-local s, id = GetID()
 function s.efilter(e,re)
 	return e:GetHandlerPlayer()~=re:GetOwnerPlayer()
 end
-local s, id = GetID()
 function s.filter(c,e,tp)
 	return c:IsRace(RACE_AQUA) and c:IsCanBeSpecialSummoned(e,0,tp,false,false)
 end
-local s, id = GetID()
 function s.spcon(e,tp,eg,ep,ev,re,r,rp)
 	return Duel.GetTurnPlayer()==tp
 end
-local s, id = GetID()
 function s.sptg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chkc then return chkc:IsControler(tp) and chkc:IsLocation(LOCATION_REMOVED) and s.filter(chkc,e,tp) end
 	if chk==0 then return Duel.GetLocationCount(tp,LOCATION_MZONE)>0
@@ -77,18 +72,15 @@ function s.sptg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	local g=Duel.SelectTarget(tp,s.filter,tp,LOCATION_REMOVED,LOCATION_REMOVED,1,1,nil,e,tp)
 	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,g,1,0,0)
 end
-local s, id = GetID()
 function s.spop(e,tp,eg,ep,ev,re,r,rp)
 	local tc=Duel.GetFirstTarget()
 	if tc:IsRelateToEffect(e) then
 		Duel.SpecialSummon(tc,0,tp,tp,false,false,POS_FACEUP)
 	end
 end
-local s, id = GetID()
 function s.filter3(c)
 	return c:IsCode(10456559)
 end
-local s, id = GetID()
 function s.drtg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsExistingMatchingCard(s.filter3,tp,LOCATION_GRAVE,0,1,nil)
 		and Duel.IsPlayerCanDraw(tp,ct) end
@@ -99,7 +91,6 @@ function s.drtg(e,tp,eg,ep,ev,re,r,rp,chk)
 		Duel.SetOperationInfo(0,CATEGORY_DRAW,nil,0,tp,ct)
 	end
 end
-local s, id = GetID()
 function s.drop(e,tp,eg,ep,ev,re,r,rp)
 	local p,d=Duel.GetChainInfo(0,CHAININFO_TARGET_PLAYER,CHAININFO_TARGET_PARAM)
 	local ct=Duel.GetMatchingGroupCount(s.filter3,tp,LOCATION_GRAVE,0,nil)

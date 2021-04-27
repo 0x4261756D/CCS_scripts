@@ -136,12 +136,13 @@ Auxiliary.AddChaosSynchroProcedure=aux.FunctionWithNamedArgs(
 	e:SetType(EFFECT_TYPE_FIELD)
 	if desc then
 		e:SetDescription(desc)
-		else 
-			e:SetDescription(3402)
+	else 
+		e:SetDescription(3402)
 	end
 	e:SetCode(EFFECT_SPSUMMON_PROC)
 	e:SetProperty(EFFECT_FLAG_UNCOPYABLE+EFFECT_FLAG_IGNORE_IMMUNE)
 	e:SetRange(LOCATION_EXTRA)
+	e:SetCondition(aux.ChaosSynchroCondition(c,f1,extraparams1,specialcheck1,atmin,atmax,f2,extraparams2,specialcheck2,antmin,antmax))
 	e:SetTarget(aux.ChaosSynchroTarget(c,f1,extraparams1,specialcheck1,atmin,atmax,f2,extraparams2,specialcheck2,antmin,antmax))
 	e:SetOperation(aux.ChaosSynchroOperation(c))
 	e:SetValue(SUMMON_TYPE_CHAOS_SYNCHRO)
@@ -162,16 +163,52 @@ function Auxiliary.csrescon(lv,gt,atmin,atmax,specialcheck1,gnt,antmin,antmax,sp
 	end
 end
 
+function Auxiliary.ChaosSynchroCondition(c,f1,extraparams1,specialcheck1,atmin,atmax,f2,extraparams2,specialcheck2,antmin,antmax)
+	return function(e)
+		local lv,tp=c:GetLevel(),e:GetHandlerPlayer()
+		local gt,gnt
+		gt=Duel.GetMatchingGroup(aux.cstfilter,tp,LOCATION_GRAVE,0,nil,c)
+		gnt=Duel.GetMatchingGroup(aux.csntfilter,tp,LOCATION_GRAVE,0,nil,c)
+		if f1 then
+			if extraparams1 then
+				gt=gt:Filter(f1,nil,table.unpack(extraparams1))
+			else
+				gt=gt:Filter(f1,nil)
+			end
+		end
+		if f2 then
+			if extraparams2 then
+				gnt=gnt:Filter(f2,nil,table.unpack(extraparams2))
+			else
+				gnt=gnt:Filter(f2,nil)
+			end
+		end
+		return Duel.GetLocationCountFromEx(tp)>0 and aux.SelectUnselectGroup(gt+gnt,e,tp,atmin+antmin,atmax+antmax,aux.csrescon(lv,gt,atmin,atmax,specialcheck1,gnt,antmin,antmax,specialcheck2),0)
+	end
+end
+
 function Auxiliary.ChaosSynchroTarget(c,f1,extraparams1,specialcheck1,atmin,atmax,f2,extraparams2,specialcheck2,antmin,antmax)
 	return function(e,tp,eg,ep,ev,re,r,rp)
 		local lv=c:GetLevel()
 		local gt,gnt
 		gt=Duel.GetMatchingGroup(aux.cstfilter,tp,LOCATION_GRAVE,0,nil,c)
 		gnt=Duel.GetMatchingGroup(aux.csntfilter,tp,LOCATION_GRAVE,0,nil,c)
-		if f1 then gt=gt:Filter(f1,nil,table.unpack(extraparams1)) end
-		if f2 then gnt=gnt:Filter(f2,nil,table.unpack(extraparams2)) end
+		if f1 then
+			if extraparams1 then
+				gt=gt:Filter(f1,nil,table.unpack(extraparams1))
+			else
+				gt=gt:Filter(f1,nil)
+			end
+		end
+		if f2 then
+			if extraparams2 then
+				gnt=gnt:Filter(f2,nil,table.unpack(extraparams2))
+			else
+				gnt=gnt:Filter(f2,nil)
+			end
+		end
 		if Duel.GetLocationCountFromEx(tp)>0 and aux.SelectUnselectGroup(gt+gnt,e,tp,atmin+antmin,atmax+antmax,aux.csrescon(lv,gt,atmin,atmax,specialcheck1,gnt,antmin,antmax,specialcheck2),0) then
-			local mat=aux.SelectUnselectGroup(gt+gnt,e,tp,atmin+antmin,atmax+antmax,aux.csrescon(lv,gt,atmin,atmax,specialcheck1,gnt,antmin,antmax,specialcheck2),1,tp,nil,nil,nil,true)
+			local mat=aux.SelectUnselectGroup(gt+gnt,e,tp,atmin+antmin,atmax+antmax,aux.csrescon(lv,gt,atmin,atmax,specialcheck1,gnt,antmin,antmax,specialcheck2),1,tp,HINTMSG_REMOVE,nil,nil,true)
 			if #mat<atmin+antmin then return false end
 			e:SetLabelObject(mat)
 			mat:KeepAlive()

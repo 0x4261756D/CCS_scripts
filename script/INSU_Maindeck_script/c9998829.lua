@@ -19,18 +19,12 @@ function s.initial_effect(c)
 	e2:SetCondition(s.handcon)
 	c:RegisterEffect(e2)
 end
---function s.hdfilter(c)
---	return c:IsType(TYPE_MONSTER) and (c:IsType(TYPE_Gemini) or c:IsSetCard(0x29A))
---end
---function s.handcon(e)
---	return Duel.GetMatchingGroupCount(Card.IsType,tp,LOCATION_GRAVE,0,nil,TYPE_MONSTER)>0 and
---	Duel.GetMatchingGroupCount(Card.IsType,tp,LOCATION_GRAVE,0,nil,TYPE_MONSTER)==Duel.GetMatchingGroupCount(s.hdfilter,tp,LOCATION_GRAVE,0,nil)
---end
+
 function s.hdfilter(c)
 	return not (c:IsType(TYPE_Gemini) or c:IsSetCard(0x29A))
 end
-function s.handcon(e,tp,eg,ep,ev,re,r,rp)
-	local g=Duel.GetMatchingGroup(Card.IsType,tp,LOCATION_GRAVE,0,nil,TYPE_MONSTER)
+function s.handcon(e)
+	local g=Duel.GetMatchingGroup(Card.IsType,e:GetHandlerPlayer(),LOCATION_GRAVE,0,nil,TYPE_MONSTER)
 	return g:GetCount()>0 and not g:IsExists(s.hdfilter,1,nil)
 end
 
@@ -39,8 +33,6 @@ function s.cfilter2(c)
 end
 function s.condition(e,tp,eg,ep,ev,re,r,rp)
 	if not Duel.IsChainNegatable(ev) then return false end
---	if re:IsHasCategory(CATEGORY_NEGATE)
---		and Duel.GetChainInfo(ev-1,CHAININFO_TRIGGERING_EFFECT):IsHasType(EFFECT_TYPE_ACTIVATE) then return false end
 	local ex1,tg1,tc1=Duel.GetOperationInfo(ev,CATEGORY_DESTROY)
 	local ex2,tg2,tc2=Duel.GetOperationInfo(ev,CATEGORY_TODECK)
 	local ex3,tg3,tc3=Duel.GetOperationInfo(ev,CATEGORY_TOHAND)

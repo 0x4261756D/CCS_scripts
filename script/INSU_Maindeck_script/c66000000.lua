@@ -154,8 +154,8 @@ end
 function s.cfilter3(c)
 	return c:IsSetCard(0x39) and c:IsType(TYPE_MONSTER)
 end
-function s.effcon4(e,tp,eg,ep,ev,re,r,rp)
-return Duel.IsExistingMatchingCard(s.cfilter3,tp,LOCATION_GRAVE,0,5,nil)
+function s.effcon4(e)
+	return Duel.IsExistingMatchingCard(s.cfilter3,e:GetHandlerPlayer(),LOCATION_GRAVE,0,5,nil)
 end
 function s.efilter(e,te)
 	return e:GetOwnerPlayer()~=te:GetOwnerPlayer()

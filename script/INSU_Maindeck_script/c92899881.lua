@@ -38,14 +38,19 @@ function s.initial_effect(c)
 	e4:SetType(EFFECT_TYPE_SINGLE)
 	e4:SetCode(EFFECT_SUMMON_PROC)
 	e4:SetRange(LOCATION_HAND)
-	e4:SetCondition(s.con)
+	e4:SetCondition(s.normcon)
 	c:RegisterEffect(e4)
+end
+function s.normcon(e, c)
+	if c == nil then return true end
+	return Duel.GetFieldGroupCount(c:GetControler(), LOCATION_MZONE, 0) == 0
+		and Duel.GetLocationCount(c:GetControler(), LOCATION_MZONE) > 0
 end
 function s.cfilter(c)
 	return c:IsFaceup() and c:IsCode(92899882)
 end
-function s.con(e,tp)
-	return Duel.IsExistingMatchingCard(s.cfilter,tp,LOCATION_MZONE,LOCATION_MZONE,1,nil)
+function s.con(e)
+	return Duel.IsExistingMatchingCard(s.cfilter,e:GetHandlerPlayer(),LOCATION_MZONE,LOCATION_MZONE,1,nil)
 end
 function s.thfilter1(c)
 	return c:IsCode(52894680) and c:IsAbleToHand()

@@ -145,8 +145,8 @@ end
 function s.cfilterk(c)
 	return c:IsSetCard(0x39) and c:IsType(TYPE_MONSTER)
 end
-function s.effcondition(e,tp,eg,ep,ev,re,r,rp)
-return Duel.IsExistingMatchingCard(s.cfilterk,tp,LOCATION_GRAVE,0,4,nil)
+function s.effcondition(e)
+return Duel.IsExistingMatchingCard(s.cfilterk,e:GetHandlerPlayer(),LOCATION_GRAVE,0,4,nil)
 end
 function s.tgtg(e,c)
 	return c:IsSetCard(0x39) and c:IsType(TYPE_MONSTER)

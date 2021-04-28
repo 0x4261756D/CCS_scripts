@@ -19,9 +19,9 @@ function s.tgfilter(c)
 end
 
 function s.spelltg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
-	if chkc then return (chkc:IsLocation(LOCATION_GRAVE) or chkc:IsLocation(LOCATION_REMOVED)) and aux.spfilter(e,tp,0,s.tgfilter,chkc) end
-	if chk==0 then return Duel.IsExistingTarget(aux.spfilter(e,tp,0,s.tgfilter),tp,LOCATION_GRAVE+LOCATION_REMOVED,0,1,nil) end
-	local tc=Duel.SelectMatchingCard(tp,aux.spfilter(e,tp,0,s.tgfilter),tp,LOCATION_GRAVE+LOCATION_REMOVED,0,1,1,nil)
+	if chkc then return (chkc:IsLocation(LOCATION_GRAVE) or chkc:IsLocation(LOCATION_REMOVED)) and aux.spfilter(e,tp,0,false,false,s.tgfilter,chkc) end
+	if chk==0 then return Duel.IsExistingTarget(aux.spfilter(e,tp,0,false,false,s.tgfilter),tp,LOCATION_GRAVE+LOCATION_REMOVED,0,1,nil) end
+	local tc=Duel.SelectMatchingCard(tp,aux.spfilter(e,tp,0,false,false,s.tgfilter),tp,LOCATION_GRAVE+LOCATION_REMOVED,0,1,1,nil)
 	Duel.SetTargetCard(tc)
 	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,tc,1,tp,tc:GetFirst():GetLocation())
 end
@@ -83,13 +83,13 @@ function s.spellop(e,tp,eg,ep,ev,re,r,rp)
 end
 
 function s.sptg(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return Duel.IsExistingMatchingCard(aux.spfilter(e,tp,0,s.tgfilter),tp,LOCATION_HAND,0,1,nil) and Duel.GetLocationCount(tp,LOCATION_MZONE)>0 end
+	if chk==0 then return Duel.IsExistingMatchingCard(aux.spfilter(e,tp,0,false,false,s.tgfilter),tp,LOCATION_HAND,0,1,nil) and Duel.GetLocationCount(tp,LOCATION_MZONE)>0 end
 	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,nil,1,tp,LOCATION_HAND)
 end
 
 function s.spop(e,tp,eg,ep,ev,re,r,rp)
 	if Duel.GetLocationCount(tp,LOCATION_MZONE)==0 then return end
-	local tc=Duel.SelectMatchingCard(tp,aux.spfilter(e,tp,0,s.tgfilter),tp,LOCATION_HAND,0,1,1,nil)
+	local tc=Duel.SelectMatchingCard(tp,aux.spfilter(e,tp,0,false,false,s.tgfilter),tp,LOCATION_HAND,0,1,1,nil)
 	Duel.SpecialSummon(tc,0,tp,tp,false,false,POS_FACEUP)
 end
 

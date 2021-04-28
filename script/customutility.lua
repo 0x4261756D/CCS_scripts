@@ -24,8 +24,8 @@ function Auxiliary.EffectCheck(tp,cons,strings,ops)
 			end
 		end
 		local choice=Duel.SelectOption(tp,table.unpack(eff))
-		if ops then ops[sel[choice+1]](e,tp,eg,ep,ev,re,r,rp) end
-		return sel[choice+1]
+		if ops then ops[sel[choice]](e,tp,eg,ep,ev,re,r,rp) end
+		return sel[choice]
 	end
 end
 

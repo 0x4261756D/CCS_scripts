@@ -87,13 +87,13 @@ function s.spellop(rittg,ritop,fustg,fusop)
 		local choice=aux.EffectCheck(tp,{rittg(e,tp,eg,ep,ev,re,r,rp,0),fustg(e,tp,eg,ep,ev,re,r,rp,0)},{aux.Stringid(id,4),aux.Stringid(id,5)})(e,tp,eg,ep,ev,re,r,rp)
 		if choice==1 then
 			ritop(e,tp,eg,ep,ev,re,r,rp)
-			elseif choice==1 then
+			elseif choice==2 then
 			fusop(e,tp,eg,ep,ev,re,r,rp)
 			else return
 		end
-		if choice==2 and additional and Duel.GetLocationCount(tp,LOCATION_MZONE)>0 and fustg(e,tp,eg,ep,ev,re,r,rp,0) and Duel.SelectYesNo(tp,aux.Stringid(id,6)) then
+		if choice==1 and additional and Duel.GetLocationCount(tp,LOCATION_MZONE)>0 and fustg(e,tp,eg,ep,ev,re,r,rp,0) and Duel.SelectYesNo(tp,aux.Stringid(id,6)) then
 			fusop(e,tp,eg,ep,ev,re,r,rp)
-			elseif choice==1 and additional and Duel.GetLocationCount(tp,LOCATION_MZONE)>0 and rittg(e,tp,eg,ep,ev,re,r,rp,0) and Duel.SelectYesNo(tp,aux.Stringid(id,6)) then
+			elseif choice==2 and additional and Duel.GetLocationCount(tp,LOCATION_MZONE)>0 and rittg(e,tp,eg,ep,ev,re,r,rp,0) and Duel.SelectYesNo(tp,aux.Stringid(id,6)) then
 				ritop(e,tp,eg,ep,ev,re,r,rp)
 				else return
 		end

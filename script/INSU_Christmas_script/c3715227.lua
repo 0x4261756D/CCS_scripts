@@ -25,7 +25,7 @@ function s.initial_effect(c)
 	c:RegisterEffect(e2)
 end
 function s.matcheck(g,lc,tp)
-	return g:IsExists(Card.IsLinkSetCard,1,nil,0xaf1)
+	return g:IsExists(Card.IsSetCard ,1,nil,0xaf1)
 end
 --
 function s.cfilter(c)

@@ -77,7 +77,7 @@ end
 function s.cop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	local g=c:GetOverlayGroup()
-	for tc in g:Iter() do
+	for tc in ~g do
 		local code=tc:GetOriginalCode()
 		if c:IsFaceup() and c:GetFlagEffect(code)==0 then
 			c:CopyEffect(code,RESET_EVENT+RESETS_STANDARD+RESET_PHASE+PHASE_END,1)
@@ -90,7 +90,7 @@ end
 
 function s.acop(e,tp,eg,ep,ev,re,r,rp)
 	local ct=0
-	for tc in eg:Iter() do
+	for tc in ~eg do
 		if tc:HasLevel() then ct=ct+tc:GetLevel()
 			elseif tc:GetRank()>0 then ct=ct+tc:GetRank()
 				elseif tc:IsLinkMonster() then ct=ct+2*tc:GetLink()
@@ -117,13 +117,13 @@ function s.rccost(e,tp,eg,ep,ev,re,r,rp,chk)
 	local celcr,infcr,chacr={},{},{}
 	local st,fum=Duel.IsExistingTarget(s.stfilter,tp,LOCATION_GRAVE+LOCATION_REMOVED,0,1,nil,tp,ct),Duel.IsExistingTarget(s.fumfilter,tp,LOCATION_GRAVE+LOCATION_REMOVED,0,1,nil,e,tp,ct)
 	if chk==0 then return st or fum end
-	local choice=aux.EffectCheck(tp,{st,fum},{aux.Stringid(id,10),aux.Stringid(id,11)})
+	local choice=aux.EffectCheck(tp,{st,fum},{aux.Stringid(id,10),aux.Stringid(id,11)})(e,tp,eg,ep,ev,re,r,rp)
 	local tc
-	if choice==0 then
+	if choice==1 then
 		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TARGET)
 		tc=Duel.SelectTarget(tp,s.stfilter,tp,LOCATION_GRAVE+LOCATION_REMOVED,0,1,1,nil,tp,ct):GetFirst()
 		ctr=2
-	elseif choice==1 then
+	elseif choice==2 then
 		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TARGET)
 		tc=Duel.SelectTarget(tp,s.fumfilter,tp,LOCATION_GRAVE+LOCATION_REMOVED,0,1,1,nil,e,tp,ct):GetFirst()
 		if tc:HasLevel() then
@@ -137,7 +137,7 @@ function s.rccost(e,tp,eg,ep,ev,re,r,rp,chk)
 	else return
 	end
 	local ss,set,th,td,tg=tc:IsCanBeSpecialSummoned(e,0,tp,false,false) and Duel.GetLocationCount(tp,LOCATION_MZONE)>0,tc:IsSSetable() and Duel.GetLocationCount(tp,LOCATION_SZONE)>0,tc:IsAbleToHand(),tc:IsAbleToDeck(),tc:IsAbleToGrave() and not tc:IsLocation(LOCATION_GRAVE)
-	choice=aux.EffectCheck(tp,{ss,set,th,td,tg},{aux.Stringid(id,5),aux.Stringid(id,6),aux.Stringid(id,7),aux.Stringid(id,8),aux.Stringid(id,9)})
+	choice=aux.EffectCheck(tp,{ss,set,th,td,tg},{aux.Stringid(id,5),aux.Stringid(id,6),aux.Stringid(id,7),aux.Stringid(id,8),aux.Stringid(id,9)})(e,tp,eg,ep,ev,re,r,rp)
 	for i=math.min(math.abs(ctr-2*cha-cel-inf),cha),math.min(ctr,cha) do
 		table.insert(chacr,i)
 	end
@@ -168,20 +168,19 @@ end
 
 function s.rcop(e,tp,eg,ep,ev,re,r,rp)
 	local tc,choice=Duel.GetFirstTarget(),e:GetLabel()
-	if (choice==0 and (not tc:IsCanBeSpecialSummoned(e,0,tp,false,false) or Duel.GetLocationCount(tp,LOCATION_MZONE)==0)) or (choice==1 and (not tc:IsSSetable() or Duel.GetLocationCount(tp,LOCATION_SZONE)==0)) or (choice==2 and not tc:IsAbleToHand()) or (choice==3 and not tc:IsAbleToDeck()) or (choice==4 and not tc:IsAbleToGrave()) then
+	if (choice==1 and (not tc:IsCanBeSpecialSummoned(e,0,tp,false,false) or Duel.GetLocationCount(tp,LOCATION_MZONE)==0)) or (choice==2 and (not tc:IsSSetable() or Duel.GetLocationCount(tp,LOCATION_SZONE)==0)) or (choice==3 and not tc:IsAbleToHand()) or (choice==4 and not tc:IsAbleToDeck()) or (choice==5 and not tc:IsAbleToGrave()) then
 		return
 	end
-	if choice==0 then
+	if choice==1 then
 		Duel.SpecialSummon(tc,0,tp,tp,false,false,POS_FACEUP)
-	elseif choice==1 then
-		Duel.SSet(tp,tc)
 	elseif choice==2 then
-		Duel.SendtoHand(tc,tp,REASON_EFFECT)
+		Duel.SSet(tp,tc)
 	elseif choice==3 then
-		Duel.SendtoDeck(tc,tp,2,REASON_EFFECT)
+		Duel.SendtoHand(tc,tp,REASON_EFFECT)
 	elseif choice==4 then
+		Duel.SendtoDeck(tc,tp,2,REASON_EFFECT)
+	elseif choice==5 then
 		Duel.SendtoGrave(tc,REASON_EFFECT)
 	else return
 	end
 end
-

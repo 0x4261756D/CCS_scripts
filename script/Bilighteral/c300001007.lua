@@ -141,14 +141,15 @@ function s.rccost(e,tp,eg,ep,ev,re,r,rp,chk)
 	local ct=e:GetHandler():GetCounter(0x1001)
 	local fdst,fum=Duel.IsExistingTarget(s.filter1,tp,0,LOCATION_MZONE+LOCATION_SZONE,1,nil,ct),Duel.IsExistingTarget(s.filter2,tp,0,LOCATION_MZONE,1,nil,ct)
 	if chk==0 then return fdst or fum end
-	local choice=aux.EffectCheck(tp,{fdst,fum},{aux.Stringid(id,1),aux.Stringid(id,2)})
-	if choice==0 then
+	local choice=aux.EffectCheck(tp,{fdst,fum},{aux.Stringid(id,1),aux.Stringid(id,2)})(e,tp,eg,ep,ev,re,r,rp)
+	local tc
+	if choice==1 then
 		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TOGRAVE)
-		local tc=Duel.SelectTarget(tp,s.filter1,tp,0,LOCATION_MZONE+LOCATION_SZONE,1,1,nil,ct):GetFirst()
+		tc=Duel.SelectTarget(tp,s.filter1,tp,0,LOCATION_MZONE+LOCATION_SZONE,1,1,nil,ct):GetFirst()
 		ct=2
-	elseif choice==1 then
+	elseif choice==2 then
 		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TOGRAVE)
-		local tc=Duel.SelectTarget(tp,s.filter2,tp,0,LOCATION_MZONE,1,1,nil,ct):GetFirst()
+		tc=Duel.SelectTarget(tp,s.filter2,tp,0,LOCATION_MZONE,1,1,nil,ct):GetFirst()
 		if tc:HasLevel() then
 			ct=tc:GetLevel()
 		elseif tc:GetRank()>0 then

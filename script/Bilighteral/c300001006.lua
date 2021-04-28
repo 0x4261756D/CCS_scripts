@@ -80,7 +80,7 @@ function s.initial_effect(c)
 	c:RegisterEffect(e10)
 	--Remove Counters + return
 	local e11=Effect.CreateEffect(c)
-	e11:SetDescription(aux.Stringid(300001006,0))
+	e11:SetDescription(aux.Stringid(id,0))
 	e11:SetCategory(CATEGORY_TODECK+CATEGORY_RECOVER)
 	e11:SetProperty(EFFECT_FLAG_CARD_TARGET)
 	e11:SetType(EFFECT_TYPE_QUICK_O)
@@ -117,7 +117,7 @@ end
 function s.acop(e,tp,eg,ep,ev,re,r,rp)
 	local g=eg:Filter(Card.IsAttribute,nil,ATTRIBUTE_LIGHT)
 	local ct=0
-	for tc in g:Iter() do
+	for tc in ~g do
 		if tc:HasLevel() then ct=ct+tc:GetLevel()
 			elseif tc:GetRank()>0 then ct=ct+tc:GetRank()
 				elseif tc:IsLinkMonster() then ct=ct+2*tc:GetLink()
@@ -147,14 +147,15 @@ function s.rccost(e,tp,eg,ep,ev,re,r,rp,chk)
 	local ct=e:GetHandler():GetCounter(0x1000)
 	local st,fum=Duel.IsExistingTarget(s.filter1,tp,LOCATION_GRAVE+LOCATION_REMOVED,0,1,nil,ct),Duel.IsExistingTarget(s.filter2,tp,LOCATION_GRAVE+LOCATION_REMOVED,0,1,nil,ct)
 	if chk==0 then return st or fum end
-	local choice=aux.EffectCheck(tp,{st,fum},{aux.Stringid(id,1),aux.Stringid(id,2)})
-	if choice==0 then
+	local choice=aux.EffectCheck(tp,{st,fum},{aux.Stringid(id,1),aux.Stringid(id,2)})(e,tp,eg,ep,ev,re,r,rp)
+	local tc
+	if choice==1 then
 		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TODECK)
-		local tc=Duel.SelectTarget(tp,s.filter1,tp,LOCATION_GRAVE+LOCATION_REMOVED,0,1,1,nil,ct):GetFirst()
+		tc=Duel.SelectTarget(tp,s.filter1,tp,LOCATION_GRAVE+LOCATION_REMOVED,0,1,1,nil,ct):GetFirst()
 		ct=2
-	elseif choice==1 then
+	elseif choice==2 then
 		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TODECK)
-		local tc=Duel.SelectTarget(tp,s.filter2,tp,LOCATION_GRAVE+LOCATION_REMOVED,0,1,1,nil,ct):GetFirst()
+		tc=Duel.SelectTarget(tp,s.filter2,tp,LOCATION_GRAVE+LOCATION_REMOVED,0,1,1,nil,ct):GetFirst()
 		if tc:HasLevel() then
 			ct=tc:GetLevel()
 		elseif tc:GetRank()>0 then

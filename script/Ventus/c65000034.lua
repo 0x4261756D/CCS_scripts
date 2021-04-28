@@ -1,4 +1,4 @@
-
+--Minerva, Guardian of Ventus
 local s,id=GetID()
 function s.initial_effect(c)
 	--link summon
@@ -6,18 +6,18 @@ function s.initial_effect(c)
 	c:EnableReviveLimit()
 	--special summon
 	local e1=Effect.CreateEffect(c)
-	e1:SetDescription(aux.Stringid(65000034,0))
+	e1:SetDescription(aux.Stringid(id,0))
 	e1:SetCategory(CATEGORY_SPECIAL_SUMMON)
-    e1:SetType(EFFECT_TYPE_IGNITION)
+    	e1:SetType(EFFECT_TYPE_IGNITION)
 	e1:SetRange(LOCATION_MZONE)
-	e1:SetCountLimit(1,65000034)
+	e1:SetCountLimit(1,id)
 	e1:SetCost(s.spcost)
 	e1:SetTarget(s.sptarget)
 	e1:SetOperation(s.spoperation)
 	c:RegisterEffect(e1)
 	--search
 	local e2=Effect.CreateEffect(c)
-	e2:SetDescription(aux.Stringid(65000034,0))
+	e2:SetDescription(aux.Stringid(id,0))
 	e2:SetCategory(CATEGORY_TODECK+CATEGORY_SEARCH+CATEGORY_TOHAND)
 	e2:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
 	e2:SetProperty(EFFECT_FLAG_DAMAGE_STEP+EFFECT_FLAG_DELAY)
@@ -26,15 +26,15 @@ function s.initial_effect(c)
 	e2:SetTarget(s.thtg)
 	e2:SetOperation(s.thop)
 	c:RegisterEffect(e2)
-	end
-	function s.matcheck(g,lc,sumtype,tp)
+end
+function s.matcheck(g,lc,sumtype,tp)
 	return g:IsExists(Card.IsSetCard,1,nil,0x17d,lc,sumtype,tp)
 end
 function s.cfilter(c,e,tp)
 	local tc=e:GetHandler()
 	local lg=tc:GetLinkedGroup()
 	local bd=lg:Filter(Card.IsAbleToDeckAsCost,nil)
-	return bd:IsContains(c) and Duel.IsExistingMatchingCard(s.filter,tp,LOCATION_DECK+LOCATION_GRAVE,0,1,nil,e,tp,c:GetLevel())
+	return bd:IsContains(c) and Duel.IsExistingMatchingCard(s.filter,tp,LOCATION_HAND+LOCATION_GRAVE,0,1,nil,e,tp,c:GetLevel())
 end
 function s.spcost(e,tp,eg,ep,ev,re,r,rp,chk)
     e:SetLabel(100)
@@ -60,20 +60,20 @@ function s.spoperation(e,tp,eg,ep,ev,re,r,rp)
 	if Duel.GetLocationCount(tp,LOCATION_MZONE)<=0 then return end
 	local lv=e:GetLabel()
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
-	local g=Duel.SelectMatchingCard(tp,s.filter,tp,LOCATION_DECK+LOCATION_GRAVE,0,1,1,nil,e,tp,lv)
+	local g=Duel.SelectMatchingCard(tp,s.filter,tp,LOCATION_HAND+LOCATION_GRAVE,0,1,1,nil,e,tp,lv)
 	Duel.SpecialSummon(g,0,tp,tp,false,false,POS_FACEUP)
 end
 
 function s.thcon(e,tp,eg,ep,ev,re,r,rp)
 	if not rp==1-tp then return end
-    local rc=nil
-    if r==REASON_BATTLE+REASON_DESTROY then
-        rc=e:GetHandler():GetReasonCard()
-    else
-        rc=re:GetHandler()
-    end
-    e:SetLabelObject(rc)
-    return rc~=nil
+    	local rc=nil
+	if r==REASON_BATTLE+REASON_DESTROY then
+		rc=e:GetHandler():GetReasonCard()
+	else
+		rc=re:GetHandler()
+	end
+		e:SetLabelObject(rc)
+	return rc
 end
 function s.thfilter(c,typ)
 	return c:GetType()==typ and c:IsSetCard(0x17d) and c:IsAbleToHand()
@@ -90,8 +90,8 @@ function s.thop(e,tp,eg,ep,ev,re,r,rp)
 	local rc=e:GetLabelObject()
 	local typ=rc:GetType()
 	if rc:IsRelateToEffect(e) then
-        Duel.SendtoDeck(rc,nil,2,REASON_EFFECT)
-    end
+        	Duel.SendtoDeck(rc,nil,2,REASON_EFFECT)
+    	end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_ATOHAND)
 	local g=Duel.SelectMatchingCard(tp,s.thfilter,tp,LOCATION_GRAVE,0,1,1,nil,typ)
 	if g:GetCount()>0 then

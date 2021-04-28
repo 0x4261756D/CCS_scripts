@@ -104,11 +104,11 @@ end
 --Remove Counters
 
 function s.stfilter(c,tp,ct)
-	return ((c:IsAbleToGrave() and not c:IsLocation(LOCATION_GRAVE)) or c:IsAbleToDeck() or c:IsAbleToHand() or (c:IsSSetable() and Duel.GetLocationCount(tp,LOCATION_SZONE)>0)) and c:IsType(TYPE_SPELL+TYPE_TRAP) and c:IsFaceup() and ct>=4
+	return c:IsSetCard(0x400) and ((c:IsAbleToGrave() and not c:IsLocation(LOCATION_GRAVE)) or c:IsAbleToDeck() or c:IsAbleToHand() or (c:IsSSetable() and Duel.GetLocationCount(tp,LOCATION_SZONE)>0)) and c:IsType(TYPE_SPELL+TYPE_TRAP) and c:IsFaceup() and ct>=4
 end
 
 function s.fumfilter(c,e,tp,ct)
-	return ((c:IsAbleToGrave() and not c:IsLocation(LOCATION_GRAVE)) or c:IsAbleToDeck() or c:IsAbleToHand() or (c:IsCanBeSpecialSummoned(e,0,tp,false,false) and Duel.GetLocationCount(tp,LOCATION_MZONE)>0)) and c:IsFaceup() and ((c:HasLevel() and ct>=2*c:GetLevel()) or (c:IsType(TYPE_XYZ) and ct>=2*c:GetRank()) or (c:IsLinkMonster() and ct>=4*c:GetLink()))
+	return c:IsSetCard(0x400) and ((c:IsAbleToGrave() and not c:IsLocation(LOCATION_GRAVE)) or c:IsAbleToDeck() or c:IsAbleToHand() or (c:IsCanBeSpecialSummoned(e,0,tp,false,false) and Duel.GetLocationCount(tp,LOCATION_MZONE)>0)) and c:IsFaceup() and ((c:HasLevel() and ct>=2*c:GetLevel()) or (c:IsType(TYPE_XYZ) and ct>=2*c:GetRank()) or (c:IsLinkMonster() and ct>=4*c:GetLink()))
 end
 
 function s.rccost(e,tp,eg,ep,ev,re,r,rp,chk)

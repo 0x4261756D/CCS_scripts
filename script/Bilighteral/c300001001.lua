@@ -81,9 +81,9 @@ function s.traptg(e,tp,eg,ep,ev,re,r,rp,chk)
 	local g=Duel.GetMatchingGroup(s.thfilter,tp,LOCATION_DECK,0,nil)
 	local add,draw=#g>0 and aux.SelectUnselectGroup(g,e,tp,1,2,aux.dncheck,0),#g>0 and Duel.IsPlayerCanDraw(tp,3) and Duel.GetMatchingGroupCount(Card.IsDiscardable,tp,LOCATION_HAND,0,nil)>0
 	if chk==0 then return add or draw end
-	local choice=aux.EffectCheck(tp,{add,draw},{aux.Stringid(id,0),aux.Stringid(id,1)})
-	if choice==0 then Duel.SetOperationInfo(0,CATEGORY_TOHAND+CATEGORY_SEARCH,nil,nil,tp,LOCATION_DECK) end
-	if choice==1 then
+	local choice=aux.EffectCheck(tp,{add,draw},{aux.Stringid(id,0),aux.Stringid(id,1)})(e,tp,eg,ep,ev,re,r,rp)
+	if choice==1 then Duel.SetOperationInfo(0,CATEGORY_TOHAND+CATEGORY_SEARCH,nil,nil,tp,LOCATION_DECK) end
+	if choice==2 then
 		Duel.SetOperationInfo(0,CATEGORY_TOHAND+CATEGORY_DRAW,nil,2,tp,LOCATION_DECK)
 		Duel.SetOperationInfo(0,CATEGORY_TOGRAVE,nil,1,tp,LOCATION_HAND) end
 	e:SetLabel(choice)
@@ -92,14 +92,14 @@ end
 function s.trapop(e,tp,eg,ep,ev,re,r,rp)
 	local choice=e:GetLabel()
 	local g=Duel.GetMatchingGroup(s.thfilter,tp,LOCATION_DECK,0,nil)
-	if choice==0 and not (#g>0 or aux.SelectUnselectGroup(g,e,tp,1,2,aux.dncheck,0)) then return end
-	if choice==1 and not (Duel.IsPlayerCanDraw(tp,3) or Duel.GetMatchingGroupCount(Card.IsDiscardable,tp,LOCATION_HAND,0,nil)>0) then return end
-	if choice==0 then
+	if choice==1 and not (#g>0 or aux.SelectUnselectGroup(g,e,tp,1,2,aux.dncheck,0)) then return end
+	if choice==2 and not (Duel.IsPlayerCanDraw(tp,3) or Duel.GetMatchingGroupCount(Card.IsDiscardable,tp,LOCATION_HAND,0,nil)>0) then return end
+	if choice==1 then
 		local tc=aux.SelectUnselectGroup(g,e,tp,1,2,aux.dncheck,1,tp,nil,nil,nil,true)
 		Duel.SendtoHand(tc,REASON_EFFECT,tp)
 		Duel.ConfirmCards(1-tp,tc)
 	end
-	if choice==1 then
+	if choice==2 then
 		Duel.Draw(tp,3,REASON_EFFECT)
 		Duel.DiscardHand(tp,Card.IsDiscardable,1,1,REASON_EFFECT,nil)
 	end

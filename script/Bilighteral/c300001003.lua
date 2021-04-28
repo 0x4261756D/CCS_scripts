@@ -37,8 +37,8 @@ function s.spellop(e,tp,eg,ep,ev,re,r,rp)
 	local dnd,pab=tc:IsAttribute(ATTRIBUTE_LIGHT) and Duel.IsExistingMatchingCard(s.tgfilter,tp,LOCATION_DECK,0,1,nil,ATTRIBUTE_DARK) and Duel.IsPlayerCanDraw(tp,1),tc:IsAttribute(ATTRIBUTE_DARK) and Duel.IsExistingMatchingCard(s.tgfilter,tp,LOCATION_DECK,0,1,nil,ATTRIBUTE_LIGHT) and Duel.IsExistingTarget(Card.IsDestructable,tp,0,LOCATION_MZONE,1,nil)
 	local choice,additional=-1,dnd and pab
 	if Duel.SelectYesNo(tp,aux.Stringid(id,5)) then
-		choice=aux.EffectCheck(tp,{dnd,pab},{aux.Stringid(id,0),aux.Stringid(id,1)})
-		if choice==0 then
+		choice=aux.EffectCheck(tp,{dnd,pab},{aux.Stringid(id,0),aux.Stringid(id,1)})(e,tp,eg,ep,ev,re,r,rp)
+		if choice==1 then
 			local tc=Duel.SelectMatchingCard(tp,s.tgfilter,tp,LOCATION_DECK,0,1,1,nil,ATTRIBUTE_DARK)
 			Duel.SendtoGrave(tc,REASON_COST,tp)
 			Duel.ShuffleDeck(tp)
@@ -54,7 +54,7 @@ function s.spellop(e,tp,eg,ep,ev,re,r,rp)
 				Duel.Recover(tp,val,REASON_EFFECT)
 			end
 		end
-		if choice==1 then
+		if choice==2 then
 			local tc=Duel.SelectMatchingCard(tp,s.tgfilter,tp,LOCATION_DECK,0,1,1,nil,ATTRIBUTE_LIGHT)
 			Duel.SendtoGrave(tc,REASON_COST,tp)
 			tc=Duel.SelectTarget(tp,aux.TRUE,tp,0,LOCATION_MZONE,1,1,nil):GetFirst()
@@ -106,8 +106,8 @@ function s.trapop(e,tp,eg,ep,ev,re,r,rp)
 	local ath,shuf=l and Duel.IsExistingMatchingCard(s.remfilter2,tp,LOCATION_GRAVE,0,1,nil,ATTRIBUTE_DARK) and Duel.IsExistingMatchingCard(s.thfilter,tp,LOCATION_GRAVE+LOCATION_REMOVED,0,1,nil),d>0 and Duel.GetFieldGroupCount(tp,0,LOCATION_HAND)>0 and Duel.IsExistingMatchingCard(s.remfilter2,tp,LOCATION_GRAVE,0,1,nil,ATTRIBUTE_LIGHT)
 	local aditional=ath and shuf
 	if Duel.SelectYesNo(tp,aux.Stringid(id,5)) then
-		local choice=aux.EffectCheck(tp,{ath,shuf},{aux.Stringid(id,2),aux.Stringid(id,3)})
-		if choice==0 then
+		local choice=aux.EffectCheck(tp,{ath,shuf},{aux.Stringid(id,2),aux.Stringid(id,3)})(e,tp,eg,ep,ev,re,r,rp)
+		if choice==1 then
 			local rem=Duel.SelectMatchingCard(tp,s.remfilter2,tp,LOCATION_GRAVE,0,1,1,nil,ATTRIBUTE_DARK)
 			Duel.Remove(rem,POS_FACEUP,REASON_COST,tp)
 			local tc=Duel.SelectMatchingCard(tp,s.thfilter,tp,LOCATION_GRAVE+LOCATION_REMOVED,0,1,1,nil)
@@ -121,7 +121,7 @@ function s.trapop(e,tp,eg,ep,ev,re,r,rp)
 				Duel.SendtoDeck(tc,2,REASON_EFFECT,1-tp)
 			end
 		end
-		if choice==1 then
+		if choice==2 then
 			local rem=Duel.SelectMatchingCard(tp,s.remfilter2,tp,LOCATION_GRAVE,0,1,1,nil,ATTRIBUTE_LIGHT)
 			Duel.Remove(rem,POS_FACEUP,REASON_COST,tp)
 			Duel.ConfirmCards(tp,Duel.GetFieldGroup(tp,0,LOCATION_HAND))

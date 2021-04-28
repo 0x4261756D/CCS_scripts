@@ -43,9 +43,9 @@ function s.spelltg(e,tp,eg,ep,ev,re,r,rp,chk)
 	local tc,att=table.unpack(e:GetLabelObject())
 	local l,d=eatt&ATTRIBUTE_LIGHT==ATTRIBUTE_LIGHT,att&ATTRIBUTE_DARK==ATTRIBUTE_DARK
 	local b=l and d
-	local choice=aux.EffectCheck(tp,{l,d},{aux.Stringid(id,0),aux.Stringid(id,1)})
-	if choice==0 then Duel.SetOperationInfo(0,CATEGORY_TOHAND+CATEGORY_SEARCH,nil,1,tp,LOCATION_DECK)
-		elseif choice==1 then Duel.SetOperationInfo(0,CATEGORY_DAMAGE+CATEGORY_DESTROY,nil,1,1-tp,LOCATION_MZONE)
+	local choice=aux.EffectCheck(tp,{l,d},{aux.Stringid(id,0),aux.Stringid(id,1)})(e,tp,eg,ep,ev,re,r,rp)
+	if choice==1 then Duel.SetOperationInfo(0,CATEGORY_TOHAND+CATEGORY_SEARCH,nil,1,tp,LOCATION_DECK)
+		elseif choice==2 then Duel.SetOperationInfo(0,CATEGORY_DAMAGE+CATEGORY_DESTROY,nil,1,1-tp,LOCATION_MZONE)
 			else return
 	end
 	e:SetLabelObject({choice,b,tc})
@@ -53,8 +53,8 @@ end
 
 function s.spellop(e,tp,eg,ep,ev,re,r,rp)
 	local choice,additional,tc2=table.unpack(e:GetLabelObject())
-	if (choice==0 and not Duel.IsExistingMatchingCard(s.thfilter,tp,LOCATION_DECK,0,1,nil)) or (choice==1 and not Duel.IsExistingTarget(s.dfilter,tp,0,LOCATION_MZONE,1,nil)) then return end
-	if choice==0 then
+	if (choice==1 and not Duel.IsExistingMatchingCard(s.thfilter,tp,LOCATION_DECK,0,1,nil)) or (choice==2 and not Duel.IsExistingTarget(s.dfilter,tp,0,LOCATION_MZONE,1,nil)) then return end
+	if choice==1 then
 		local tc=Duel.SelectMatchingCard(tp,s.thfilter,tp,LOCATION_DECK,0,1,1,nil)
 		Duel.SendtoHand(tc,tp,REASON_EFFECT)
 		Duel.ConfirmCards(1-tp,tc)
@@ -63,7 +63,7 @@ function s.spellop(e,tp,eg,ep,ev,re,r,rp)
 			Duel.Destroy(tc,REASON_EFFECT)
 			Duel.Damage(1-tp,(tc:GetTextAttack()+tc:GetTextDefense()+tc2:GetTextAttack()+tc2:GetTextDefense())/2,REASON_EFFECT)
 		end
-		elseif choice==1 then
+		elseif choice==2 then
 			local tc=Duel.SelectTarget(tp,s.dfilter,tp,0,LOCATION_MZONE,1,1,nil):GetFirst()
 			Duel.Destroy(tc,REASON_EFFECT)
 			Duel.Damage(1-tp,(tc:GetTextAttack()+tc:GetTextDefense()+tc2:GetTextAttack()+tc2:GetTextDefense())/2,REASON_EFFECT)
@@ -79,17 +79,17 @@ end
 --Trap Effect
 
 function s.matfilter(c)
-	return c:IsCanBeXyzMaterial() --and c:IsSetCard(0x400)
+	return c:IsCanBeXyzMaterial() and c:IsSetCard(0x400)
 end
 
 function s.xyzfilter(c,mg)
-	return c:IsXyzSummonable(nil,mg) and not c:IsPublic() --and c:IsSetCard(0x400)
+	return c:IsXyzSummonable(nil,mg) and not c:IsPublic() and c:IsSetCard(0x400)
 end
 
 function s.trapcost(e,tp,eg,ep,ev,re,r,rp,chk)
 	local mg=Duel.GetMatchingGroup(s.matfilter,tp,LOCATION_GRAVE+LOCATION_REMOVED,0,nil)
-	if chk==0 then return #mg>1 and Duel.IsExistingMatchingCard(aux.spfilter(e,tp,SUMMON_TYPE_XYZ,s.xyzfilter,mg),tp,LOCATION_EXTRA,0,1,nil) end
-	local tc=Duel.SelectMatchingCard(tp,aux.spfilter(e,tp,SUMMON_TYPE_XYZ,s.xyzfilter,mg),tp,LOCATION_EXTRA,0,1,1,nil):GetFirst()
+	if chk==0 then return #mg>1 and Duel.IsExistingMatchingCard(aux.spfilter(e,tp,SUMMON_TYPE_XYZ,false,false,s.xyzfilter,mg),tp,LOCATION_EXTRA,0,1,nil) end
+	local tc=Duel.SelectMatchingCard(tp,aux.spfilter(e,tp,SUMMON_TYPE_XYZ,false,false,,s.xyzfilter,mg),tp,LOCATION_EXTRA,0,1,1,nil):GetFirst()
 	Duel.ConfirmCards(1-tp,tc)
 	e:SetLabelObject({tc,mg})
 end
@@ -110,14 +110,14 @@ function s.trapop(e,tp,eg,ep,ev,re,r,rp)
 	local additional=l and d
 	if (l or d) and Duel.SelectYesNo(tp,aux.Stringid(id,5)) then
 		Duel.BreakEffect()
-		local choice=aux.EffectCheck(tp,{aux.Stringid(id,2)},{aux.Stringid(id,3)})
-		if choice==0 then
+		local choice=aux.EffectCheck(tp,{aux.Stringid(id,2)},{aux.Stringid(id,3)})(e,tp,eg,ep,ev,re,r,rp)
+		if choice==1 then
 			local tc2=Duel.SelectMatchingCard(tp,s.matfilter,tp,LOCATION_DECK,0,1,1,nil):GetFirst()
 			Duel.Overlay(tc,tc2)
 			Duel.Recover(tp,(tc:GetTextAttack()+tc:GetTextDefense()+tc2:GetTextAttack()+tc2:GetTextDefense())/2,REASON_EFFECT)
 			if additional and Duel.SelectYesNo(tp,aux.Stringid(id,4)) then
 				local g=Duel.SelectMatchingCard(tp,aux.FilterFaceupFunction(Card.IsType,TYPE_EFFECT),tp,1,#mat,nil)
-				for tc3 in g:Iter() do
+				for tc3 in ~g do
 					Duel.NegateRelatedChain(tc3,RESET_TURN_SET)
 					local e1=Effect.CreateEffect(c)
 					e1:SetType(EFFECT_TYPE_SINGLE)
@@ -132,9 +132,9 @@ function s.trapop(e,tp,eg,ep,ev,re,r,rp)
 					tc3:RegisterEffect(e2)
 				end
 			end
-			elseif choice==1 then
+			elseif choice==2 then
 				local g=Duel.SelectMatchingCard(tp,aux.FilterFaceupFunction(Card.IsType,TYPE_EFFECT),tp,1,#mat,nil)
-				for tc3 in g:Iter() do
+				for tc3 in ~g do
 					Duel.NegateRelatedChain(tc3,RESET_TURN_SET)
 					local e1=Effect.CreateEffect(c)
 					e1:SetType(EFFECT_TYPE_SINGLE)

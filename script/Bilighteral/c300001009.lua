@@ -27,7 +27,7 @@ function s.filter1(c,e,tp)
 	local rk=c:GetRank()
 	local pg=aux.GetMustBeMaterialGroup(tp,Group.FromCards(c),tp,nil,nil,REASON_XYZ)
 	return (#pg<=0 or (#pg==1 and pg:IsContains(c))) and (c:GetAttribute()&ATTRIBUTE_LIGHT==ATTRIBUTE_LIGHT or c:GetAttribute()&ATTRIBUTE_DARK==ATTRIBUTE_DARK) and c:IsFaceup()
-		and Duel.IsExistingMatchingCard(s.filter2,tp,LOCATION_EXTRA,0,1,nil,e,tp,c,rk,pg,att) --and c:IsSetCard(0x400)
+		and Duel.IsExistingMatchingCard(s.filter2,tp,LOCATION_EXTRA,0,1,nil,e,tp,c,rk,pg,att) and c:IsSetCard(0x400)
 end
 
 function s.filter2(c,e,tp,mc,rk,pg)
@@ -82,11 +82,11 @@ end
 --trap effect
 
 function s.tfilter(c,tp,g)
-	return Duel.IsExistingMatchingCard(s.rfilter,tp,LOCATION_EXTRA,0,1,nil,c,g) and c:IsType(TYPE_XYZ) and c:IsFaceup() --and c:IsSetCard(0x400)
+	return Duel.IsExistingMatchingCard(s.rfilter,tp,LOCATION_EXTRA,0,1,nil,c,g) and c:IsType(TYPE_XYZ) and c:IsFaceup() and c:IsSetCard(0x400)
 end
 
 function s.rfilter(c,tc,g)
-	return c:GetRank()~=tc:GetRank() and not c:IsPublic() and #g>=math.abs(tc:GetRank()-c:GetRank()) and c:IsType(TYPE_XYZ) --and c:IsSetCard(0x400)
+	return c:GetRank()~=tc:GetRank() and not c:IsPublic() and #g>=math.abs(tc:GetRank()-c:GetRank()) and c:IsType(TYPE_XYZ) and c:IsSetCard(0x400)
 end
 
 function s.remfilter(c)
@@ -119,8 +119,8 @@ function s.trapop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.SpecialSummon(tc2,SUMMON_TYPE_XYZ,tp,tp,false,false,POS_FACEUP)
 	tc2:CompleteProcedure()
 	if Duel.SelectYesNo(tp,aux.Stringid(id,0)) then
-			Duel.Overlay(tc2,c)
-			c:CancelToGrave()
+		Duel.Overlay(tc2,c)
+		c:CancelToGrave()
 	end
 end
 
@@ -162,8 +162,8 @@ function s.op(c)
 		e1:SetCode(EFFECT_TRAP_ACT_IN_SET_TURN)
 		c:RegisterEffect(e1)
 		if Duel.SelectYesNo(tp,aux.Stringid(id,5)) then
-			local choice=aux.EffectCheck(tp,{set,disc},{aux.Stringid(id,2),aux.Stringid(id,3)})
-			if choice==0 then
+			local choice=aux.EffectCheck(tp,{set,disc},{aux.Stringid(id,2),aux.Stringid(id,3)})(e,tp,eg,ep,ev,re,r,rp)
+			if choice==1 then
 				tc=Duel.SelectMatchingCard(tp,s.setfilter,tp,LOCATION_DECK,0,1,1,nil)
 				Duel.SSet(tp,tc)
 				local e2=Effect.CreateEffect(c)
@@ -176,7 +176,7 @@ function s.op(c)
 					Duel.SendtoGrave(tc,REASON_EFFECT+REASON_DISCARD)
 				end
 			end
-			if choice==1 then
+			if choice==2 then
 				Duel.ConfirmCards(tp,Duel.GetFieldGroup(tp,0,LOCATION_HAND))
 				tc=Duel.GetFieldGroup(tp,0,LOCATION_HAND):FilterSelect(tp,Card.IsDiscardable,1,1,nil)
 				Duel.SendtoGrave(tc,REASON_EFFECT+REASON_DISCARD)

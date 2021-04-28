@@ -89,7 +89,7 @@ end
 function s.trapcost(e,tp,eg,ep,ev,re,r,rp,chk)
 	local mg=Duel.GetMatchingGroup(s.matfilter,tp,LOCATION_GRAVE+LOCATION_REMOVED,0,nil)
 	if chk==0 then return #mg>1 and Duel.IsExistingMatchingCard(aux.spfilter(e,tp,SUMMON_TYPE_XYZ,false,false,s.xyzfilter,mg),tp,LOCATION_EXTRA,0,1,nil) end
-	local tc=Duel.SelectMatchingCard(tp,aux.spfilter(e,tp,SUMMON_TYPE_XYZ,false,false,,s.xyzfilter,mg),tp,LOCATION_EXTRA,0,1,1,nil):GetFirst()
+	local tc=Duel.SelectMatchingCard(tp,aux.spfilter(e,tp,SUMMON_TYPE_XYZ,false,false,s.xyzfilter,mg),tp,LOCATION_EXTRA,0,1,1,nil):GetFirst()
 	Duel.ConfirmCards(1-tp,tc)
 	e:SetLabelObject({tc,mg})
 end

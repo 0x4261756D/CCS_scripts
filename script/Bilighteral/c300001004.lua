@@ -85,13 +85,13 @@ function s.spellop(rittg,ritop,fustg,fusop)
 		if Duel.GetLocationCount(tp,LOCATION_MZONE)==0 then return end
 		local additional=e:GetLabel()
 		local choice=aux.EffectCheck(tp,{rittg(e,tp,eg,ep,ev,re,r,rp,0),fustg(e,tp,eg,ep,ev,re,r,rp,0)},{aux.Stringid(id,4),aux.Stringid(id,5)})(e,tp,eg,ep,ev,re,r,rp)
-		if choice==0 then
+		if choice==1 then
 			ritop(e,tp,eg,ep,ev,re,r,rp)
 			elseif choice==1 then
 			fusop(e,tp,eg,ep,ev,re,r,rp)
 			else return
 		end
-		if choice==0 and additional and Duel.GetLocationCount(tp,LOCATION_MZONE)>0 and fustg(e,tp,eg,ep,ev,re,r,rp,0) and Duel.SelectYesNo(tp,aux.Stringid(id,6)) then
+		if choice==2 and additional and Duel.GetLocationCount(tp,LOCATION_MZONE)>0 and fustg(e,tp,eg,ep,ev,re,r,rp,0) and Duel.SelectYesNo(tp,aux.Stringid(id,6)) then
 			fusop(e,tp,eg,ep,ev,re,r,rp)
 			elseif choice==1 and additional and Duel.GetLocationCount(tp,LOCATION_MZONE)>0 and rittg(e,tp,eg,ep,ev,re,r,rp,0) and Duel.SelectYesNo(tp,aux.Stringid(id,6)) then
 				ritop(e,tp,eg,ep,ev,re,r,rp)
@@ -151,7 +151,7 @@ function s.tg(e,tp,eg,ep,ev,re,r,rp,chk)
 	local additional=l2 and d2
 	if chk==0 then return l2 or d2 end
 	local choice=aux.EffectCheck(tp,{l2,d2},{aux.Stringid(id,2),aux.Stringid(id,3)})(e,tp,eg,ep,ev,re,r,rp)
-	if choice==0 then 
+	if choice==1 then 
 		local tc=Duel.SelectMatchingCard(tp,aux.spfilter(e,tp,0,false,false,Card.IsSetCard,0x400),tp,LOCATION_DECK,0,1,1,nil)
 		Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,tc,1,tp,LOCATION_DECK)
 		e:SetLabelObject(tc)
@@ -161,7 +161,7 @@ function s.tg(e,tp,eg,ep,ev,re,r,rp,chk)
 			Duel.SetOperationInfo(0,CATEGORY_DESTROY,tc,#tc,1-tp,LOCATION_ONFIELD)
 			Duel.SetTargetCard(tc)
 		end
-	elseif choice==1 then
+	elseif choice==2 then
 			local tc=Duel.SelectMatchingCard(tp,Card.IsDestructable,tp,0,LOCATION_ONFIELD,1,#mat,nil)
 			Duel.SetOperationInfo(0,CATEGORY_DESTROY,tc,#tc,1-tp,LOCATION_ONFIELD)
 			Duel.SetTargetCard(tc)
@@ -178,20 +178,20 @@ end
 
 function s.op(e,tp,eg,ep,ev,re,r,rp)
 	local choice,additional=e:GetLabel()
-	if choice==0 and additional==1 then
+	if choice==1 and additional==1 then
 		local tc=e:GetLabelObject()
 		Duel.SpecialSummon(tc,0,tp,tp,false,false,POS_FACEUP)
 		tc=Duel.GetTargetCards(e)
 		Duel.Destroy(tc,REASON_EFFECT)
-		elseif choice==0 and additional==0 then
+		elseif choice==1 and additional==0 then
 			local tc=e:GetLabelObject()
 			Duel.SpecialSummon(tc,0,tp,tp,false,false,POS_FACEUP)
-			elseif choice==1 and additional==1 then
+			elseif choice==2 and additional==1 then
 				local tc=Duel.GetTargetCards(e)
 				Duel.Destroy(tc,REASON_EFFECT)
 				tc=e:GetLabelObject()
 				Duel.SpecialSummon(tc,0,tp,tp,false,false,POS_FACEUP)
-				elseif choice==1 and additional==0 then
+				elseif choice==2 and additional==0 then
 					local tc=Duel.GetTargetCards(e)
 					Duel.Destroy(tc,REASON_EFFECT)
 					else return

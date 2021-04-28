@@ -116,6 +116,7 @@ end
 
 function s.acop(e,tp,eg,ep,ev,re,r,rp)
 	local g=eg:Filter(Card.IsAttribute,nil,ATTRIBUTE_LIGHT)
+	if #g==0 then return end
 	local ct=0
 	for tc in ~g do
 		if tc:HasLevel() then ct=ct+tc:GetLevel()
@@ -152,16 +153,16 @@ function s.rccost(e,tp,eg,ep,ev,re,r,rp,chk)
 	if choice==1 then
 		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TODECK)
 		tc=Duel.SelectTarget(tp,s.filter1,tp,LOCATION_GRAVE+LOCATION_REMOVED,0,1,1,nil,ct):GetFirst()
-		ct=2
+		ct=4
 	elseif choice==2 then
 		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TODECK)
 		tc=Duel.SelectTarget(tp,s.filter2,tp,LOCATION_GRAVE+LOCATION_REMOVED,0,1,1,nil,ct):GetFirst()
 		if tc:HasLevel() then
-			ct=tc:GetLevel()
+			ct=2*tc:GetLevel()
 		elseif tc:GetRank()>0 then
-			ct=tc:GetRank()
+			ct=2*tc:GetRank()
 		elseif tc:IsLinkMonster() then
-			ct=2*tc:GetLink()
+			ct=4*tc:GetLink()
 		else return
 		end
 	else return

@@ -122,42 +122,47 @@ function s.rccost(e,tp,eg,ep,ev,re,r,rp,chk)
 	if choice==1 then
 		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TARGET)
 		tc=Duel.SelectTarget(tp,s.stfilter,tp,LOCATION_GRAVE+LOCATION_REMOVED,0,1,1,nil,tp,ct):GetFirst()
-		ctr=2
+		ctr=4
 	elseif choice==2 then
 		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TARGET)
 		tc=Duel.SelectTarget(tp,s.fumfilter,tp,LOCATION_GRAVE+LOCATION_REMOVED,0,1,1,nil,e,tp,ct):GetFirst()
 		if tc:HasLevel() then
-			ctr=tc:GetLevel()
+			ctr=2*tc:GetLevel()
 		elseif tc:GetRank()>0 then
-			ctr=tc:GetRank()
+			ctr=2*tc:GetRank()
 		elseif tc:IsLinkMonster() then
-			ctr=2*tc:GetLink()
+			ctr=4*tc:GetLink()
 		else return
 		end
 	else return
 	end
 	local ss,set,th,td,tg=tc:IsCanBeSpecialSummoned(e,0,tp,false,false) and Duel.GetLocationCount(tp,LOCATION_MZONE)>0,tc:IsSSetable() and Duel.GetLocationCount(tp,LOCATION_SZONE)>0,tc:IsAbleToHand(),tc:IsAbleToDeck(),tc:IsAbleToGrave() and not tc:IsLocation(LOCATION_GRAVE)
 	choice=aux.EffectCheck(tp,{ss,set,th,td,tg},{aux.Stringid(id,5),aux.Stringid(id,6),aux.Stringid(id,7),aux.Stringid(id,8),aux.Stringid(id,9)})(e,tp,eg,ep,ev,re,r,rp)
-	for i=math.min(math.abs(ctr-2*cha-cel-inf),cha),math.min(ctr,cha) do
-		table.insert(chacr,i)
+	local charem,celrem,infrem=0,0,0
+	for i=math.min(math.abs(ctr-cel-inf),cha),math.min(ctr,cha),2 do
+		table.insert(chacr,i/2)
 	end
 	Duel.Hint(HINT_SELECTMSG,tp,aux.Stringid(id,2))
-	cha=Duel.AnnounceNumber(tp,table.unpack(chacr))
-	ctr=ctr-2*cha
-	for i=math.min(math.abs(ctr-inf),cel),math.min(ctr,cel) do
-		table.insert(celcr,i)
+	charem=Duel.AnnounceNumber(tp,table.unpack(chacr))
+	ctr=ctr-2*charem
+	if ctr>0 then
+		for i=math.min(math.abs(ctr-inf),cel),math.min(ctr,cel) do
+			table.insert(celcr,i)
+		end
+		Duel.Hint(HINT_SELECTMSG,tp,aux.Stringid(id,3))
+		celrem=Duel.AnnounceNumber(tp,table.unpack(celcr))
+		ctr=ctr-celrem
+		if ctr>0 then
+			for i=math.min(ctr,inf),math.min(ctr,inf) do
+				table.insert(infcr,i)
+			end
+			Duel.Hint(HINT_SELECTMSG,tp,aux.Stringid(id,4))
+			infrem=Duel.AnnounceNumber(tp,table.unpack(infcr))
+		end
 	end
-	Duel.Hint(HINT_SELECTMSG,tp,aux.Stringid(id,3))
-	cel=Duel.AnnounceNumber(tp,table.unpack(celcr))
-	ctr=ctr-cel
-	for i=math.min(ctr,inf),math.min(ctr,inf) do
-		table.insert(infcr,i)
-	end
-	Duel.Hint(HINT_SELECTMSG,tp,aux.Stringid(id,4))
-	inf=Duel.AnnounceNumber(tp,table.unpack(infcr))
-	e:GetHandler():RemoveCounter(tp,0x13,cha,REASON_COST)
-	e:GetHandler():RemoveCounter(tp,0x1000,cel,REASON_COST)
-	e:GetHandler():RemoveCounter(tp,0x1001,inf,REASON_COST)
+	if charem>0 then e:GetHandler():RemoveCounter(tp,0x13,charem,REASON_COST) end
+	if celrem>0 then e:GetHandler():RemoveCounter(tp,0x1000,celrem,REASON_COST) end
+	if infrem>0 then e:GetHandler():RemoveCounter(tp,0x1001,infrem,REASON_COST) end
 	e:SetLabel(choice)
 end
 

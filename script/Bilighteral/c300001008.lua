@@ -104,11 +104,11 @@ end
 --Remove Counters
 
 function s.stfilter(c,tp,ct)
-	return ((c:IsAbleToGrave() and not c:IsLocation(LOCATION_GRAVE)) or c:IsAbleToDeck() or c:IsAbleToHand() or (c:IsSSetable() and Duel.GetLocationCount(tp,LOCATION_SZONE)>0)) and c:IsType(TYPE_SPELL+TYPE_TRAP) and c:IsFaceup() and ct>=2
+	return ((c:IsAbleToGrave() and not c:IsLocation(LOCATION_GRAVE)) or c:IsAbleToDeck() or c:IsAbleToHand() or (c:IsSSetable() and Duel.GetLocationCount(tp,LOCATION_SZONE)>0)) and c:IsType(TYPE_SPELL+TYPE_TRAP) and c:IsFaceup() and ct>=4
 end
 
 function s.fumfilter(c,e,tp,ct)
-	return ((c:IsAbleToGrave() and not c:IsLocation(LOCATION_GRAVE)) or c:IsAbleToDeck() or c:IsAbleToHand() or (c:IsCanBeSpecialSummoned(e,0,tp,false,false) and Duel.GetLocationCount(tp,LOCATION_MZONE)>0)) and c:IsFaceup() and ((c:HasLevel() and ct>=c:GetLevel()) or (c:IsType(TYPE_XYZ) and ct>=c:GetRank()) or (c:IsLinkMonster() and ct>=2*c:GetLink()))
+	return ((c:IsAbleToGrave() and not c:IsLocation(LOCATION_GRAVE)) or c:IsAbleToDeck() or c:IsAbleToHand() or (c:IsCanBeSpecialSummoned(e,0,tp,false,false) and Duel.GetLocationCount(tp,LOCATION_MZONE)>0)) and c:IsFaceup() and ((c:HasLevel() and ct>=2*c:GetLevel()) or (c:IsType(TYPE_XYZ) and ct>=2*c:GetRank()) or (c:IsLinkMonster() and ct>=4*c:GetLink()))
 end
 
 function s.rccost(e,tp,eg,ep,ev,re,r,rp,chk)
@@ -139,8 +139,8 @@ function s.rccost(e,tp,eg,ep,ev,re,r,rp,chk)
 	local ss,set,th,td,tg=tc:IsCanBeSpecialSummoned(e,0,tp,false,false) and Duel.GetLocationCount(tp,LOCATION_MZONE)>0,tc:IsSSetable() and Duel.GetLocationCount(tp,LOCATION_SZONE)>0,tc:IsAbleToHand(),tc:IsAbleToDeck(),tc:IsAbleToGrave() and not tc:IsLocation(LOCATION_GRAVE)
 	choice=aux.EffectCheck(tp,{ss,set,th,td,tg},{aux.Stringid(id,5),aux.Stringid(id,6),aux.Stringid(id,7),aux.Stringid(id,8),aux.Stringid(id,9)})(e,tp,eg,ep,ev,re,r,rp)
 	local charem,celrem,infrem=0,0,0
-	for i=math.min(math.abs(ctr-cel-inf),cha),math.min(ctr,cha),2 do
-		table.insert(chacr,i/2)
+	for i=math.min(math.abs(ctr-cel-inf)/2,cha),math.min(ctr/2,cha) do
+		table.insert(chacr,i)
 	end
 	Duel.Hint(HINT_SELECTMSG,tp,aux.Stringid(id,2))
 	charem=Duel.AnnounceNumber(tp,table.unpack(chacr))

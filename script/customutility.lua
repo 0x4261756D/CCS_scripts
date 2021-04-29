@@ -11,6 +11,16 @@ function Card.CheckType(c,tp)
 	return (c:GetType()&tp)==tp
 end
 
+--Function to check whether an array/table contains a certain element
+function tab.contains(tab,element)
+	for _,value in pairs(tab) do
+		if value==element then
+			return true
+		end
+	end
+	return false
+end
+
 --Function to select an option based on the condition on the same place as the option in the first table
 --If the third table isn't nil, the corresponding operation will be executed.
 --Example Call: local x=aux.EffectCheck(tp,cons,strings,ops)(e,tp,eg,ep,ev,re,r,rp)

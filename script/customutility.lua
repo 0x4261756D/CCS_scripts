@@ -12,7 +12,7 @@ function Card.CheckType(c,tp)
 end
 
 --Function to check whether an array/table contains a certain element
-function tab.contains(tab,element)
+function contains(tab,element)
 	for _,value in pairs(tab) do
 		if value==element then
 			return true

@@ -65,8 +65,10 @@ function s.spoperation(e,tp,eg,ep,ev,re,r,rp)
 end
 
 function s.thcon(e,tp,eg,ep,ev,re,r,rp)
-	if not rp==1-tp then return end
-    	local rc=nil
+	Debug.Message(rp)
+	Debug.Message(e:GetHandlerPlayer())
+	if rp==e:GetHandlerPlayer() then return end
+    local rc=nil
 	if r==REASON_BATTLE+REASON_DESTROY then
 		rc=e:GetHandler():GetReasonCard()
 	else

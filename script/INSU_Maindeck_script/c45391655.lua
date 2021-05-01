@@ -1,5 +1,5 @@
 --Katango, Cursed Bamboo Swordsman
-local s, id = GetID()
+local s,id=GetID()
 function s.initial_effect(c)
 	--special summon
 	local e1=Effect.CreateEffect(c)
@@ -7,7 +7,7 @@ function s.initial_effect(c)
 	e1:SetCode(EFFECT_SPSUMMON_PROC)
 	e1:SetProperty(EFFECT_FLAG_UNCOPYABLE)
 	e1:SetRange(LOCATION_HAND)
-	e1:SetCountLimit(1,45391655)
+	e1:SetCountLimit(1,id)
 	e1:SetCondition(s.spcon)
 	e1:SetOperation(s.spop)
 	c:RegisterEffect(e1)
@@ -44,9 +44,6 @@ function s.initial_effect(c)
 	e5:SetCondition(s.actcon)
 	c:RegisterEffect(e5)
 end
-function s.rescon(sg,e,tp,mg)
-	return aux.ChkfMMZ(1)(sg,e,tp,mg) and sg:GetClassCount(Card.GetCode)==2
-end
 function s.spfilter(c)
 	return c:IsSetCard(0x60) and c:IsType(TYPE_SPELL) and c:IsAbleToGraveAsCost()
 end
@@ -55,12 +52,12 @@ function s.spcon(e,c)
 	local tp=c:GetControler()
 	local rg=Duel.GetMatchingGroup(s.spfilter,tp,LOCATION_DECK,0,nil)
 		return Duel.GetLocationCount(tp,LOCATION_MZONE)>0
-		and rg:GetCount()>1 and aux.SelectUnselectGroup(rg,e,tp,2,2,s.rescon,0)
+		and #rg>1 and aux.SelectUnselectGroup(rg,e,tp,2,2,aux.dncheck,0)
 end
 function s.spop(e,tp,eg,ep,ev,re,r,rp,c)
 	local rg=Duel.GetMatchingGroup(s.spfilter,tp,LOCATION_DECK,0,nil)
-	local g=aux.SelectUnselectGroup(rg,e,tp,2,2,s.rescon,1,tp,HINTMSG_TOGRAVE)
-	Duel.SendtoGrave(g,tp,REASON_COST)
+	local g=aux.SelectUnselectGroup(rg,e,tp,2,2,aux.dncheck,1,tp,HINTMSG_TOGRAVE)
+	Duel.SendtoGrave(g,nil,REASON_COST)
 	local e1=Effect.CreateEffect(e:GetHandler())
 	e1:SetType(EFFECT_TYPE_FIELD)
 	e1:SetCode(EFFECT_CANNOT_ACTIVATE)
@@ -74,7 +71,6 @@ function s.actlimit1(e,re,rp)
 	local rc=re:GetHandler()
 	return re:IsActiveType(TYPE_MONSTER) and not rc:IsRace(RACE_PLANT) and not rc:IsImmuneToEffect(e)
 end
-
 function s.thfilter(c)
 	return c:IsSetCard(0x60) and c:IsType(TYPE_SPELL) and c:IsAbleToHand()
 end
@@ -90,7 +86,6 @@ function s.thop(e,tp,eg,ep,ev,re,r,rp)
 		Duel.ConfirmCards(1-tp,g)
 	end
 end
-
 function s.thcon2(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	return c:IsReason(REASON_EFFECT) and rp~=tp
@@ -110,7 +105,6 @@ function s.thop2(e,tp,eg,ep,ev,re,r,rp)
 		Duel.ConfirmCards(1-tp,g)
 	end
 end
-
 function s.filter(c)
 	return c:IsSetCard(0x60) and c:IsType(TYPE_SPELL) and c:IsFaceup()
 end

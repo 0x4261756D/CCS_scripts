@@ -34,9 +34,9 @@ function s.spellop(e,tp,eg,ep,ev,re,r,rp)
 	local tc=Duel.SelectMatchingCard(tp,s.remfilter,tp,LOCATION_HAND,0,1,1,nil)
 	Duel.Remove(tc,POS_FACEUP,REASON_EFFECT,tp)
 	local att=tc:GetFirst():GetAttribute()
-	local dnd,pab=(att == ATTRIBUTE_LIGHT) and Duel.IsExistingMatchingCard(s.tgfilter,tp,LOCATION_DECK,0,1,nil,ATTRIBUTE_DARK) and Duel.IsPlayerCanDraw(tp,1),(att == ATTRIBUTE_DARK) and Duel.IsExistingMatchingCard(s.tgfilter,tp,LOCATION_DECK,0,1,nil,ATTRIBUTE_LIGHT) and Duel.IsExistingTarget(Card.IsDestructable,tp,0,LOCATION_MZONE,1,nil)
+	local dnd,pab=att&ATTRIBUTE_LIGHT==ATTRIBUTE_LIGHT and Duel.IsExistingMatchingCard(s.tgfilter,tp,LOCATION_DECK,0,1,nil,ATTRIBUTE_DARK) and Duel.IsPlayerCanDraw(tp,1),att&ATTRIBUTE_DARK==ATTRIBUTE_DARK and Duel.IsExistingMatchingCard(s.tgfilter,tp,LOCATION_DECK,0,1,nil,ATTRIBUTE_LIGHT) and Duel.IsExistingTarget(Card.IsDestructable,tp,0,LOCATION_MZONE,1,nil)
 	local choice,additional=-1,dnd and pab
-	if Duel.SelectYesNo(tp,aux.Stringid(id,5)) then
+	if (dnd or pab) and Duel.SelectYesNo(tp,aux.Stringid(id,5)) then
 		choice=aux.EffectCheck(tp,{dnd,pab},{aux.Stringid(id,0),aux.Stringid(id,1)})(e,tp,eg,ep,ev,re,r,rp)
 		if choice==1 then
 			local tc=Duel.SelectMatchingCard(tp,s.tgfilter,tp,LOCATION_DECK,0,1,1,nil,ATTRIBUTE_DARK)
@@ -44,7 +44,7 @@ function s.spellop(e,tp,eg,ep,ev,re,r,rp)
 			Duel.ShuffleDeck(tp)
 			Duel.Draw(tp,1,REASON_EFFECT)
 			Duel.DiscardHand(tp,Card.IsDiscardable,1,1,REASON_EFFECT,nil)
-			if additional then
+			if additional and pab and Duel.SelectYesNo(tp,aux.Stringid(id,5)) then
 				local tc=Duel.SelectMatchingCard(tp,s.tgfilter,tp,LOCATION_DECK,0,1,1,nil,ATTRIBUTE_LIGHT)
 				Duel.SendtoGrave(tc,REASON_COST,tp)
 				tc=Duel.SelectTarget(tp,aux.TRUE,tp,0,LOCATION_MZONE,1,1,nil):GetFirst()
@@ -62,7 +62,7 @@ function s.spellop(e,tp,eg,ep,ev,re,r,rp)
 			local val=(tc:GetTextAttack()+tc:GetTextDefense())/2
 			Duel.Damage(1-tp,val,REASON_EFFECT)
 			Duel.Recover(tp,val,REASON_EFFECT)
-			if additional then
+			if additional and dnd and Duel.SelectYesNo(tp,aux.Stringid(id,5)) then
 				local tc=Duel.SelectMatchingCard(tp,s.tgfilter,tp,LOCATION_DECK,0,1,1,nil,ATTRIBUTE_DARK)
 				Duel.SendtoGrave(tc,REASON_COST,tp)
 				Duel.ShuffleDeck(tp)
@@ -72,7 +72,6 @@ function s.spellop(e,tp,eg,ep,ev,re,r,rp)
 		end
 	end
 end
-
 --Trap Effect
 
 function s.thfilter(c)

@@ -57,7 +57,7 @@ end
 function s.spop(e,tp,eg,ep,ev,re,r,rp,c)
 	local rg=Duel.GetMatchingGroup(s.spfilter,tp,LOCATION_DECK,0,nil)
 	local g=aux.SelectUnselectGroup(rg,e,tp,2,2,aux.dncheck,1,tp,HINTMSG_TOGRAVE)
-	Duel.SendtoGrave(g,nil,REASON_COST)
+	Duel.SendtoGrave(g,REASON_COST,tp)
 	local e1=Effect.CreateEffect(e:GetHandler())
 	e1:SetType(EFFECT_TYPE_FIELD)
 	e1:SetCode(EFFECT_CANNOT_ACTIVATE)

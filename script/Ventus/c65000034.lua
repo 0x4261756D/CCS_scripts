@@ -63,16 +63,10 @@ function s.spoperation(e,tp,eg,ep,ev,re,r,rp)
 	local g=Duel.SelectMatchingCard(tp,s.filter,tp,LOCATION_HAND+LOCATION_GRAVE,0,1,1,nil,e,tp,lv)
 	Duel.SpecialSummon(g,0,tp,tp,false,false,POS_FACEUP)
 end
-
 function s.thcon(e,tp,eg,ep,ev,re,r,rp)
-	if rp==e:GetHandlerPlayer() then return end
-    local rc=nil
-	if r==REASON_BATTLE+REASON_DESTROY then
-		rc=e:GetHandler():GetReasonCard()
-	else
-		rc=re:GetHandler()
-	end
-		e:SetLabelObject(rc)
+	if rp==tp or r&REASON_COST>0 then return false end
+	local rc=e:GetHandler():GetReasonCard()
+	e:SetLabelObject(rc)
 	return rc
 end
 function s.thfilter(c,typ)
@@ -82,19 +76,18 @@ function s.thtg(e,tp,eg,ep,ev,re,r,rp,chk)
     local rc=e:GetLabelObject()
     local typ=rc:GetType()
 	if chk==0 then return Duel.IsExistingMatchingCard(s.thfilter,tp,LOCATION_GRAVE,0,1,nil,typ) end
-	rc:CreateEffectRelation(e)
 	Duel.SetOperationInfo(0,CATEGORY_TOHAND,nil,1,tp,LOCATION_GRAVE)
-	Duel.SetOperationInfo(0,CATEGORY_TODECK,rc,1,tp,rc:GetLocation())
+	Duel.SetOperationInfo(0,CATEGORY_TODECK,rc,1,1-tp,rc:GetLocation())
 end
 function s.thop(e,tp,eg,ep,ev,re,r,rp)
 	local rc=e:GetLabelObject()
 	local typ=rc:GetType()
-	if rc:IsRelateToEffect(e) then
+	if rc then
         	Duel.SendtoDeck(rc,nil,2,REASON_EFFECT)
     	end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_ATOHAND)
 	local g=Duel.SelectMatchingCard(tp,s.thfilter,tp,LOCATION_GRAVE,0,1,1,nil,typ)
-	if g:GetCount()>0 then
+	if #g>0 then
 		Duel.SendtoHand(g,nil,REASON_EFFECT)
 		Duel.ConfirmCards(1-tp,g)
 	end

@@ -1,4 +1,4 @@
-Hermes, Runner of Ventus
+--Hermes, Runner of Ventus
 local s,id=GetID()
 function s.initial_effect(c)
 	--to deck

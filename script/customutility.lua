@@ -336,6 +336,6 @@ end
 function Auxiliary.VentusCon(con)
 	return function(e,tp,eg,ep,ev,re,r,rp)
 		if not re or r&REASON_COST>0 then return false end 
-		return (not con or con(e,tp,eg,ep,ev,re,r,rp)) and re:GetHandler():IsAttribute(ATTRIBUTE_WIND)
+		return (not con or con(e,tp,eg,ep,ev,re,r,rp)) and (re:GetHandler():IsAttribute(ATTRIBUTE_WIND) or re:GetHandler():IsCode(65000040))
 	end
 end

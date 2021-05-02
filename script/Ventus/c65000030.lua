@@ -1,17 +1,17 @@
---ventus simorogh
-local s, id = GetID()
+--Ventus Simorgh
+local s,id=GetID()
 function s.initial_effect(c)
 	--synchro summon
 	Synchro.AddProcedure(c,aux.FilterBoolFunction(Card.IsSetCard,0x17d),1,1,Synchro.NonTuner(Card.IsAttribute,ATTRIBUTE_WIND),1,99)
 	c:EnableReviveLimit()
 	--atkup
 	local e1=Effect.CreateEffect(c)
-	e1:SetDescription(aux.Stringid(65000030,0))
+	e1:SetDescription(aux.Stringid(id,0))
 	e1:SetCategory(CATEGORY_TODECK)
 	e1:SetProperty(EFFECT_FLAG_CARD_TARGET)
 	e1:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
 	e1:SetCode(EVENT_SPSUMMON_SUCCESS)
-	e1:SetCountLimit(1,65000030)
+	e1:SetCountLimit(1,id)
 	e1:SetCondition(s.con)
 	e1:SetTarget(s.tg)
 	e1:SetOperation(s.op)

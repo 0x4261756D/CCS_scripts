@@ -1,18 +1,20 @@
 --Mushu, Lindwurm of Ventus
+Duel.LoadScript("customutility.lua")
 local s,id=GetID()
 function s.initial_effect(c)
-    c:EnableUnsummonable()
+	c:EnableUnsummonable()
+	--Special Summon
 	local e1=Effect.CreateEffect(c)
 	e1:SetCategory(CATEGORY_SPECIAL_SUMMON)
 	e1:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
 	e1:SetProperty(EFFECT_FLAG_DELAY)
 	e1:SetCode(EVENT_TO_DECK)
 	e1:SetCountLimit(1,id)
-	e1:SetCondition(s.spcon)
-	e1:SetValue(1)
+	e1:SetCondition(aux.VentusCon)
 	e1:SetTarget(s.sptg)
 	e1:SetOperation(s.spop)
 	c:RegisterEffect(e1)
+	--Negate
 	local e2=Effect.CreateEffect(c)
 	e2:SetCategory(CATEGORY_DISABLE)
 	e2:SetProperty(EFFECT_FLAG_CARD_TARGET+EFFECT_FLAG_DELAY)
@@ -23,10 +25,6 @@ function s.initial_effect(c)
 	e2:SetTarget(s.target)
 	e2:SetOperation(s.operation)
 	c:RegisterEffect(e2)
-end
-function s.spcon(e,tp,eg,ep,ev,re,r,rp)
-	if not re then return false end
-	return re:GetHandler():IsAttribute(ATTRIBUTE_WIND)
 end
 function s.sptg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.GetLocationCount(tp,LOCATION_MZONE)>0

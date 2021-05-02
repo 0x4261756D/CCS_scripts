@@ -1,4 +1,5 @@
 --Ventus Zera
+Duel.LoadScript("customutility.lua")
 local s,id=GetID()
 function s.initial_effect(c)
 	--atk
@@ -17,7 +18,7 @@ function s.initial_effect(c)
 	e2:SetProperty(EFFECT_FLAG_DELAY+EFFECT_FLAG_CARD_TARGET)
 	e2:SetCode(EVENT_TO_DECK)
 	e2:SetCountLimit(1,id)
-	e2:SetCondition(s.spcon)
+	e2:SetCondition(aux.VentusCon)
 	e2:SetValue(1)
 	e2:SetTarget(s.sptg)
 	e2:SetOperation(s.spop)
@@ -40,23 +41,19 @@ function s.atkop(e,tp,eg,ep,ev,re,r,rp)
 		c:RegisterEffect(e1)
 	end
 end
-function s.spcon(e,tp,eg,ep,ev,re,r,rp)
-	if not re then return false end
-	return re:GetHandler():IsAttribute(ATTRIBUTE_WIND)
-end
 function s.tdfilter(c)
-	return c:IsAbleToDeck()
+	return c:IsAbleToDeck() and c:IsMonster()
 end
 function s.sptg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chkc then return chkc:IsOnField() and s.tdfilter(chkc) and chkc~=e:GetHandler() end
-	if chk==0 then return Duel.IsExistingTarget(s.tdfilter,tp,LOCATION_ONFIELD+LOCATION_GRAVE,LOCATION_ONFIELD+LOCATION_GRAVE,1,e:GetHandler()) end
+	if chk==0 then return Duel.IsExistingTarget(Card.IsAbleToDeck,tp,LOCATION_ONFIELD+LOCATION_GRAVE,LOCATION_ONFIELD+LOCATION_GRAVE,1,e:GetHandler()) end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TODECK)
-	local g=Duel.SelectTarget(tp,s.tdfilter,tp,LOCATION_ONFIELD+LOCATION_GRAVE,LOCATION_ONFIELD+LOCATION_GRAVE,1,1,e:GetHandler())
-	Duel.SetOperationInfo(0,CATEGORY_TODECK,g,1,0,0)
+	local tc=Duel.SelectTarget(tp,s.tdfilter,tp,LOCATION_ONFIELD+LOCATION_GRAVE,LOCATION_ONFIELD+LOCATION_GRAVE,1,1,e:GetHandler()):GetFirst()
+	Duel.SetOperationInfo(0,CATEGORY_TODECK,tc,1,PLAYER_ALL,tc:GetLocation())
 end
 function s.spop(e,tp,eg,ep,ev,re,r,rp)
 	local tc=Duel.GetFirstTarget()
-	if tc:IsRelateToEffect(e) then
+	if tc and tc:IsRelateToEffect(e) then
 		Duel.SendtoDeck(tc,nil,2,REASON_EFFECT)
 	end
 end

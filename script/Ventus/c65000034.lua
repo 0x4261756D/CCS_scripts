@@ -8,7 +8,7 @@ function s.initial_effect(c)
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(id,0))
 	e1:SetCategory(CATEGORY_SPECIAL_SUMMON)
-    	e1:SetType(EFFECT_TYPE_IGNITION)
+	e1:SetType(EFFECT_TYPE_IGNITION)
 	e1:SetRange(LOCATION_MZONE)
 	e1:SetCountLimit(1,id)
 	e1:SetCost(s.spcost)
@@ -37,7 +37,7 @@ function s.cfilter(c,e,tp)
 	return bd:IsContains(c) and Duel.IsExistingMatchingCard(s.filter,tp,LOCATION_HAND+LOCATION_GRAVE,0,1,nil,e,tp,c:GetLevel())
 end
 function s.spcost(e,tp,eg,ep,ev,re,r,rp,chk)
-    e:SetLabel(100)
+	e:SetLabel(100)
 	return true
 end
 function s.filter(c,e,tp,lev)
@@ -73,8 +73,8 @@ function s.thfilter(c,typ)
 	return c:GetType()==typ and c:IsSetCard(0x17d) and c:IsAbleToHand()
 end
 function s.thtg(e,tp,eg,ep,ev,re,r,rp,chk)
-    local rc=e:GetLabelObject()
-    local typ=rc:GetType()
+	local rc=e:GetLabelObject()
+	local typ=rc:GetType()
 	if chk==0 then return Duel.IsExistingMatchingCard(s.thfilter,tp,LOCATION_GRAVE,0,1,nil,typ) end
 	Duel.SetOperationInfo(0,CATEGORY_TOHAND,nil,1,tp,LOCATION_GRAVE)
 	Duel.SetOperationInfo(0,CATEGORY_TODECK,rc,1,1-tp,rc:GetLocation())
@@ -83,8 +83,8 @@ function s.thop(e,tp,eg,ep,ev,re,r,rp)
 	local rc=e:GetLabelObject()
 	local typ=rc:GetType()
 	if rc then
-        	Duel.SendtoDeck(rc,nil,2,REASON_EFFECT)
-    	end
+		Duel.SendtoDeck(rc,nil,2,REASON_EFFECT)
+	end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_ATOHAND)
 	local g=Duel.SelectMatchingCard(tp,s.thfilter,tp,LOCATION_GRAVE,0,1,1,nil,typ)
 	if #g>0 then

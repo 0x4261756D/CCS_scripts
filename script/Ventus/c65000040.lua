@@ -1,4 +1,5 @@
 --Inner Conflict of Ventus
+Duel.LoadScript("customutility.lua")
 local s,id=GetID()
 function s.initial_effect(c)
 --Activate
@@ -27,7 +28,7 @@ function s.initial_effect(c)
 	e3:SetProperty(EFFECT_FLAG_DELAY)
 	e3:SetCode(EVENT_TO_DECK)
 	e3:SetCountLimit(1,id)
-	e3:SetCondition(s.spcon)
+	e3:SetCondition(aux.VentusCon)
 	e3:SetTarget(s.sptg)
 	e3:SetOperation(s.spop)
 	c:RegisterEffect(e3)
@@ -58,10 +59,6 @@ function s.target(e,tp,eg,ep,ev,re,r,rp,chk)
 end
 function s.activate(e,tp,eg,ep,ev,re,r,rp)
 	Duel.NegateAttack()
-end
-function s.spcon(e,tp,eg,ep,ev,re,r,rp)
-	if not re then return false end
-	return re:GetHandler():IsAttribute(ATTRIBUTE_WIND)
 end
 function s.sptg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chkc then return chkc:IsLocation(LOCATION_ONFIELD+LOCATION_GRAVE) and chkc:IsAbleToDeck() end

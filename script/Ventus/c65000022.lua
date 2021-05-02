@@ -1,4 +1,5 @@
 --Ventus Winda
+Duel.LoadScript("customutility.lua")
 local s,id=GetID()
 function s.initial_effect(c)
 	--shuffle
@@ -19,7 +20,7 @@ function s.initial_effect(c)
 	e2:SetProperty(EFFECT_FLAG_DELAY)
 	e2:SetCode(EVENT_TO_DECK)
 	e2:SetCountLimit(1,id)
-	e2:SetCondition(s.spcon)
+	e2:SetCondition(aux.VentusCon)
 	e2:SetTarget(s.sptg)
 	e2:SetOperation(s.spop)
 	c:RegisterEffect(e2)
@@ -34,21 +35,13 @@ end
 function s.operation(e,tp,eg,ep,ev,re,r,rp)
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TODECK)
 	local g=Duel.SelectMatchingCard(tp,Card.IsAbleToDeck,tp,LOCATION_HAND,0,1,1,nil)
---[[ 	if #g>0 then
-		Duel.SendtoDeck(g,nil,2,REASON_EFFECT)
-	end ]]
-	if #g > 0 and Duel.SendtoDeck(g,nil,2,REASON_EFFECT) and Duel.IsExistingMatchingCard(s.filter,tp,LOCATION_ONFIELD,LOCATION_ONFIELD,1,nil) and Duel.SelectYesNo(tp,aux.Stringid(id,0)) then
+	if #g>0 and Duel.SendtoDeck(g,nil,2,REASON_EFFECT)>0 and Duel.IsExistingMatchingCard(s.filter,tp,LOCATION_ONFIELD,LOCATION_ONFIELD,1,nil) and Duel.SelectYesNo(tp,aux.Stringid(id,0)) then
 		Duel.BreakEffect()
 		local h=Duel.SelectMatchingCard(tp,s.filter,tp,LOCATION_ONFIELD,LOCATION_ONFIELD,1,1,nil)
 		if #h>0 then
 			Duel.SendtoDeck(h,nil,2,REASON_EFFECT)
 		end
 	end
-end
-
-function s.spcon(e,tp,eg,ep,ev,re,r,rp)
-	if not re then return false end
-	return re:GetHandler():IsAttribute(ATTRIBUTE_WIND)
 end
 function s.spfilter(c,e,tp)
 	return c:IsSetCard(0x17d) and not c:IsCode(id) and c:IsCanBeSpecialSummoned(e,0,tp,false,false)

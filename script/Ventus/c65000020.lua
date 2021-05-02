@@ -1,4 +1,5 @@
 --Hermes, Runner of Ventus
+Duel.LoadScript("customutility.lua")
 local s,id=GetID()
 function s.initial_effect(c)
 	--to deck
@@ -35,8 +36,8 @@ function s.initial_effect(c)
 	e5:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
 	e5:SetProperty(EFFECT_FLAG_DELAY)
 	e5:SetCode(EVENT_TO_DECK)
-	e5:SetCountLimit(1,65000020)
-	e5:SetCondition(s.spcon)
+	e5:SetCountLimit(1,id)
+	e5:SetCondition(aux.VentusCon)
 	e5:SetTarget(s.target2)
 	e5:SetOperation(s.operation2)
 	c:RegisterEffect(e5)
@@ -74,10 +75,6 @@ function s.tgop(e,tp,eg,ep,ev,re,r,rp)
 		Duel.SendtoHand(tc,nil,REASON_EFFECT)
 	end
 end
-function s.spcon(e,tp,eg,ep,ev,re,r,rp)
-	if not re then return false end
-	return re:GetHandler():IsAttribute(ATTRIBUTE_WIND)
-end
 function s.filter2(c)
 	return c:IsSetCard(0x17d) and c:IsType(TYPE_MONSTER) and not c:IsCode(65000020) and c:IsAbleToHand()
 end
@@ -89,7 +86,7 @@ function s.operation2(e,tp,eg,ep,ev,re,r,rp)
 	if not e:GetHandler():IsRelateToEffect(e) then return end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_ATOHAND)
 	local g=Duel.SelectMatchingCard(tp,s.filter2,tp,LOCATION_DECK,0,1,1,nil)
-	if g:GetCount()>0 then
+	if #g>0 then
 		Duel.SendtoHand(g,nil,REASON_EFFECT)
 		Duel.ConfirmCards(1-tp,g)
 	end

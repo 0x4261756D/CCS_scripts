@@ -330,3 +330,12 @@ function Auxiliary.TimeBanishOperation(c)
 		Duel.SpecialSummon(tc,0,tp,tp,false,false,POS_FACEUP)
 	end
 end
+
+--Standardcondition for Ventus monsters (if shuffled into the Deck by a Wind monster)
+--can also support another condition if passed
+function Auxiliary.VentusCondition(con)
+	return function(e,tp,eg,ep,ev,re,r,rp)
+		if not re then return false end 
+		return (not con or con(e,tp,eg,ep,ev,re,r,rp)) and re:GetHandler():IsAttribute(ATTRIBUTE_WIND)
+	end
+end

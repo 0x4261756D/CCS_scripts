@@ -335,7 +335,7 @@ end
 --can also support another condition if passed
 function Auxiliary.VentusCon(con)
 	return function(e,tp,eg,ep,ev,re,r,rp)
-		if not re then return false end 
+		if not re or r&REASON_COST>0 then return false end 
 		return (not con or con(e,tp,eg,ep,ev,re,r,rp)) and re:GetHandler():IsAttribute(ATTRIBUTE_WIND)
 	end
 end

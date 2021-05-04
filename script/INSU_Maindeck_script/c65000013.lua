@@ -63,15 +63,15 @@ function s.cfilter(c)
 	return c:IsType(TYPE_SPELL) and c:IsAbleToDeck()
 end
 function s.shtg(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return Duel.IsExistingMatchingCard(s.cfilter,tp,LOCATION_REMOVED,0,1,nil) end
+	if chk==0 then return Duel.IsExistingTarget(s.cfilter,tp,LOCATION_REMOVED,0,1,nil) end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TODECK)
-	local g=Duel.SelectMatchingCard(tp,s.filter,tp,LOCATION_REMOVED,0,1,1,nil)
+	local g=Duel.SelectTarget(tp,s.cfilter,tp,LOCATION_REMOVED,0,1,1,nil)
 	Duel.SetOperationInfo(0,CATEGORY_TODECK,g,1,0,0)
 end
 function s.shop(e,tp,eg,ep,ev,re,r,rp)
-	local g=Duel.GetChainInfo(0,CHAININFO_TARGET_CARDS):Filter(Card.IsRelateToEffect,e)
-	if #g>0 then
-		Duel.SendtoDeck(g,nil,2,REASON_EFFECT)
+	local tc = Duel.GetFirstTarget()
+	if tc and tc:IsRelateToEffect(e) then
+		Duel.SendtoDeck(tc,nil,2,REASON_EFFECT)
 	end
 end
 function s.filter1(c)

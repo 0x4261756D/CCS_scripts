@@ -16,13 +16,9 @@ function Bilighteral.CreateActivation(c)
 	c:RegisterEffect(e1)
 end
 
-function Bilighteral.spellcon(e,tp,eg,ep,ev,re,r,rp)
-	return Duel.GetCurrentChain()==0 and Duel.GetTurnPlayer()==tp
-end
-
-function Bilighteral.spellcon2(con)
+function Bilighteral.spellcon(con)
 	return function(e,tp,eg,ep,ev,re,r,rp)
-		return Bilighteral.spellcon(e,tp,eg,ep,ev,re,r,rp) and con(e,tp,eg,ep,ev,re,r,rp)
+		return (not con or con(e,tp,eg,ep,ev,re,r,rp)) and Duel.GetCurrentChain()==0 and Duel.GetTurnPlayer()==tp
 	end
 end
 
@@ -39,9 +35,7 @@ function(c,cat,prop,con,cost,tg,op)
 	e:SetType(EFFECT_TYPE_ACTIVATE)
 	e:SetCode(EVENT_FREE_CHAIN)
 	e:SetCountLimit(1,c:GetOriginalCode())
-	if con then e:SetCondition(Bilighteral.spellcon2(con))
-		else e:SetCondition(Bilighteral.spellcon)
-	end
+	e:SetCondition(Bilighteral.spellcon(con))
 	if cost then
 		e:SetCost(cost)
 	end
@@ -54,13 +48,9 @@ function(c,cat,prop,con,cost,tg,op)
 	return e
 end,"handler","cat","prop","con","cost","tg","op")
 
-function Bilighteral.trapcon(e,tp,eg,ep,ev,re,r,rp)
-	return e:GetHandler():IsLocation(LOCATION_SZONE) and e:GetHandler():GetTurnID()~=Duel.GetTurnCount()
-end
-
-function Bilighteral.trapcon2(con)
+function Bilighteral.trapcon(con)
 	return function(e,tp,eg,ep,ev,re,r,rp)
-		return Bilighteral.trapcon(e,tp,eg,ep,ev,re,r,rp) and con(e,tp,eg,ep,ev,re,r,rp)
+		return (not con or con(e,tp,eg,ep,ev,re,r,rp)) and e:GetHandler():IsLocation(LOCATION_SZONE) and e:GetHandler():GetTurnID()~=Duel.GetTurnCount()
 	end
 end
 
@@ -77,10 +67,7 @@ Bilighteral.AddTrapEffect=aux.FunctionWithNamedArgs(
 		if prop then
 			e:SetProperty(prop)
 		end
-		if con then 
-			e:SetCondition(Bilighteral.trapcon2(con))
-			else e:SetCondition(Bilighteral.trapcon)
-		end
+		e:SetCondition(Bilighteral.trapcon(con))
 		if cost then
 			e:SetCost(cost)
 		end

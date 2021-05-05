@@ -10,6 +10,7 @@ function s.initial_effect(c)
 	e1:SetCondition(s.spcon)
 	e1:SetTarget(s.sptg)
 	e1:SetOperation(s.spop)
+	e1:SetCountLimit(1,id)
 	c:RegisterEffect(e1)
 	--hand eff
 	local e2=Effect.CreateEffect(c)
@@ -17,13 +18,13 @@ function s.initial_effect(c)
 	e2:SetCategory(CATEGORY_SPECIAL_SUMMON)
 	e2:SetType(EFFECT_TYPE_IGNITION)
 	e2:SetRange(LOCATION_HAND)
-	e2:SetCountLimit(1,id)
+	e2:SetCountLimit(1,id+1)
 	e2:SetTarget(s.target)
 	e2:SetOperation(s.activate)
 	c:RegisterEffect(e2)
 end
 function s.spcon(e,tp,eg,ep,ev,re,r,rp)
-	return e:GetHandler():IsPreviousLocation(LOCATION_HAND) and bit.band(r,REASON_DISCARD)~=0
+	return e:GetHandler():IsPreviousLocation(LOCATION_HAND or LOCATION_DECK or LOCATION_FIELD)
 end
 function s.sptg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return true end

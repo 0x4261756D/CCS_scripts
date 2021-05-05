@@ -348,10 +348,23 @@ function Auxiliary.SumtypeCon(c,st,con)
 	end
 end
 
---This function merges t2 into t1 where t1,t2 are tables/arrays
-function merge(t1, t2)
-   for k,v in ipairs(t2) do
-      table.insert(t1, v)
-   end 
-   return t1
+--This function merges t2 into t1 where t1,t2 are tables/arrays. If filter==true, duplicate entries will be filtered out.
+function merge(t1, t2, filter)
+    filter=filter or false
+    if filter==true then
+        local dup=true
+        for _, i in ipairs(t2) do
+            for _, j in ipairs(t1) do
+                dup = (i == j)
+                if dup then break end
+            end
+            if not dup then
+                table.insert(t1, i)
+            end
+        end
+    else
+        for _, i in ipairs(t2) do
+            table.insert(t1, i)
+        end
+    end
 end

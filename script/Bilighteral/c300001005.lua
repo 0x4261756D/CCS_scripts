@@ -8,14 +8,14 @@ function s.initial_effect(c)
 	local e2=Bilighteral.AddSpellEffect({handler=c,cat=CATEGORY_TOHAND+CATEGORY_SEARCH+CATEGORY_DESTROY+CATEGORY_DAMAGE,prop=EFFECT_FLAG_CARD_TARGET,cost=s.spellcost,tg=s.spelltg,op=s.spellop})
 	c:RegisterEffect(e2)
 	--Trap Effect
-	local e3=Bilighteral.AddTrapEffect({handler=c,cat=CATEGORY_SPECIAL_SUMMON+CATEGORY_RECOVER+CATEGORY_DISABLE,prop=EFFECT_FLAG_CARD_TARGET,tg=s.traptg,op=s.trapop})
+	local e3=Bilighteral.AddTrapEffect({handler=c,cat=CATEGORY_SPECIAL_SUMMON+CATEGORY_RECOVER+CATEGORY_DISABLE,prop=EFFECT_FLAG_CARD_TARGET,cost=s.trapcost,tg=s.traptg,op=s.trapop})
 	c:RegisterEffect(e3)
 end
 
 --Spell Effect
 
 function s.tgfilter(c,tp)
-	return c:IsType(TYPE_XYZ) and c:IsAttribute(ATTRIBUTE_DARK) and c:GetOverlayGroup():IsExists(s.detfilter,1,nil)
+	return c:IsType(TYPE_XYZ) and c:IsAttribute(ATTRIBUTE_DARK) and c:GetOverlayGroup():IsExists(s.detfilter,1,nil,tp)
 end
 
 function s.detfilter(c,tp)
@@ -32,6 +32,7 @@ end
 
 function s.spellcost(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsExistingTarget(s.tgfilter,tp,LOCATION_MZONE,0,1,nil,tp) end
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TARGET)
 	local tc=Duel.SelectTarget(tp,s.tgfilter,tp,LOCATION_MZONE,0,1,1,nil,tp):GetFirst()
 	tc=tc:GetOverlayGroup():FilterSelect(tp,s.detfilter,1,1,nil,tp):GetFirst()
 	Duel.SendtoGrave(tc,REASON_EFFECT)
@@ -39,9 +40,9 @@ function s.spellcost(e,tp,eg,ep,ev,re,r,rp,chk)
 end
 
 function s.spelltg(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return e:GetLabelObject() end
+	if chk==0 then return true end
 	local tc,att=table.unpack(e:GetLabelObject())
-	local l,d=eatt&ATTRIBUTE_LIGHT==ATTRIBUTE_LIGHT,att&ATTRIBUTE_DARK==ATTRIBUTE_DARK
+	local l,d=att&ATTRIBUTE_LIGHT==ATTRIBUTE_LIGHT,att&ATTRIBUTE_DARK==ATTRIBUTE_DARK
 	local b=l and d
 	local choice=aux.EffectCheck(tp,{l,d},{aux.Stringid(id,0),aux.Stringid(id,1)})(e,tp,eg,ep,ev,re,r,rp)
 	if choice==1 then Duel.SetOperationInfo(0,CATEGORY_TOHAND+CATEGORY_SEARCH,nil,1,tp,LOCATION_DECK)

@@ -339,3 +339,11 @@ function Auxiliary.VentusCon(con)
 		return (not con or con(e,tp,eg,ep,ev,re,r,rp)) and (re:GetHandler():IsAttribute(ATTRIBUTE_WIND) or re:GetHandler():IsCode(65000040))
 	end
 end
+
+--Condition to check the Summon type of a card
+--can also support another condition if passed
+function Auxiliary.SumtypeCon(c,st,con)
+	return function(e,tp,eg,ep,ev,re,r,rp) 
+		return (not con or con(e,tp,eg,ep,ev,re,r,rp)) and c:IsSummonType(st)
+	end
+end

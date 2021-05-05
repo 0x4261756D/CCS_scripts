@@ -347,3 +347,11 @@ function Auxiliary.SumtypeCon(c,st,con)
 		return (not con or con(e,tp,eg,ep,ev,re,r,rp)) and c:IsSummonType(st)
 	end
 end
+
+--This function merges t2 into t1 where t1,t2 are tables/arrays
+function merge(t1, t2)
+   for k,v in ipairs(t2) do
+      table.insert(t1, v)
+   end 
+   return t1
+end

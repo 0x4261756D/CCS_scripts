@@ -14,6 +14,13 @@ function Bilighteral.CreateActivation(c)
 	local e1=e0:Clone()
 	e1:SetCode(EFFECT_TRAP_ACT_IN_SET_TURN)
 	c:RegisterEffect(e1)
+	local e2=Effect.CreateEffect(c)
+	e2:SetProperty(EFFECT_FLAG_CANNOT_NEGATE+EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_IGNORE_IMMUNE)
+	e2:SetType(EFFECT_TYPE_SINGLE)
+	e2:SetCode(EFFECT_ADD_TYPE)
+	e2:SetValue(TYPE_SPELL)
+	e2:SetRange(LOCATION_ALL)
+	c:RegisterEffect(e2)
 end
 
 function Bilighteral.spellcon(con)

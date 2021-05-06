@@ -1,7 +1,8 @@
 Duel.LoadScript("customutility.lua")
 
 function Card.IsTrapspell(c)
-	return c:IsType(TYPE_SPELL) and c:IsType(TYPE_TRAP)
+	local e=c:IsHasEffect(EFFECT_ADD_TYPE)
+	return c:IsType(TYPE_TRAP) and e:GetValue()==TYPE_SPELL
 end
 
 Bilighteral={}

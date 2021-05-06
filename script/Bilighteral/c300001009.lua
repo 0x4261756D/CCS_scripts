@@ -32,7 +32,7 @@ end
 
 function s.filter2(c,e,tp,mc,rk,pg)
 	if c.rum_limit and not c.rum_limit(mc,e) then return false end
-	return mc:IsType(TYPE_XYZ,c,SUMMON_TYPE_XYZ,tp) and not c:IsRank(rk) and mc:IsCanBeXyzMaterial(c,tp)
+	return mc:IsType(TYPE_XYZ,c,SUMMON_TYPE_XYZ,tp) and (c:IsRank(rk+1) or c:IsRank(rk-1)) and mc:IsCanBeXyzMaterial(c,tp)
 		and Duel.GetLocationCountFromEx(tp,tp,mc,c)>0 and c:IsCanBeSpecialSummoned(e,SUMMON_TYPE_XYZ,tp,false,false)
 end
 
@@ -79,7 +79,7 @@ function s.spellop(e,tp,eg,ep,ev,re,r,rp)
 	end
 end
 
---trap effect
+--Trap Effect
 
 function s.tfilter(c,tp,g)
 	return Duel.IsExistingMatchingCard(s.rfilter,tp,LOCATION_EXTRA,0,1,nil,c,g) and c:IsType(TYPE_XYZ) and c:IsFaceup() and c:IsSetCard(0x400)
@@ -124,7 +124,7 @@ function s.trapop(e,tp,eg,ep,ev,re,r,rp)
 	end
 end
 
---attach + reset
+--Attach + Reset
 
 function s.atfilter(c,tc)
 	return (c:GetAttribute()&ATTRIBUTE_LIGHT==ATTRIBUTE_LIGHT or c:GetAttribute()&ATTRIBUTE_DARK==ATTRIBUTE_DARK) and c:IsCanBeXyzMaterial(tc)

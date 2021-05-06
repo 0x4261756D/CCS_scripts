@@ -17,7 +17,6 @@ function s.initial_effect(c)
 	e2:SetCode(EVENT_ATTACK_ANNOUNCE)
 	e2:SetCountLimit(1,id)
 	e2:SetCondition(s.condition)
-	e2:SetCost(s.cost)
 	e2:SetOperation(s.activate)
 	c:RegisterEffect(e2)
 	--shuffle
@@ -37,28 +36,18 @@ function s.condition(e,tp,eg,ep,ev,re,r,rp)
 	return tp~=Duel.GetTurnPlayer()
 end
 function s.cfilter(c)
-	return c:IsAttribute(ATTRIBUTE_WIND) and c:IsAbleToDeckAsCost()
-end
-function s.cost(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return Duel.IsExistingMatchingCard(s.cfilter,tp,LOCATION_MZONE+LOCATION_GRAVE,0,1,nil) end
-	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TODECK)
-	local g=Duel.SelectMatchingCard(tp,s.cfilter,tp,LOCATION_MZONE+LOCATION_GRAVE,0,1,1,nil)
-	Duel.SendtoDeck(g,nil,2,REASON_COST)
+	return c:IsAttribute(ATTRIBUTE_WIND) and c:IsAbleToDeck()
 end
 function s.target(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return true end
-	local res,teg,tep,tev,tre,tr,trp=Duel.CheckEvent(EVENT_ATTACK_ANNOUNCE,true)
-	if res and s.condition(e,tp,teg,tep,tev,tre,tr,trp)
-		and s.cost(e,tp,teg,tep,tev,tre,tr,trp,0)
-		and Duel.SelectYesNo(tp,94) then
-		s.cost(e,tp,teg,tep,tev,tre,tr,trp,1)
-		e:SetOperation(s.activate)
-	else
-		e:SetOperation(nil)
-	end
+	if chk==0 then return Duel.IsExistingMatchingCard(s.cfilter,tp,LOCATION_MZONE+LOCATION_GRAVE,0,1,nil) end
 end
 function s.activate(e,tp,eg,ep,ev,re,r,rp)
-	Duel.NegateAttack()
+	if not Duel.IsExistingMatchingCard(s.cfilter,tp,LOCATION_MZONE+LOCATION_GRAVE,0,1,nil) then return end
+	if Duel.NegateAttack() then
+		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TODECK)
+		local g=Duel.SelectMatchingCard(tp,s.cfilter,tp,LOCATION_MZONE+LOCATION_GRAVE,0,1,1,nil)
+		Duel.SendtoDeck(g,nil,2,REASON_EFFECT)	
+	end
 end
 function s.sptg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chkc then return chkc:IsLocation(LOCATION_ONFIELD+LOCATION_GRAVE) and chkc:IsAbleToDeck() end

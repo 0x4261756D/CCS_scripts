@@ -1,5 +1,5 @@
 --Lavalval Archtyrant
-local s, id = GetID()
+local s,id=GetID()
 function s.initial_effect(c)
 	--link summon
 	Link.AddProcedure(c,aux.FilterBoolFunctionEx(Card.IsAttribute,ATTRIBUTE_FIRE),2,3,s.matcheck)
@@ -10,7 +10,7 @@ function s.initial_effect(c)
 	e1:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
 	e1:SetCategory(CATEGORY_DESTROY)
 	e1:SetCode(EVENT_SPSUMMON_SUCCESS)
-	e1:SetCountLimit(1,8622928)
+	e1:SetCountLimit(1,id)
 	e1:SetCondition(s.lzcon)
 	e1:SetTarget(s.lztg)
 	e1:SetOperation(s.lzop)
@@ -21,7 +21,7 @@ function s.initial_effect(c)
 	e2:SetCategory(CATEGORY_SPECIAL_SUMMON)
 	e2:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
 	e2:SetCode(EVENT_BATTLE_DESTROYING)
-	e2:SetCountLimit(1,8622929)
+	e2:SetCountLimit(1,id+100)
 	e2:SetCondition(aux.bdocon)
 	e2:SetTarget(s.target)
 	e2:SetOperation(s.operation)
@@ -55,16 +55,9 @@ end
 function s.lzop(e,tp,eg,ep,ev,re,r,rp)
 	local tc=Duel.GetFirstMatchingCard(s.cfilter,tp,LOCATION_DECK,0,nil,tp)
 	if tc then
-		--[[local fc=Duel.GetFieldCard(tp,LOCATION_SZONE,5)
-		if fc then
-			Duel.SendtoGrave(fc,REASON_RULE)
-			Duel.BreakEffect()
-			end
-		Duel.MoveToField(tc,tp,tp,LOCATION_SZONE,POS_FACEUP,true)
-		fc=Duel.GetFieldCard(1-tp,LOCATION_SZONE,5)]]--
-		aux.PlayFieldSpell(tc, e, tp, eg, ep, ev, re, r, rp)
+		aux.PlayFieldSpell(tc,e,tp,eg,ep,ev,re,r,rp)
 		local dg=Duel.GetMatchingGroup(nil,tp,LOCATION_ONFIELD,LOCATION_ONFIELD,nil)
-		if dg:GetCount()>0 and Duel.GetMatchingGroupCount(Card.IsSetCard,tp,LOCATION_GRAVE,0,nil,0x39)>=3 and Duel.SelectYesNo(tp,aux.Stringid(8622928,0)) then
+		if dg:GetCount()>0 and Duel.GetMatchingGroupCount(Card.IsSetCard,tp,LOCATION_GRAVE,0,nil,0x39)>=3 and Duel.SelectYesNo(tp,aux.Stringid(id,0)) then
 			Duel.BreakEffect()
 			Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_DESTROY)
 			local sg=dg:Select(tp,1,1,nil)
@@ -91,8 +84,8 @@ function s.operation(e,tp,eg,ep,ev,re,r,rp)
 		if Duel.SpecialSummon(tc,0,tp,tp,false,false,POS_FACEUP_ATTACK)==0 then return end
 	end
 end
-function s.con(e,tp,eg,ep,ev,re,r,rp)
-	return Duel.GetMatchingGroupCount(Card.IsSetCard,tp,LOCATION_GRAVE,0,nil,0x39)>=3
+function s.con(e)
+	return Duel.GetMatchingGroupCount(Card.IsSetCard,e:GetHandlerPlayer(),LOCATION_GRAVE,0,nil,0x39)>=3
 end
 function s.indtg(e,c)
 	return c:IsSetCard(0x39) and e:GetHandler():GetLinkedGroup():IsContains(c)

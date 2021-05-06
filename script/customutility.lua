@@ -368,3 +368,11 @@ function merge(t1, t2, filter)
         end
     end
 end
+
+-- This function allocates <space> ids for setcountlimit
+-- (the returned value should be used as the first limit, returned value + 1 for the second, etc.)
+cur_id = 1 << 31
+function getFreeIdSpace(space)
+	cur_id = cur_id - space
+	return cur_id
+end

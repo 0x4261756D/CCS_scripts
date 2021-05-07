@@ -92,6 +92,7 @@ function s.trapcost(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return #mg>1 and Duel.IsExistingMatchingCard(aux.spfilter(e,tp,SUMMON_TYPE_XYZ,false,false,s.xyzfilter,mg),tp,LOCATION_EXTRA,0,1,nil) end
 	local tc=Duel.SelectMatchingCard(tp,aux.spfilter(e,tp,SUMMON_TYPE_XYZ,false,false,s.xyzfilter,mg),tp,LOCATION_EXTRA,0,1,1,nil):GetFirst()
 	Duel.ConfirmCards(1-tp,tc)
+	mg:KeepAlive()
 	e:SetLabelObject({tc,mg})
 end
 

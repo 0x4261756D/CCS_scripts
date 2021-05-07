@@ -56,7 +56,24 @@ to /config/configs.json in your ProjectIgnis folder after this part
             "should_read": true
         },
 ```
+and for field-arts you also have to add
+```json
+        {
+            "url": "https://raw.githubusercontent.com/0x4261756D/CCS_scripts/master/pics/field/{}.png",
+            "type": "field"
+        },
+        {
+            "url": "https://raw.githubusercontent.com/0x4261756D/CCS_scripts/master/pics/field/{}.jpg",
+            "type": "field"
+        }
+```
+after this part
+```json
+	}
+		],
+		"urls": [
 
+```
 **Playing with other people using Custom Cards:**
 Add
 ```json

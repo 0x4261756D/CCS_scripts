@@ -5,6 +5,7 @@ SUMMON_TYPE_TIMELEAP=SUMMON_TYPE_LINK+69
 REASON_TIMELEAP=REASON_LINK+69
 SUMMON_TYPE_CHAOS_SYNCHRO=SUMMON_TYPE_SYNCHRO+69
 REASON_CHAOS_SYNCHRO=REASON_SYNCHRO+69
+REGISTER_FLAG_FILTER=16
 
 --Function to check whether a card is EXACTLY the passed type (like a more strict version of Card.IsType)
 function Card.CheckType(c,tp)
@@ -377,7 +378,7 @@ function getFreeIdSpace(space)
 	return cur_id
 end
 
---Function which originally was intended for Effulgence Congregater Zalatiel. If "16" or "REGISTER_FLAG_IGNORE_CL" is passed as argument 3 or an "EVENT_" effect, GetCardEffect can filter for that as well
+--Function which originally was intended for Effulgence Congregater Zalatiel. If "REGISTER_FLAG_FILTER" is passed as argument 3 or an "EVENT_" effect, GetCardEffect can filter for that as well.
 local regeff2=Card.RegisterEffect
 function Card.RegisterEffect(c,e,forced,...)
 	if c:IsStatus(STATUS_INITIALIZING) and not e then

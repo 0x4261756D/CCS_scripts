@@ -5,6 +5,7 @@ SUMMON_TYPE_TIMELEAP=SUMMON_TYPE_LINK+69
 REASON_TIMELEAP=REASON_LINK+69
 SUMMON_TYPE_CHAOS_SYNCHRO=SUMMON_TYPE_SYNCHRO+69
 REASON_CHAOS_SYNCHRO=REASON_SYNCHRO+69
+REGISTER_FLAG_FILTER=16
 
 --Function to check whether a card is EXACTLY the passed type (like a more strict version of Card.IsType)
 function Card.CheckType(c,tp)
@@ -350,23 +351,23 @@ end
 
 --This function merges t2 into t1 where t1,t2 are tables/arrays. If filter==true, duplicate entries will be filtered out.
 function merge(t1, t2, filter)
-    filter=filter or false
-    if filter==true then
-        local dup=true
-        for _, i in ipairs(t2) do
-            for _, j in ipairs(t1) do
-                dup = (i == j)
-                if dup then break end
-            end
-            if not dup then
-                table.insert(t1, i)
-            end
-        end
-    else
-        for _, i in ipairs(t2) do
-            table.insert(t1, i)
-        end
-    end
+	filter=filter or false
+	if filter==true then
+		local dup=true
+		for _, i in ipairs(t2) do
+			for _, j in ipairs(t1) do
+				dup = (i == j)
+				if dup then break end
+			end
+			if not dup then
+				table.insert(t1, i)
+			end
+		end
+	else
+		for _, i in ipairs(t2) do
+			table.insert(t1, i)
+		end
+	end
 end
 
 -- This function allocates <space> ids for setcountlimit
@@ -375,4 +376,50 @@ cur_id = 1 << 31
 function getFreeIdSpace(space)
 	cur_id = cur_id - space
 	return cur_id
+end
+
+--Function which originally was intended for Effulgence Congregater Zalatiel. If "REGISTER_FLAG_FILTER" is passed as argument 3 or an "EVENT_" effect, GetCardEffect can filter for that as well.
+local regeff2=Card.RegisterEffect
+function Card.RegisterEffect(c,e,forced,...)
+	if c:IsStatus(STATUS_INITIALIZING) and not e then
+		error("Parameter 2 expected to be Effect, got nil instead.",2)
+	end
+	--1 == 511002571 - access to effects that activate that detach an Xyz Material as cost
+	--2 == 511001692 - access to Cardian Summoning conditions/effects
+	--4 ==  12081875 - access to Thunder Dragon effects that activate by discarding
+	--8 == 511310036 - access to Allure Queen effects that activate by sending themselves to GY
+	--16 == 300001010 - access to Effulgence Congregater Zalatiel to filter for "EVENT_" effects
+	local reg_e=regeff2(c,e,forced)
+	if not reg_e then
+		return nil
+	end
+	local reg={...}
+	local resetflag,resetcount=e:GetReset()
+	for _,val in ipairs(reg) do
+		local prop=EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_IGNORE_IMMUNE+EFFECT_FLAG_SET_AVAILABLE
+		if e:IsHasProperty(EFFECT_FLAG_UNCOPYABLE) then prop=prop|EFFECT_FLAG_UNCOPYABLE end
+		local e2=Effect.CreateEffect(c)
+		e2:SetType(EFFECT_TYPE_SINGLE)
+		e2:SetProperty(prop,EFFECT_FLAG2_MAJESTIC_MUST_COPY)
+		if val==1 then
+			e2:SetCode(511002571)
+		elseif val==2 then
+			e2:SetCode(511001692)
+		elseif val==4 then
+			e2:SetCode(12081875)
+		elseif val==8 then
+			e2:SetCode(511310036)
+		elseif val==16 then
+			e2:SetCode(300001010)
+		end
+		e2:SetLabelObject(e)
+		e2:SetLabel(c:GetOriginalCode())
+		if resetflag and resetcount then
+			e2:SetReset(resetflag,resetcount)
+		elseif resetflag then
+			e2:SetReset(resetflag)
+		end
+		c:RegisterEffect(e2)
+	end
+	return reg_e
 end

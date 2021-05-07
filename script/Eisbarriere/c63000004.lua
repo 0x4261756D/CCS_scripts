@@ -1,18 +1,19 @@
 --Nyzette, Witch of the Ice Barrier
+Duel.LoadScript("customutility.lua")
 local s,id=GetID()
 function s.initial_effect(c)
 	--xyz summon
 	Xyz.AddProcedure(c,s.matfilter,4,2,nil,nil,5)
 	c:EnableReviveLimit()
-local e1=Effect.CreateEffect(c)
+	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(id,0))
 	e1:SetType(EFFECT_TYPE_QUICK_O)
 	e1:SetCode(EVENT_FREE_CHAIN)
-	e1:SetHintTiming(0,0x1c0)
-	e1:SetRange(LOCATION_MZONE)
 	e1:SetCountLimit(1)
+	e1:SetRange(LOCATION_MZONE)
+	e1:SetHintTiming(0,0x1c0)
+	e1:SetCost(aux.doccost(1))
 	e1:SetOperation(s.activate)
-	e1:SetCost(s.poscost)
 	c:RegisterEffect(e1)
 	--activate limit
 	local e2=Effect.CreateEffect(c)
@@ -40,16 +41,12 @@ end
 function s.matfilter(c)
 	return c:IsSetCard(0X2F)
 end
-function s.poscost(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return e:GetHandler():CheckRemoveOverlayCard(tp,1,REASON_COST) end
-	e:GetHandler():RemoveOverlayCard(tp,1,1,REASON_COST)
-end
 function s.discon(e,tp,eg,ep,ev,re,r,rp)
 	return re:IsActiveType(TYPE_MONSTER) and rp==1-tp
 end
 function s.activate(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
-	if c:IsFacedown() or not c:IsRelateToEffect(e) then return end
+	if not c:IsRelateToEffect(e) then return end
 	local e1=Effect.CreateEffect(c)
 	e1:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
 	e1:SetRange(LOCATION_MZONE)
@@ -60,6 +57,7 @@ function s.activate(e,tp,eg,ep,ev,re,r,rp)
 	Duel.RegisterEffect(e1,tp)
 end
 function s.disop(e,tp,eg,ep,ev,re,r,rp)
+	if not e:GetHandler():IsFaceup() then return end
 	Duel.NegateEffect(ev)
 end
 function s.aclimit1(e,tp,eg,ep,ev,re,r,rp)
@@ -76,5 +74,3 @@ end
 function s.elimit(e,te,tp)
 	return te:IsHasType(EFFECT_TYPE_ACTIVATE)
 end
-
-

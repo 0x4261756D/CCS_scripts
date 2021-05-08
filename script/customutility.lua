@@ -107,7 +107,7 @@ end
 --Shortcut function to register the same effect on different events. (Useful for something like "If this card is summoned" to take care of all summon events).
 --Like with all fwna's, the arguments are passed as a table where "codes" is a table of all events which should be used.
 Auxiliary.MultiRegister=aux.FunctionWithNamedArgs(
-	function(c,codes,desc,cat,prop,typ,range,con,cost,tg,op,opt)
+	function(c,codes,desc,cat,prop,typ,range,con,cost,tg,op,opt,forced,flags)
 	local effs={}
 	local e=Effect.CreateEffect(c)
 	if desc then e:SetDescription(desc) end
@@ -127,10 +127,10 @@ Auxiliary.MultiRegister=aux.FunctionWithNamedArgs(
 	end
 	for i=1,#codes do
 		e:SetCode(codes[i])
-		c:RegisterEffect(e:Clone())
+		c:RegisterEffect(e:Clone(),forced,flags)
 	end
 	e:Reset()
-end,"handler","codes","desc","cat","prop","typ","range","con","cost","tg","op","opt")
+end,"handler","codes","desc","cat","prop","typ","range","con","cost","tg","op","opt","forced","flags")
 
 --The following function adds a proc for the Chaos Synchro Summon type to a card (basically Synchro Summoning by banishing materials from the GY with more flexibility).
 --Parameter Explanation:

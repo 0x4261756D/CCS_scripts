@@ -118,7 +118,7 @@ function s.trapop(e,tp,eg,ep,ev,re,r,rp)
 			Duel.Overlay(tc,tc2)
 			Duel.Recover(tp,(tc:GetTextAttack()+tc:GetTextDefense()+tc2:GetTextAttack()+tc2:GetTextDefense())/2,REASON_EFFECT)
 			if additional and Duel.SelectYesNo(tp,aux.Stringid(id,4)) then
-				local g=Duel.SelectMatchingCard(tp,aux.FilterFaceupFunction(Card.IsType,TYPE_EFFECT),tp,1,#mat,nil)
+				local g=Duel.SelectMatchingCard(tp,aux.FilterFaceupFunction(Card.IsType,TYPE_EFFECT),tp,0,LOCATION_MZONE,1,#mat,nil)
 				for tc3 in ~g do
 					Duel.NegateRelatedChain(tc3,RESET_TURN_SET)
 					local e1=Effect.CreateEffect(c)
@@ -135,7 +135,7 @@ function s.trapop(e,tp,eg,ep,ev,re,r,rp)
 				end
 			end
 			elseif choice==2 then
-				local g=Duel.SelectMatchingCard(tp,aux.FilterFaceupFunction(Card.IsType,TYPE_EFFECT),tp,1,#mat,nil)
+				local g=Duel.SelectMatchingCard(tp,aux.FilterFaceupFunction(Card.IsType,TYPE_EFFECT),tp,0,LOCATION_MZONE,1,#mat,nil)
 				for tc3 in ~g do
 					Duel.NegateRelatedChain(tc3,RESET_TURN_SET)
 					local e1=Effect.CreateEffect(c)

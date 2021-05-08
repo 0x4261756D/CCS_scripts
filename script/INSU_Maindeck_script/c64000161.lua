@@ -69,23 +69,18 @@ function s.activate(e,tp,eg,ep,ev,re,r,rp)
 		if c:IsRelateToEffect(e) and Duel.SpecialSummon(a,0,tp,tp,false,false,POS_FACEUP)>0 then
 			local tc=Duel.SelectMatchingCard(tp,s.filter1,tp,0,LOCATION_MZONE,1,1,nil):GetFirst()
 			if tc then
-				Duel.ChangePosition(tc,POS_FACEUP_DEFENSE)
 				local e1=Effect.CreateEffect(c)
 				e1:SetType(EFFECT_TYPE_SINGLE)
-				e1:SetCode(EFFECT_CANNOT_CHANGE_POSITION)
+				e1:SetCode(EFFECT_DISABLE)
 				e1:SetReset(RESET_EVENT+RESETS_STANDARD)
 				tc:RegisterEffect(e1)
 				local e2=Effect.CreateEffect(c)
 				e2:SetType(EFFECT_TYPE_SINGLE)
-				e2:SetCode(EFFECT_DISABLE)
+				e2:SetCode(EFFECT_DISABLE_EFFECT)
 				e2:SetReset(RESET_EVENT+RESETS_STANDARD)
 				tc:RegisterEffect(e2)
-				local e3=Effect.CreateEffect(c)
-				e3:SetType(EFFECT_TYPE_SINGLE)
-				e3:SetCode(EFFECT_DISABLE_EFFECT)
-				e3:SetValue(RESET_TURN_SET)
-				e3:SetReset(RESET_EVENT+RESETS_STANDARD)
-				tc:RegisterEffect(e3)
+				Duel.BreakEffect()
+				Duel.ChangePosition(tc,POS_FACEUP_DEFENSE)
 			end
 		end
 	end

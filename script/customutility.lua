@@ -108,7 +108,7 @@ end
 --Like with all fwna's, the arguments are passed as a table where "codes" is a table of all events which should be used.
 Auxiliary.MultiRegister=aux.FunctionWithNamedArgs(
 	function(c,codes,desc,cat,prop,typ,range,con,cost,tg,op,opt,forced,flags)
-	local effs={}
+	local effs,forced={},forced or {}
 	local e=Effect.CreateEffect(c)
 	if desc then e:SetDescription(desc) end
 	if cat then e:SetCategory(cat) end

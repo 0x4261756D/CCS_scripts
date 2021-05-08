@@ -260,7 +260,7 @@ Auxiliary.AddTimeLeapProcedure=aux.FunctionWithNamedArgs(
 		e1:SetCode(EFFECT_SPSUMMON_PROC)
 		e1:SetProperty(EFFECT_FLAG_UNCOPYABLE+EFFECT_FLAG_IGNORE_IMMUNE)
 		e1:SetRange(LOCATION_EXTRA)
-		e1:SetCondition(aux.TimeLeapCondition(con))
+		e1:SetCondition(aux.TimeLeapCondition(c,con))
 		e1:SetTarget(aux.TimeLeapTarget(c,f,min,max,table.unpack(extraparams)))
 		e1:SetOperation(aux.TimeLeapOperation(c))
 		e1:SetValue(SUMMON_TYPE_TIMELEAP)
@@ -278,9 +278,9 @@ Auxiliary.AddTimeLeapProcedure=aux.FunctionWithNamedArgs(
 			end
 end,"handler","con","filter","min","max","desc","time banish","extraparams")
 
-function Auxiliary.TimeLeapCondition(con)
+function Auxiliary.TimeLeapCondition(c,con)
 	return function(e,tp,eg,ep,ev,re,r,rp)
-		return (not con or con(e,tp,eg,ep,ev,re,r,rp)) and Duel.GetFlagEffect(tp,3400)==0
+		return (not con or con(e,tp,eg,ep,ev,re,r,rp)) and Duel.GetFlagEffect(tp,c:GetOriginalCode())==0
 	end
 end
 
@@ -300,10 +300,11 @@ end
 function Auxiliary.TimeLeapOperation(c)
 	return function(e,tp,eg,ep,ev,re,r,rp)
 		local mat=e:GetLabelObject()
-		c:SetMaterial(mat)
-		Duel.Remove(mat,POS_FACEUP,REASON_MATERIAL+REASON_FUSION+69)
-		Duel.RegisterFlagEffect(tp,3400,RESET_PHASE+PHASE_END,EFFECT_FLAG_OATH,1)
+		Duel.Remove(mat,POS_FACEUP,REASON_MATERIAL+REASON_TIMELEAP)
+		Duel.RegisterFlagEffect(tp,c:GetOriginalCode(),RESET_PHASE+PHASE_END,EFFECT_FLAG_OATH,1)
 		mat:RegisterFlagEffect(3401,RESET_PHASE+PHASE_END,0,1,EFFECT_FLAG_CLIENT_HINT,1,0,3401)
+		c:SetMaterial(mat)
+		c:CompleteProcedure()
 	end
 end
 
@@ -314,7 +315,7 @@ function Auxiliary.TimeBanishTarget(c)
 end
 
 function Auxiliary.TimeBanishFilter(c)
-	return c:GetFlagEffect(3401)~=0
+	return c:GetFlagEffect(3401)>0
 end
 
 function Auxiliary.TimeBanishOperation(c)
@@ -327,7 +328,7 @@ function Auxiliary.TimeBanishOperation(c)
 		e1:SetRange(LOCATION_REMOVED)
 		e1:SetValue(1)
 		c:RegisterEffect(e1,true)
-		local tc=Duel.SelectMatchingCard(tp,aux.spfilter(e,tp,0,aux.TimeBanishFilter),tp,LOCATION_REMOVED,0,1,1,nil)
+		local tc=Duel.SelectMatchingCard(tp,aux.spfilter(e,tp,0,false,false,aux.TimeBanishFilter),tp,LOCATION_REMOVED,0,1,1,nil)
 		Duel.SpecialSummon(tc,0,tp,tp,false,false,POS_FACEUP)
 	end
 end

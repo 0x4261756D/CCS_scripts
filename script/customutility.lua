@@ -354,7 +354,7 @@ end
 function merge(t1, t2, filter)
 	filter=filter or false
 	if filter==true then
-		local dup=true
+		local dup=false
 		for _, i in ipairs(t2) do
 			for _, j in ipairs(t1) do
 				dup = (i == j)

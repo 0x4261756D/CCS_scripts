@@ -424,3 +424,16 @@ function Card.RegisterEffect(c,e,forced,...)
 	end
 	return reg_e
 end
+
+--Global Check to allow Spells/Traps to be used in Fusion Summons of cards that the "value" function returns 
+function Auxiliary.AddSpellTrapFusion(c,s,value)
+	aux.GlobalCheck(s,function()
+		local ge=Effect.CreateEffect(c)
+		ge:SetType(EFFECT_TYPE_FIELD)
+		ge:SetCode(EFFECT_EXTRA_FUSION_MATERIAL)
+		ge:SetTargetRange(LOCATION_SZONE+LOCATION_HAND,0)
+		ge:SetTarget(function(e,c) return c:IsType(TYPE_SPELL+TYPE_TRAP) end)
+		ge:SetValue(value)
+		Duel.RegisterEffect(ge,0)
+	end)
+end

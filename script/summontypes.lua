@@ -2,6 +2,8 @@
 
 Duel.LoadScript("customutility.lua")
 
+--LINK SUMMON WITH SPELLS/TRAPS AS MATERIAL
+
 function Link.AddSpellTrapProcedure(c,f,min,max,specialchk,desc)
 	local e1=Effect.CreateEffect(c)
 	e1:SetType(EFFECT_TYPE_FIELD)
@@ -141,18 +143,25 @@ function Link.STOperation(f,minc,maxc,specialchk)
 	end
 end
 
---Global Check to allow Spells/Traps to be used in Fusion Summons of cards that the "value" function returns 
-function Auxiliary.AddSpellTrapFusion(c,s,value)
+--Global Check to allow Spells/Traps to be used in Fusion Summons of cards that the "value" function returns
+--If "value" is nil, it defaults to the card itself
+function Fusion.AddSpellTrapRep(c,s,value,f,...)
+	f(...)
 	aux.GlobalCheck(s,function()
 		local ge=Effect.CreateEffect(c)
 		ge:SetType(EFFECT_TYPE_FIELD)
 		ge:SetCode(EFFECT_EXTRA_FUSION_MATERIAL)
 		ge:SetTargetRange(LOCATION_SZONE+LOCATION_HAND,0)
-		ge:SetTarget(function(e,c) return c:IsType(TYPE_SPELL+TYPE_TRAP) end)
-		ge:SetValue(value)
+		ge:SetTarget(function(e,cc) return cc:IsType(TYPE_SPELL+TYPE_TRAP) end)
+		ge:SetValue(value or function(e,cc) if not cc then return false end return cc:IsOriginalCode(c:GetOriginalCode()) end)
 		Duel.RegisterEffect(ge,0)
 	end)
 end
+
+--TIME LEAP
+
+--The Summon works by banishing a monster with 1 level lower than the Time Leap Monster from your field
+--Time Banish means, that the summoned monster will be banished in the end phase and a monster which has been used as material can be summoned back
 
 function Card.IsCanBeTimeleapMaterial(c)
 	return c:IsCanBeMaterial(SUMMON_TYPE_TIMELEAP)
@@ -249,7 +258,8 @@ function Auxiliary.TimeBanishOperation(c)
 	end
 end
 
---The following function adds a proc for the Chaos Synchro Summon type to a card (basically Synchro Summoning by banishing materials from the GY with more flexibility).
+--CHAOS SYNCHRO (basically Synchro Summoning by banishing materials from the GY with more flexibility)
+
 --Parameter Explanation:
 --c: The card which receives the proc
 --f1: A filter to further specify the legal Tuners with extraparams1 as a table of needed extraparameters.

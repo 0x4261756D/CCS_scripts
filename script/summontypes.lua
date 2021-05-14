@@ -169,56 +169,63 @@ end
 
 --Explanation of params:
 --c=card which will be summoned, con=required conditions, f=filter for materials, min/max=how many materials are needed,
---desc=optional description, tb=bool to specify whether to time banish in the end phase, extraparams=array containing all extraparams of "f".
-Auxiliary.AddTimeLeapProcedure=aux.FunctionWithNamedArgs(
-	function(c,con,f,min,max,desc,tb,extraparams)
-		local min=min or 1
-		local max=max or min
-		local tb=tb or false
-		local e1=Effect.CreateEffect(c)
-		e1:SetType(EFFECT_TYPE_FIELD)
-		if desc then
-			e1:SetDescription(desc)
-			else 
-				e1:SetDescription(3400)
-		end
-		e1:SetCode(EFFECT_SPSUMMON_PROC)
-		e1:SetProperty(EFFECT_FLAG_UNCOPYABLE+EFFECT_FLAG_IGNORE_IMMUNE)
-		e1:SetRange(LOCATION_EXTRA)
-		e1:SetCondition(aux.TimeLeapCondition(c,con))
-		e1:SetTarget(aux.TimeLeapTarget(c,f,min,max,table.unpack(extraparams)))
-		e1:SetOperation(aux.TimeLeapOperation(c))
-		e1:SetValue(SUMMON_TYPE_TIMELEAP)
-		c:RegisterEffect(e1)
-			if tb==true then
-				local e2=Effect.CreateEffect(c)
-				e2:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
-				e2:SetCode(EVENT_PHASE+PHASE_END)
-				e2:SetProperty(EFFECT_FLAG_UNCOPYABLE+EFFECT_FLAG_IGNORE_IMMUNE)
-				e2:SetRange(LOCATION_MZONE)
-				e2:SetCondition(function(e) return Duel.GetTurnPlayer()==e:GetHandlerPlayer() end)
-				e2:SetTarget(aux.TimeBanishTarget(c))
-				e2:SetOperation(aux.TimeBanishOperation(c))
-				c:RegisterEffect(e2)
-			end
-end,"handler","con","filter","min","max","desc","time banish","extraparams")
-
-function Auxiliary.TimeLeapCondition(c,con)
-	return function(e,tp,eg,ep,ev,re,r,rp)
-		return (not con or con(e,tp,eg,ep,ev,re,r,rp)) and Duel.GetFlagEffect(tp,c:GetOriginalCode())==0
+--desc=optional description, tb=bool to specify whether to time banish in the end phase, ...=all extraparams of "f".
+function Auxiliary.AddTimeLeapProcedure(c,con,f,min,max,desc,tb,...)
+	local params={...}
+	local min=min or 1
+	local max=max or min
+	local tb=tb or false
+	local e1=Effect.CreateEffect(c)
+	e1:SetType(EFFECT_TYPE_FIELD)
+	if desc then
+		e1:SetDescription(desc)
+	else 
+		e1:SetDescription(3400)
 	end
+	e1:SetCode(EFFECT_SPSUMMON_PROC)
+	e1:SetProperty(EFFECT_FLAG_UNCOPYABLE+EFFECT_FLAG_IGNORE_IMMUNE)
+	e1:SetRange(LOCATION_EXTRA)
+	e1:SetCondition(aux.TimeLeapCondition(c,f,min,table.unpack(params)))
+	e1:SetTarget(aux.TimeLeapTarget(c,f,min,max,table.unpack(params)))
+	e1:SetOperation(aux.TimeLeapOperation(c))
+	e1:SetValue(SUMMON_TYPE_TIMELEAP)
+	c:RegisterEffect(e1)
+	if tb==true then
+		local e2=Effect.CreateEffect(c)
+		e2:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
+		e2:SetCode(EVENT_PHASE+PHASE_END)
+		e2:SetProperty(EFFECT_FLAG_UNCOPYABLE+EFFECT_FLAG_IGNORE_IMMUNE)
+		e2:SetRange(LOCATION_MZONE)
+		e2:SetCondition(function(e) return Duel.GetTurnPlayer()==c:GetControler() end)
+		e2:SetTarget(aux.TimeBanishTarget(c))
+		e2:SetOperation(aux.TimeBanishOperation(c))
+		c:RegisterEffect(e2)
+	end
+	local e3=Effect.CreateEffect(c)
+	e3:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_IGNORE_IMMUNE+EFFECT_FLAG_UNCOPYABLE+EFFECT_FLAG_SET_AVAILABLE)
+	e3:SetType(EFFECT_TYPE_SINGLE)
+	e3:SetCode(EFFECT_REMOVE_TYPE)
+	e3:SetValue(TYPE_FUSION)
+	e3:SetRange(LOCATION_EXTRA)
+	c:RegisterEffect(e3)
+	c:RegisterFlagEffect(3400,0,0,0)
+end
+
+function Auxiliary.TimeLeapCondition(c,f,min,...)
+	local params={...}
+	local g=Duel.GetMatchingGroup(Card.IsLevel,c:GetControler(),LOCATION_MZONE,0,nil,c:GetLevel()-1):Filter(Card.IsCanBeTimeleapMaterial,nil):Filter(f,nil,table.unpack(params))
+	return #g>=min and Duel.GetFlagEffect(c:GetControler(),c:GetOriginalCode())==0
 end
 
 function Auxiliary.TimeLeapTarget(c,f,min,max,...)
 	local params={...}
-	return function(e,tp,eg,ep,ev,re,r,rp)
-		local g=Duel.GetMatchingGroup(Card.IsLevel,tp,LOCATION_MZONE,0,nil,c:GetLevel()-1):Filter(Card.IsCanBeTimeleapMaterial,nil)
-		if #g>=min then
-			local mat=g:FilterSelect(tp,f,min,max,true,nil,table.unpack(params))
-			e:SetLabelObject(mat)
-			return true
-			else return false
-		end
+	local g=Duel.GetMatchingGroup(Card.IsLevel,tp,LOCATION_MZONE,0,nil,c:GetLevel()-1):Filter(Card.IsCanBeTimeleapMaterial,nil)
+	if #g>=min then
+		local mat=g:FilterSelect(tp,f,min,max,true,nil,table.unpack(params))
+		e:SetLabelObject(mat)
+		mat:KeepAlive()
+		return true
+		else return false
 	end
 end
 
@@ -227,9 +234,12 @@ function Auxiliary.TimeLeapOperation(c)
 		local mat=e:GetLabelObject()
 		Duel.Remove(mat,POS_FACEUP,REASON_MATERIAL+REASON_TIMELEAP)
 		Duel.RegisterFlagEffect(tp,c:GetOriginalCode(),RESET_PHASE+PHASE_END,EFFECT_FLAG_OATH,1)
-		mat:RegisterFlagEffect(3401,RESET_PHASE+PHASE_END,0,1,EFFECT_FLAG_CLIENT_HINT,1,0,3401)
+		for tc in ~mat do
+			tc:RegisterFlagEffect(3401,RESET_PHASE+PHASE_END,0,1,EFFECT_FLAG_CLIENT_HINT,1,0,3401)
+		end
 		c:SetMaterial(mat)
 		c:CompleteProcedure()
+		mat:DeleteGroup()
 	end
 end
 

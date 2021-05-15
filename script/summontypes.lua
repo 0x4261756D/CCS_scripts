@@ -185,7 +185,7 @@ function Auxiliary.AddTimeLeapProcedure(c,con,f,min,max,desc,tb,...)
 	e1:SetCode(EFFECT_SPSUMMON_PROC)
 	e1:SetProperty(EFFECT_FLAG_UNCOPYABLE+EFFECT_FLAG_IGNORE_IMMUNE)
 	e1:SetRange(LOCATION_EXTRA)
-	e1:SetCondition(aux.TimeLeapCondition(c,f,min,table.unpack(params)))
+	e1:SetCondition(aux.AND(aux.TimeLeapCondition(c,f,min,params)),con)
 	e1:SetTarget(aux.TimeLeapTarget(c,f,min,max,table.unpack(params)))
 	e1:SetOperation(aux.TimeLeapOperation(c))
 	e1:SetValue(SUMMON_TYPE_TIMELEAP)
@@ -211,7 +211,13 @@ function Auxiliary.AddTimeLeapProcedure(c,con,f,min,max,desc,tb,...)
 	c:RegisterFlagEffect(3400,0,0,0)
 end
 
-function Auxiliary.TimeLeapCondition(c,f,min,...)
+function Auxiliary.TimeLeapCondition(c,f,min,params)
+	return function()
+		return aux.TimeLeapCondition2(c,f,min,table.unpack(params))
+	end
+end
+
+function Auxiliary.TimeLeapCondition2(c,f,min,...)
 	local params={...}
 	local g=Duel.GetMatchingGroup(Card.IsLevel,c:GetControler(),LOCATION_MZONE,0,nil,c:GetLevel()-1):Filter(Card.IsCanBeTimeleapMaterial,nil):Filter(f,nil,table.unpack(params))
 	return #g>=min and Duel.GetFlagEffect(c:GetControler(),c:GetOriginalCode())==0
@@ -219,13 +225,15 @@ end
 
 function Auxiliary.TimeLeapTarget(c,f,min,max,...)
 	local params={...}
-	local g=Duel.GetMatchingGroup(Card.IsLevel,tp,LOCATION_MZONE,0,nil,c:GetLevel()-1):Filter(Card.IsCanBeTimeleapMaterial,nil)
-	if #g>=min then
-		local mat=g:FilterSelect(tp,f,min,max,true,nil,table.unpack(params))
-		e:SetLabelObject(mat)
-		mat:KeepAlive()
-		return true
-		else return false
+	return function(e,tp,eg,ep,ev,re,r,rp)
+		local g=Duel.GetMatchingGroup(Card.IsLevel,tp,LOCATION_MZONE,0,nil,c:GetLevel()-1):Filter(Card.IsCanBeTimeleapMaterial,nil)
+		if #g>=min then
+			local mat=g:FilterSelect(tp,f,min,max,true,nil,table.unpack(params))
+			e:SetLabelObject(mat)
+			mat:KeepAlive()
+			return true
+			else return false
+		end
 	end
 end
 

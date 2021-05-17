@@ -223,3 +223,12 @@ function Card.RegisterEffect(c,e,forced,...)
 	end
 	return reg_e
 end
+
+--Some smol utilities for Time Leap
+function Card.IsTimeLeap(c)
+	return c:GetFlagEffect(3400)>0
+end
+
+function Card.IsTimeLeapMaterial(c)
+	return c:GetFlagEffect(3401)>0
+end

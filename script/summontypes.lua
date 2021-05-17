@@ -239,7 +239,7 @@ function Auxiliary.TimeLeapOperation(c)
 		Duel.Remove(mat,POS_FACEUP,REASON_MATERIAL+REASON_TIMELEAP)
 		Duel.RegisterFlagEffect(tp,c:GetOriginalCode(),RESET_PHASE+PHASE_END,EFFECT_FLAG_OATH,1)
 		for tc in ~mat do
-			tc:RegisterFlagEffect(3401,RESET_PHASE+PHASE_END,0,1,EFFECT_FLAG_CLIENT_HINT,1,0,3401)
+			tc:RegisterFlagEffect(3401,RESET_EVENT+RESETS_STANDARD+RESET_OVERLAY,0,1)
 		end
 		c:SetMaterial(mat)
 		c:CompleteProcedure()

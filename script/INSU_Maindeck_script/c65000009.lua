@@ -1,42 +1,35 @@
 --Weirzard Maxer
-local s, id = GetID()
+local s,id=GetID()
 function s.initial_effect(c)
 	--Negate
 	local e1=Effect.CreateEffect(c)
-	e1:SetDescription(aux.Stringid(65000009,0))
-	e1:SetCategory(CATEGORY_NEGATE+CATEGORY_DESTROY)
+	e1:SetDescription(aux.Stringid(id,0))
+	e1:SetCategory(CATEGORY_DISABLE+CATEGORY_DESTROY)
 	e1:SetType(EFFECT_TYPE_QUICK_O)
 	e1:SetCode(EVENT_CHAINING)
-	--e1:SetProperty(EFFECT_FLAG_DAMAGE_STEP+EFFECT_FLAG_DAMAGE_CAL)
+	e1:SetProperty(EFFECT_FLAG_DAMAGE_STEP+EFFECT_FLAG_DAMAGE_CAL)
 	e1:SetRange(LOCATION_HAND)
-	e1:SetCountLimit(1,65000009)
+	e1:SetCountLimit(1,id)
 	e1:SetCondition(s.negcon)
 	e1:SetCost(s.negcost)
 	e1:SetTarget(s.negtg)
 	e1:SetOperation(s.negop)
 	c:RegisterEffect(e1)
+	--Special Summon
 	local e2=Effect.CreateEffect(c)
-	e2:SetDescription(aux.Stringid(65000009,0))
+	e2:SetDescription(aux.Stringid(id,1))
 	e2:SetCategory(CATEGORY_SPECIAL_SUMMON)
-	e2:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_F)
+	e2:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
 	e2:SetCode(EVENT_SPSUMMON_SUCCESS)
-	e2:SetProperty(EFFECT_FLAG_CARD_TARGET)
-	e2:SetCountLimit(1,65000010)
+	e2:SetProperty(EFFECT_FLAG_DELAY+EFFECT_FLAG_DAMAGE_STEP)
+	e2:SetCountLimit(1,id+1)
 	e2:SetTarget(s.sptg)
 	e2:SetOperation(s.spop)
 	c:RegisterEffect(e2)
-	--destroy replace
-	local e3=Effect.CreateEffect(c)
-	e3:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
-	e3:SetCode(EFFECT_DESTROY_REPLACE)
-	e3:SetRange(LOCATION_MZONE)
-	e3:SetCountLimit(1,65000011)
-	e3:SetTarget(s.reptg)
-	e3:SetValue(1)
-	c:RegisterEffect(e3)
 end
 function s.negcon(e,tp,eg,ep,ev,re,r,rp)
-	return Duel.IsChainNegatable(ev) and re:GetOperation() and (not re:GetHandler():IsCode(65000009) or ep~=tp)
+	local rc,tl=eg:GetFirst(),Duel.GetChainInfo(0,CHAININFO_TRIGGERING_LOCATION)
+	return Duel.IsChainDisablable(ev) and not rc:IsCode(id) and ((rc:IsMonster() and tl==LOCATION_MZONE) or (not rc:IsMonster() and tl==LOCATION_SZONE))
 end
 function s.costfilter(c)
 	return c:IsSetCard(0x800)
@@ -50,53 +43,54 @@ function s.negcost(e,tp,eg,ep,ev,re,r,rp,chk)
 	Duel.ConfirmCards(1-tp,g,REASON_COST)
 end
 function s.negtg(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return Duel.GetLocationCount(tp,LOCATION_MZONE)>0 end
-	Duel.SetOperationInfo(0,CATEGORY_NEGATE,eg,1,0,0)
-	if re:GetHandler():IsDestructable() and re:GetHandler():IsRelateToEffect(re) then
-		Duel.SetOperationInfo(0,CATEGORY_DESTROY,eg,1,0,0)
+	local rc=eg:GetFirst()
+	if chk==0 then return true end
+	Duel.SetOperationInfo(0,CATEGORY_DISABLE,rc,1,rc:GetControler(),rc:GetLocation())
+	if rc:IsDestructable() and rc:IsRelateToEffect(re) then
+		Duel.SetOperationInfo(0,CATEGORY_DESTROY,rc,1,rc:GetControler(),rc:GetLocation())
 	end
 end
 function s.negop(e,tp,eg,ep,ev,re,r,rp)
-	if Duel.NegateActivation(ev) and re:GetHandler():IsRelateToEffect(re) then
-		Duel.Destroy(eg,REASON_EFFECT)
+	local rc=eg:GetFirst()
+	if Duel.NegateEffect(ev) and rc:IsRelateToEffect(re) then
+		Duel.Destroy(rc,REASON_EFFECT)
 		local c=e:GetHandler()
-		if not c:IsRelateToEffect(e) then return end
-		Duel.SpecialSummon(c,0,tp,tp,false,false,POS_FACEUP)
-		Duel.ShuffleHand(tp)
+		if c:IsRelateToEffect(e) and Duel.GetLocationCount(tp,LOCATION_MZONE)>0 and Duel.SelectYesNo(tp,aux.Stringid(id,2)) then 
+			Duel.SpecialSummon(c,0,tp,tp,false,false,POS_FACEUP)
+			Duel.ShuffleHand(tp)
+		end
 	end
 end
 function s.spfilter(c,e,tp)
-	return c:IsSetCard(0x800) and c:IsCanBeSpecialSummoned(e,0,tp,false,false) and not c:IsCode(65000009)
+	return c:IsSetCard(0x800) and c:IsCanBeSpecialSummoned(e,0,tp,false,false)
 end
 function s.sptg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
-	if chkc then return chkc:IsLocation(LOCATION_GRAVE) and chkc:IsControler(tp) and s.spfilter(chkc,e,tp) end
-	if chk==0 then return Duel.GetLocationCount(tp,LOCATION_MZONE)>0
-		and Duel.IsExistingTarget(s.spfilter,tp,LOCATION_GRAVE,0,1,nil,e,tp) end
-	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
-	local g=Duel.SelectTarget(tp,s.spfilter,tp,LOCATION_GRAVE,0,1,1,nil,e,tp)
-	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,g,1,0,0)
+	if chk==0 then return Duel.GetLocationCount(tp,LOCATION_MZONE)>0 and Duel.IsExistingMatchingCard(s.spfilter,tp,LOCATION_GRAVE,0,1,nil,e,tp) end
+	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,nil,1,tp,LOCATION_GRAVE)
 end
 function s.spop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
-	local tc=Duel.GetFirstTarget()
 	if Duel.GetLocationCount(tp,LOCATION_MZONE)<=0 then return end
-	if tc:IsRelateToEffect(e) then
-		Duel.SpecialSummon(tc,0,tp,tp,false,false,POS_FACEUP)
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
+	local tc=Duel.SelectMatchingCard(tp,aux.NecroValleyFilter(s.spfilter),tp,LOCATION_GRAVE,0,1,1,nil,e,tp):GetFirst()
+	if tc then
+		if Duel.SpecialSummon(tc,0,tp,tp,false,false,POS_FACEUP)>0 then
+			local e1=Effect.CreateEffect(c)
+			e1:SetType(EFFECT_TYPE_SINGLE)
+			e1:SetCode(EFFECT_DISABLE)
+			e1:SetReset(RESET_EVENT+RESETS_STANDARD)
+			tc:RegisterEffect(e1,true)
+			local e2=Effect.CreateEffect(c)
+			e2:SetType(EFFECT_TYPE_SINGLE)
+			e2:SetCode(EFFECT_DISABLE_EFFECT)
+			e2:SetReset(RESET_EVENT+RESETS_STANDARD)
+			tc:RegisterEffect(e2,true)
+			local og=Group.Filter(Duel.GetOperatedGroup(),Card.IsLocation,nil,LOCATION_MZONE)
+			if #og>0 and Duel.SelectYesNo(tp,aux.Stringid(id,3)) then
+				Duel.BreakEffect()
+				tc=Duel.SelectMatchingCard(tp,s.remfilter,tp,LOCATION_DECK,0,1,1,nil)
+				Duel.Remove(tc,POS_FACEUP,REASON_EFFECT)
+			end
+		end
 	end
-end
-function s.remfilter(c)
-return c:IsType(TYPE_SPELL) and c:IsAbleToRemoveAsCost()
-end
-function s.reptg(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then 
-		--if eg:GetCount()~=1 then return false end
-		local tc=eg:GetFirst()
-		return tc:IsFaceup() and tc:IsLocation(LOCATION_MZONE) and tc:IsSetCard(0x800) 
-			and tc:IsReason(REASON_BATTLE+REASON_EFFECT) and not tc:IsReason(REASON_REPLACE)
-			and Duel.IsExistingMatchingCard(s.remfilter,tp,LOCATION_DECK,0,1,nil)
-	end	
-	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_REMOVE)
-	local g=Duel.SelectMatchingCard(tp,s.remfilter,tp,LOCATION_DECK,0,1,1,nil)
-	Duel.Remove(g,POS_FACEUP,REASON_EFFECT)
-	return true
 end

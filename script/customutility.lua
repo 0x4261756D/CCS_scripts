@@ -1,4 +1,4 @@
---This file contains a useful list of functions and constants which can be used for a lot of things. Each function should have a small description as well.
+--This file contains a useful list of functions and constants which can be used for a lot of things.
 
 --constants
 SUMMON_TYPE_TIMELEAP=SUMMON_TYPE_LINK+69
@@ -7,12 +7,10 @@ SUMMON_TYPE_CHAOS_SYNCHRO=SUMMON_TYPE_SYNCHRO+69
 REASON_CHAOS_SYNCHRO=REASON_SYNCHRO+69
 REGISTER_FLAG_FILTER=16
 
---Function to check whether a card is EXACTLY the passed type (like a more strict version of Card.IsType)
 function Card.CheckType(c,tp)
 	return (c:GetType()&tp)==tp
 end
 
---Function to check whether an array/table contains a certain element
 function contains(tab,element)
 	for _,value in pairs(tab) do
 		if value==element then
@@ -22,9 +20,6 @@ function contains(tab,element)
 	return false
 end
 
---Function to select an option based on the condition on the same place as the option in the first table
---If the third table isn't nil, the corresponding operation will be executed.
---Example Call: local x=aux.EffectCheck(tp,cons,strings,ops)(e,tp,eg,ep,ev,re,r,rp)
 function Auxiliary.EffectCheck(tp,cons,strings,ops)
 	return function(e,tp,eg,ep,ev,re,r,rp)
 		local eff,sel={},{}
@@ -40,11 +35,6 @@ function Auxiliary.EffectCheck(tp,cons,strings,ops)
 	end
 end
 
---doccost detaches a specific amount of materials from an Xyz monster (min=<X=<max). min=nil -> detaches all materials.
---label=true -> the amount of detached materials will be saved as a label.
---The function also supports another cost when passed as parameter 4.
---If "cost" isn't nil, it is required that "order" isn't nil as well, otherwise the passed function won't be executed.
---order=0 -> the passed cost will be executed before the detaching, order=1 -> afterwards
 function Auxiliary.doccost(min,max,label,cost,order)
 	return function(e,tp,eg,ep,ev,re,r,rp,chk)
 		local c=e:GetHandler()
@@ -94,8 +84,6 @@ function Auxiliary.doccost(min,max,label,cost,order)
 	end
 end
 
---aux.spfilter is a shortcut to check for legally special summonable. It has to be called with e,tp,the summon type and bools whether summon conditions and revive limit are ignored and also supports another filter which has to be fullfilled along with all its extraparams.
---Example: Duel.IsExistingMatchingCard(aux.spfilter(e,tp,s.filter,a,b),tp,LOCATION_GRAVE,0,1,nil) where a and b are the extraparams of s.filter.
 function Auxiliary.spfilter(e,tp,sumtype,nocheck,nolimit,f,...)
 	local params={...}
 	return function(c)
@@ -104,8 +92,6 @@ function Auxiliary.spfilter(e,tp,sumtype,nocheck,nolimit,f,...)
 	end
 end
 
---Shortcut function to register the same effect on different events. (Useful for something like "If this card is summoned" to take care of all summon events).
---Like with all fwna's, the arguments are passed as a table where "codes" is a table of all events which should be used.
 Auxiliary.MultiRegister=aux.FunctionWithNamedArgs(
 	function(c,codes,desc,cat,prop,typ,range,con,cost,tg,op,opt,flags)
 	local effs,flags={},flags or {}
@@ -132,8 +118,6 @@ Auxiliary.MultiRegister=aux.FunctionWithNamedArgs(
 	e:Reset()
 end,"handler","codes","desc","cat","prop","typ","range","con","cost","tg","op","opt","flags")
 
---Standardcondition for Ventus monsters (if shuffled into the Deck by a Wind monster)
---can also support another condition if passed
 function Auxiliary.VentusCon(con)
 	return function(e,tp,eg,ep,ev,re,r,rp)
 		if not re or r&REASON_COST>0 then return false end 
@@ -141,15 +125,12 @@ function Auxiliary.VentusCon(con)
 	end
 end
 
---Condition to check the Summon type of a card
---can also support another condition if passed
 function Auxiliary.SumtypeCon(c,st,con)
 	return function(e,tp,eg,ep,ev,re,r,rp) 
 		return (not con or con(e,tp,eg,ep,ev,re,r,rp)) and c:IsSummonType(st)
 	end
 end
 
---This function merges t2 into t1 where t1,t2 are tables/arrays. If filter==true, duplicate entries will be filtered out.
 function merge(t1, t2, filter)
 	filter=filter or false
 	if filter==true then
@@ -170,15 +151,12 @@ function merge(t1, t2, filter)
 	end
 end
 
--- This function allocates <space> ids for setcountlimit
--- (the returned value should be used as the first limit, returned value + 1 for the second, etc.)
 cur_id = 1 << 31
 function getFreeIdSpace(space)
 	cur_id = cur_id - space
 	return cur_id
 end
 
---Function which originally was intended for Effulgence Congregater Zalatiel. If "REGISTER_FLAG_FILTER" is passed as argument 3 or an "EVENT_" effect, GetCardEffect can filter for that as well.
 local regeff2=Card.RegisterEffect
 function Card.RegisterEffect(c,e,forced,...)
 	if c:IsStatus(STATUS_INITIALIZING) and not e then
@@ -224,7 +202,6 @@ function Card.RegisterEffect(c,e,forced,...)
 	return reg_e
 end
 
---Some smol utilities for Time Leap
 function Card.IsTimeLeap(c)
 	return c:GetFlagEffect(3400)>0
 end

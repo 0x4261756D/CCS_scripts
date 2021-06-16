@@ -2,8 +2,6 @@
 
 Duel.LoadScript("customutility.lua")
 
---LINK SUMMON WITH SPELLS/TRAPS AS MATERIAL
-
 function Link.AddSpellTrapProcedure(c,f,min,max,specialchk,desc)
 	local e1=Effect.CreateEffect(c)
 	e1:SetType(EFFECT_TYPE_FIELD)
@@ -142,9 +140,6 @@ function Link.STOperation(f,minc,maxc,specialchk)
 		aux.DeleteExtraMaterialGroups(emt)
 	end
 end
-
---Global Check to allow Spells/Traps to be used in Fusion Summons of cards that the "value" function returns
---If "value" is nil, it defaults to the card itself
 function Fusion.AddSpellTrapRep(c,s,value,f,...)
 	f(...)
 	aux.GlobalCheck(s,function()
@@ -158,18 +153,10 @@ function Fusion.AddSpellTrapRep(c,s,value,f,...)
 	end)
 end
 
---TIME LEAP
-
---The Summon works by banishing a monster with 1 level lower than the Time Leap Monster from your field
---Time Banish means, that the summoned monster will be banished in the end phase and a monster which has been used as material can be summoned back
-
 function Card.IsCanBeTimeleapMaterial(c)
 	return c:IsCanBeMaterial(SUMMON_TYPE_TIMELEAP)
 end
 
---Explanation of params:
---c=card which will be summoned, con=required conditions, f=filter for materials, min/max=how many materials are needed,
---desc=optional description, tb=bool to specify whether to time banish in the end phase, ...=all extraparams of "f".
 function Auxiliary.AddTimeLeapProcedure(c,con,f,min,max,desc,tb,...)
 	local params={...}
 	local min=min or 1
@@ -272,15 +259,6 @@ function Auxiliary.TimeBanishOperation(c)
 	end
 end
 
---CHAOS SYNCHRO (basically Synchro Summoning by banishing materials from the GY with more flexibility)
-
---Parameter Explanation:
---c: The card which receives the proc
---f1: A filter to further specify the legal Tuners with extraparams1 as a table of needed extraparameters.
---atmin/atmax: minimum/maximum amount of Tuners
---f2,extraparams2,antmin/antmax: the same but for Nontuners
---specialcheck1,specialcheck2: Filters to handle what the groups of selected Tuners/Nontuners must include
---desc: an optional descrption
 Auxiliary.AddChaosSynchroProcedure=aux.FunctionWithNamedArgs(
 	function(c,f1,extraparams1,specialcheck1,atmin,atmax,f2,extraparams2,specialcheck2,antmin,antmax,desc)
 	atmin,atmax,antmin,antmax=atmin or 1,atmax or 99,antmin or 1,antmax or 99

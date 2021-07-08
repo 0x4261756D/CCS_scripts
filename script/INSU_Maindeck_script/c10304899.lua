@@ -9,6 +9,7 @@ function s.initial_effect(c)
 	e1:SetRange(LOCATION_MZONE)
 	e1:SetCondition(s.chcon)
 	e1:SetCost(s.chcost)
+	e1:SetTarget(s.chtg))
 	e1:SetOperation(s.chop)
 	c:RegisterEffect(e1)
 end
@@ -18,6 +19,9 @@ end
 function s.chcost(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsExistingMatchingCard(Card.IsDiscardable,tp,LOCATION_HAND,0,1,nil) end
 	Duel.DiscardHand(tp,Card.IsDiscardable,1,1,REASON_COST+REASON_DISCARD,nil)
+end
+function s.chtg(e,tp,eg,ep,ev,re,r,rp,chk)
+	if chk==0 then return Duel.IsExistingMatchingCard(aux.TRUE,rp,LOCATION_ONFIELD,0,1,nil) or Duel.IsExistingMatchingCard(Card.IsFaceup,rp,0,LOCATION_MZONE,1,nil) end
 end
 function s.chop(e,tp,eg,ep,ev,re,r,rp)
 	local cons,strings,ops={Duel.IsExistingMatchingCard(aux.TRUE,rp,LOCATION_ONFIELD,0,1,nil),Duel.IsExistingMatchingCard(Card.IsFaceup,rp,0,LOCATION_MZONE,1,nil)},{aux.Stringid(id,1),aux.Stringid(id,0)},{

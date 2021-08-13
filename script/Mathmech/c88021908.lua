@@ -30,7 +30,7 @@ end
 s.listed_series={0x132}
 --Search
 function s.tdfilter(c,tp)
-	return c:IsAbleToExtraAsCost() and c:IsSetCard(0x132) and Duel.IsExistingMatchingCard(s.thfilter,tp,LOCATION_DECK,0,1,nil,c:GetCode())
+	return c:IsAbleToDeckOrExtraAsCost() and c:IsSetCard(0x132) and Duel.IsExistingMatchingCard(s.thfilter,tp,LOCATION_DECK,0,1,nil,c:GetCode())
 end
 function s.thfilter(c,code)
 	return c:IsAbleToHand() and c:IsSetCard(0x132) and not c:IsCode(code)

@@ -20,6 +20,14 @@ function contains(tab,element)
 	return false
 end
 
+function removeall(tab,element)
+	for _,value in pairs(tab) do
+		if value==element then
+			table.remove(tab,value)
+		end
+	end
+end
+
 function Auxiliary.EffectCheck(tp,cons,strings,ops)
 	return function(e,tp,eg,ep,ev,re,r,rp)
 		local eff,sel={},{}

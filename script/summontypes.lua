@@ -263,6 +263,14 @@ function Auxiliary.TimeBanishOperation(c)
 	end
 end
 
+function Card.IsTimeLeap(c)
+	return c:GetFlagEffect(3400)>0
+end
+
+function Card.IsTimeLeapMaterial(c)
+	return c:GetFlagEffect(3401)>0
+end
+
 Auxiliary.AddChaosSynchroProcedure=aux.FunctionWithNamedArgs(
 	function(c,f1,extraparams1,specialcheck1,atmin,atmax,f2,extraparams2,specialcheck2,antmin,antmax,desc)
 	atmin,atmax,antmin,antmax=atmin or 1,atmax or 99,antmin or 1,antmax or 99

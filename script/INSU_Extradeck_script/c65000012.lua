@@ -44,7 +44,7 @@ function s.rmfilter(c,tp)
 	return c:IsType(TYPE_SPELL) and c:IsSetCard(0x800) and c:IsAbleToRemoveAsCost() and Duel.IsExistingMatchingCard(s.thfilter1,tp,LOCATION_REMOVED,0,1,nil,c:GetCode())
 end
 function s.thfilter1(c,r)
-	return c:IsAbleToHand() and not c:IsCode(r)
+	return c:IsAbleToHand() and not c:IsCode(r) and c:IsType(TYPE_SPELL)
 end
 function s.cost(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return e:GetHandler():CheckRemoveOverlayCard(tp,1,REASON_COST)

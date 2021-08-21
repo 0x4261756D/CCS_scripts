@@ -4,13 +4,13 @@ function s.initial_effect(c)
 	--Activate
 	local e1=Effect.CreateEffect(c)
 	e1:SetCategory(CATEGORY_SPECIAL_SUMMON)
-	e1:SetProperty(EFFECT_FLAG_CARD_TARGET)
 	e1:SetType(EFFECT_TYPE_ACTIVATE)
 	e1:SetCode(EVENT_FREE_CHAIN)
 	e1:SetHintTiming(0,TIMING_END_PHASE)
 	e1:SetTarget(s.target)
 	e1:SetOperation(s.activate)
 	c:RegisterEffect(e1)
+	--Summon Limit
 	local e2=Effect.CreateEffect(c)
 	e2:SetType(EFFECT_TYPE_FIELD)
 	e2:SetProperty(EFFECT_FLAG_PLAYER_TARGET)
@@ -19,7 +19,7 @@ function s.initial_effect(c)
 	e2:SetRange(LOCATION_SZONE)
 	e2:SetTargetRange(0,1)
 	c:RegisterEffect(e2)
-	--to hand
+	--To Hand
 	local e3=Effect.CreateEffect(c)
 	e3:SetDescription(aux.Stringid(25032004,0))
 	e3:SetCategory(CATEGORY_SPECIAL_SUMMON)
@@ -32,7 +32,8 @@ function s.initial_effect(c)
 	e3:SetTarget(s.thtg)
 	e3:SetOperation(s.thop)
 	c:RegisterEffect(e3)
-	end
+end
+--Activate
 function s.filter(c,e,tp)
 	return c:IsType(TYPE_MONSTER) and (c:IsSetCard(0x1a) or c:IsCode(76922029)) and c:IsCanBeSpecialSummoned(e,0,tp,false,false)
 end
@@ -48,9 +49,11 @@ function s.activate(e,tp,eg,ep,ev,re,r,rp)
 		Duel.SpecialSummon(g,0,tp,tp,false,false,POS_FACEUP)
 	end
 end
+--Summon Limit
 function s.limit(e,c,sump,sumtype,sumpos,targetp,se)
 	return c:IsLevelAbove(5) or c:IsRankAbove(5)
 end
+--To Hand
 function s.thcon(e,tp,eg,ep,ev,re,r,rp)
 	return ep~=tp and eg:GetFirst():IsControler(tp) and (eg:GetFirst():IsSetCard(0x1a) or eg:GetFirst():IsCode(76922029))
 end

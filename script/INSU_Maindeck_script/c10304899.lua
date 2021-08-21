@@ -35,7 +35,7 @@ function s.chop(e,tp,eg,ep,ev,re,r,rp)
 			Duel.ChangeTargetCard(ev,g)
 			Duel.ChangeChainOperation(ev,s.repop2)
 		end}
-	aux.EffectCheck(1-rp,cons,strings,ops)(e,tp,eg,ep,ev,re,r,rp)
+	aux.EffectCheck(1-tp,cons,strings,ops)(e,tp,eg,ep,ev,re,r,rp)
 end
 function s.repop1(e,tp,eg,ep,ev,re,r,rp)
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_DESTROY)

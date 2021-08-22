@@ -18,7 +18,7 @@ function s.initial_effect(c)
 	--Special Summon
 	local e2=Effect.CreateEffect(c)
 	e2:SetDescription(aux.Stringid(id,1))
-	e2:SetCategory(CATEGORY_SPECIAL_SUMMON)
+	e2:SetCategory(CATEGORY_SPECIAL_SUMMON+CATEGORY_REMOVE)
 	e2:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
 	e2:SetCode(EVENT_SPSUMMON_SUCCESS)
 	e2:SetProperty(EFFECT_FLAG_DELAY+EFFECT_FLAG_DAMAGE_STEP)
@@ -32,7 +32,7 @@ function s.negcon(e,tp,eg,ep,ev,re,r,rp)
 	return Duel.IsChainDisablable(ev) and not rc:IsCode(id) and ((rc:IsMonster() and tl==LOCATION_MZONE) or (not rc:IsMonster() and tl==LOCATION_SZONE))
 end
 function s.costfilter(c)
-	return c:IsSetCard(0x800)
+	return c:IsSetCard(0x800) and not c:IsPublic()
 end
 function s.negcost(e,tp,eg,ep,ev,re,r,rp,chk)
 	local c=e:GetHandler()
@@ -40,7 +40,7 @@ function s.negcost(e,tp,eg,ep,ev,re,r,rp,chk)
 		Duel.IsExistingMatchingCard(s.costfilter,tp,LOCATION_HAND,0,1,c) end
 	local g=Duel.SelectMatchingCard(tp,s.costfilter,tp,LOCATION_HAND,0,1,1,c)
 	g:AddCard(c)
-	Duel.ConfirmCards(1-tp,g,REASON_COST)
+	Duel.ConfirmCards(1-tp,g)
 end
 function s.negtg(e,tp,eg,ep,ev,re,r,rp,chk)
 	local rc=eg:GetFirst()
@@ -67,7 +67,7 @@ end
 function s.remfilter(c)
 	return c:IsType(TYPE_SPELL) and c:IsAbleToRemove()
 end
-function s.sptg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
+function s.sptg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.GetLocationCount(tp,LOCATION_MZONE)>0 and Duel.IsExistingMatchingCard(s.spfilter,tp,LOCATION_GRAVE,0,1,nil,e,tp) end
 	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,nil,1,tp,LOCATION_GRAVE)
 end

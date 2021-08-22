@@ -29,7 +29,7 @@ function s.initial_effect(c)
 end
 function s.negcon(e,tp,eg,ep,ev,re,r,rp)
 	local rc,tl=eg:GetFirst(),Duel.GetChainInfo(0,CHAININFO_TRIGGERING_LOCATION)
-	return Duel.IsChainDisablable(ev) and not rc:IsCode(id) and ((rc:IsMonster() and tl==LOCATION_MZONE) or (not rc:IsMonster() and tl==LOCATION_SZONE))
+	return not rc:IsCode(id) and ((rc:IsMonster() and tl==LOCATION_MZONE) or (not rc:IsMonster() and tl==LOCATION_SZONE))
 end
 function s.costfilter(c)
 	return c:IsSetCard(0x800) and not c:IsPublic()
@@ -44,21 +44,14 @@ function s.negcost(e,tp,eg,ep,ev,re,r,rp,chk)
 end
 function s.negtg(e,tp,eg,ep,ev,re,r,rp,chk)
 	local rc=eg:GetFirst()
-	if chk==0 then return true end
+	if chk==0 then return Duel.IsChainDisablable(ev) end
 	Duel.SetOperationInfo(0,CATEGORY_DISABLE,rc,1,rc:GetControler(),rc:GetLocation())
-	if rc:IsDestructable() and rc:IsRelateToEffect(re) then
-		Duel.SetOperationInfo(0,CATEGORY_DESTROY,rc,1,rc:GetControler(),rc:GetLocation())
-	end
 end
 function s.negop(e,tp,eg,ep,ev,re,r,rp)
-	local rc=eg:GetFirst()
-	if Duel.NegateEffect(ev) and rc:IsRelateToEffect(re) then
-		Duel.Destroy(rc,REASON_EFFECT)
-		local c=e:GetHandler()
-		if c:IsRelateToEffect(e) and Duel.GetLocationCount(tp,LOCATION_MZONE)>0 and Duel.SelectYesNo(tp,aux.Stringid(id,2)) then 
-			Duel.SpecialSummon(c,0,tp,tp,false,false,POS_FACEUP)
-			Duel.ShuffleHand(tp)
-		end
+	local c=e:GetHandler()
+	if Duel.NegateEffect(ev) and c:IsRelateToEffect(e) and Duel.GetLocationCount(tp,LOCATION_MZONE)>0 and Duel.SelectYesNo(tp,aux.Stringid(id,2)) then 
+		Duel.SpecialSummon(c,0,tp,tp,false,false,POS_FACEUP)
+		Duel.ShuffleHand(tp)
 	end
 end
 function s.spfilter(c,e,tp)

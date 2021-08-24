@@ -1,6 +1,6 @@
 local s,id=GetID()
 function s.initial_effect(c)
-    --fusion material
+	--fusion material
 	c:EnableReviveLimit()
 	Fusion.AddProcMixRep(c,true,true,aux.FilterBoolFunction(Card.IsCode,79575620,5519829),1,1,77585513)
 	Fusion.AddContactProc(c,s.contactfil,s.contactop,s.splimit)
@@ -24,7 +24,7 @@ function s.initial_effect(c)
 	--summon success
 	local e3=Effect.CreateEffect(c)
 	e3:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_CONTINUOUS)
-    	e3:SetCode(EVENT_SPSUMMON_SUCCESS)
+	e3:SetCode(EVENT_SPSUMMON_SUCCESS)
 	e3:SetCondition(s.limcon)
 	e3:SetOperation(s.sumsuc)
 	c:RegisterEffect(e3)

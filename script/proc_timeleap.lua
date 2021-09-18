@@ -70,7 +70,7 @@ function TimeLeap.Operation(c)
 		local mat=e:GetLabelObject()
 		Duel.Remove(mat,POS_FACEUP,REASON_MATERIAL+REASON_TIMELEAP)
 		Duel.RegisterFlagEffect(tp,c:GetOriginalCode(),RESET_PHASE+PHASE_END,EFFECT_FLAG_OATH,1)
-		for tc in ~mat do
+		for tc in mat:Iter() do
 			tc:RegisterFlagEffect(3401,RESET_EVENT+RESETS_STANDARD+RESET_OVERLAY,0,1)
 		end
 		c:SetMaterial(mat)

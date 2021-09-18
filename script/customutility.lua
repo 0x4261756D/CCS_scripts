@@ -1,11 +1,9 @@
 --This file contains a useful list of functions and constants which can be used for a lot of things.
 
 --constants
-SUMMON_TYPE_TIMELEAP=SUMMON_TYPE_LINK+69
-REASON_TIMELEAP=REASON_LINK+69
-SUMMON_TYPE_CHAOS_SYNCHRO=SUMMON_TYPE_SYNCHRO+69
-REASON_CHAOS_SYNCHRO=REASON_SYNCHRO+69
 REGISTER_FLAG_FILTER=16
+
+--functions
 
 function Card.CheckType(c,tp)
 	return (c:GetType()&tp)==tp
@@ -208,4 +206,39 @@ function Card.RegisterEffect(c,e,forced,...)
 		c:RegisterEffect(e2)
 	end
 	return reg_e
+end
+
+function Fusion.AddSpellTrapRep(c,s,value,f,...)
+	f(...)
+	aux.GlobalCheck(s,function()
+		local ge=Effect.CreateEffect(c)
+		ge:SetType(EFFECT_TYPE_FIELD)
+		ge:SetCode(EFFECT_EXTRA_FUSION_MATERIAL)
+		ge:SetTargetRange(LOCATION_SZONE+LOCATION_HAND,LOCATION_SZONE+LOCATION_HAND)
+		ge:SetTarget(function(e,cc) return cc:IsType(TYPE_SPELL+TYPE_TRAP) end)
+		ge:SetValue(value or function(e,cc) if not cc then return false end return cc:IsOriginalCode(c:GetOriginalCode()) end)
+		Duel.RegisterEffect(ge,0)
+	end)
+end
+
+function Xyz.OGFilter(c)
+	return c:IsType(TYPE_XYZ) and c:GetOverlayCount()>0
+end
+
+function Duel.GetOverlayGroup(tp,f1,f2,chk,ex1,ex2,params1,params2)
+	if not params1 then params1={} end
+	if not params2 then params2={} end
+	local g,og
+	if chk==0 then
+		g=Duel.GetMatchingGroup(Xyz.OGFilter,tp,LOCATION_MZONE,0,nil):Match(f1,ex1,table.unpack(params1))
+	elseif chk==1 then
+		g=Duel.GetMatchingGroup(Xyz.OGFilter,tp,0,LOCATION_MZONE,nil):Match(f1,ex1,table.unpack(params1))
+	elseif chk==2 then
+		g=Duel.GetMatchingGroup(Xyz.OGFilter,tp,LOCATION_MZONE,LOCATION_MZONE,nil):Match(f1,ex1,table.unpack(params1))
+	else
+		g=Group.CreateGroup()
+	end
+	for tc in g:Iter() do
+		og=og:Merge(tc:GetOverlayGroup():Match(f2,ex2,table.unpack(params2)))
+	end
 end

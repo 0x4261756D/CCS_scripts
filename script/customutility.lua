@@ -241,4 +241,5 @@ function Duel.GetOverlayGroup(tp,f1,f2,chk,ex1,ex2,params1,params2)
 	for tc in g:Iter() do
 		og=og:Merge(tc:GetOverlayGroup():Match(f2,ex2,table.unpack(params2)))
 	end
+	return og
 end

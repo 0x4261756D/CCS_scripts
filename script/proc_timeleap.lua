@@ -42,7 +42,7 @@ function TimeLeap.AddProcedure(c,con,f,min,max,desc,tb,...)
 	c:Type(c:Type()&~TYPE_FUSION)
 end
 
-function TimeLeap.TimeLeapCondition(c,con,f,min,...)
+function TimeLeap.Condition(c,con,f,min,...)
 	local params={...}
 	return function(e)
 		local g=Duel.GetMatchingGroup(Card.IsLevel,c:GetControler(),LOCATION_MZONE,0,nil,c:GetLevel()-1):Filter(Card.IsCanBeTimeleapMaterial,nil):Filter(f,nil,table.unpack(params))
@@ -50,7 +50,7 @@ function TimeLeap.TimeLeapCondition(c,con,f,min,...)
 	end
 end
 
-function TimeLeap.TimeLeapTarget(c,f,min,max,...)
+function TimeLeap.Target(c,f,min,max,...)
 	local params={...}
 	return function(e,tp,eg,ep,ev,re,r,rp)
 		local g=Duel.GetMatchingGroup(Card.IsLevel,tp,LOCATION_MZONE,0,nil,c:GetLevel()-1):Filter(Card.IsCanBeTimeleapMaterial,nil)
@@ -65,7 +65,7 @@ function TimeLeap.TimeLeapTarget(c,f,min,max,...)
 	end
 end
 
-function TimeLeap.TimeLeapOperation(c)
+function TimeLeap.Operation(c)
 	return function(e,tp,eg,ep,ev,re,r,rp)
 		local mat=e:GetLabelObject()
 		Duel.Remove(mat,POS_FACEUP,REASON_MATERIAL+REASON_TIMELEAP)

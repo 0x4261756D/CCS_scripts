@@ -5,6 +5,13 @@ REGISTER_FLAG_FILTER=16
 
 --functions
 
+function Synchro.Tuner(f,...)
+	local params={...}
+	return function(target,scard,sumtype,tp)
+		return target:IsType(TYPE_TUNER,scard,sumtype,tp) and (not f or f(target,table.unpack(params)))
+	end
+end
+
 function Card.CheckType(c,tp)
 	return (c:GetType()&tp)==tp
 end

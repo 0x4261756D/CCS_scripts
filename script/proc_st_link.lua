@@ -28,14 +28,14 @@ function Link.STConditionFilter(c,f,lc,tp)
 end
 
 function Link.STCondition(f,minc,maxc,specialchk)
-	return function(e,c,must,g,min,max)
-		if c==nil then return true end
+	return function(e,c,must,g2,min,max)
+		if not c then return true end
 		if c:IsType(TYPE_PENDULUM) and c:IsFaceup() then return false end
 		local tp=c:GetControler()
-		local g2=Duel.GetMatchingGroup(Card.IsType,tp,LOCATION_SZONE,0,nil,TYPE_SPELL+TYPE_TRAP)
-		if not g then
-			g=Duel.GetMatchingGroup(Card.IsFaceup,tp,LOCATION_MZONE,0,nil)
+		if not g2 then
+			g2=Duel.GetMatchingGroup(Card.IsFaceup,tp,LOCATION_MZONE,0,nil)
 		end
+		local g=Duel.GetMatchingGroup(Card.IsType,tp,LOCATION_SZONE,0,nil,TYPE_SPELL+TYPE_TRAP)
 		g:Merge(g2)
 		local mg=g:Filter(Link.STConditionFilter,nil,f,c,tp)
 		local mustg=Auxiliary.GetMustBeMaterialGroup(tp,g,tp,c,mg,REASON_LINK)
@@ -63,11 +63,11 @@ function Link.STCondition(f,minc,maxc,specialchk)
 end
 
 function Link.STTarget(f,minc,maxc,specialchk)
-	return function(e,tp,eg,ep,ev,re,r,rp,chk,c,must,g,min,max)
-		local g2=Duel.GetMatchingGroup(Card.IsType,tp,LOCATION_SZONE,0,nil,TYPE_SPELL+TYPE_TRAP)
-		if not g then
-			g=Duel.GetMatchingGroup(Card.IsFaceup,tp,LOCATION_MZONE,0,nil)
+	return function(e,tp,eg,ep,ev,re,r,rp,chk,c,must,g2,min,max)
+		if not g2 then
+			g2=Duel.GetMatchingGroup(Card.IsFaceup,tp,LOCATION_MZONE,0,nil)
 		end
+		local g=Duel.GetMatchingGroup(Card.IsType,tp,LOCATION_SZONE,0,nil,TYPE_SPELL+TYPE_TRAP)
 		g:Merge(g2)
 		if min and min < minc then return false end
 		if max and max > maxc then return false end

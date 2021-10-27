@@ -1,5 +1,5 @@
 --Primathmech Hamiltonian
-Duel.LoadScript("customutility.lua.lua")
+Duel.LoadScript("customutility.lua")
 local s,id=GetID()
 function s.initial_effect(c)
 	Xyz.AddProcedure(c,aux.FilterBoolFunctionEx(Card.IsSetCard,0x132),4,2,nil,nil,7)

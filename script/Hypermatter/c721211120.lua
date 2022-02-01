@@ -14,7 +14,7 @@ function s.initial_effect(c)
 	e1:SetCondition(s.spcon)
 	e1:SetCountLimit(1, {id, 1})
 	c:RegisterEffect(e1)
-	-- You can send 1 "Hypermatter" card from your hand or Deck to the GY; Special Summon 1 monster from your Deck or GY, but its ATK/DEF become 0 and its effects become negated, then, immediately after this effect resolves, banish that monster
+	-- You can send 1 "Hypermatter" from your hand or Deck to the GY; Special Summon 1 monster from your Deck or GY, but its ATK/DEF become 0 and its effects become negated, then, immediately after this effect resolves, banish that monster
 	local e2 = Effect.CreateEffect(c)
 	e2:SetDescription(aux.Stringid(id, 0))
 	e2:SetCategory(CATEGORY_SPECIAL_SUMMON)
@@ -41,7 +41,7 @@ function s.cost(e,tp,eg,ep,ev,re,r,rp,chk)
 end
 
 function s.filter(c)
-	return c:IsAbleToGraveAsCost() and c:IsSetCard(0x4879)
+	return c:IsAbleToGraveAsCost() and c:IsCode(721211121)
 end
 
 function s.tg(e,tp,eg,ep,ev,re,r,rp,chk)

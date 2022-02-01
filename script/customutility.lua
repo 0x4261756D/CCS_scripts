@@ -156,12 +156,6 @@ function merge(t1, t2, filter)
 	end
 end
 
-cur_id = 1 << 31
-function getFreeIdSpace(space)
-	cur_id = cur_id - space
-	return cur_id
-end
-
 local regeff2=Card.RegisterEffect
 function Card.RegisterEffect(c,e,forced,...)
 	if c:IsStatus(STATUS_INITIALIZING) and not e then

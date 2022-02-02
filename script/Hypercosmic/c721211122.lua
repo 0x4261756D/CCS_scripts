@@ -1,5 +1,4 @@
 -- The Core of Time and Space
-Duel.LoadScript("customutility.lua")
 local s, id = GetID()
 
 function s.initial_effect(c)

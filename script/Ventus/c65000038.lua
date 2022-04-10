@@ -41,7 +41,7 @@ function s.activate(e,tp,eg,ep,ev,re,r,rp)
 	end
 end
 function s.sfilter(c)
-	return c:IsSetCard(0x17d) and c:IsAbleToHand() and not c:IsCode(id)
+	return c:IsSetCard(0x27d) and c:IsAbleToHand() and not c:IsCode(id)
 end
 function s.sptg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsExistingMatchingCard(s.sfilter,tp,LOCATION_DECK,0,1,nil) end

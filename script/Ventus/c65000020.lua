@@ -76,7 +76,7 @@ function s.tgop(e,tp,eg,ep,ev,re,r,rp)
 	end
 end
 function s.filter2(c)
-	return c:IsSetCard(0x17d) and c:IsType(TYPE_MONSTER) and not c:IsCode(65000020) and c:IsAbleToHand()
+	return c:IsSetCard(0x27d) and c:IsType(TYPE_MONSTER) and not c:IsCode(65000020) and c:IsAbleToHand()
 end
 function s.target2(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsExistingMatchingCard(s.filter2,tp,LOCATION_DECK,0,1,nil) end

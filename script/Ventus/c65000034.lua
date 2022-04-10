@@ -28,7 +28,7 @@ function s.initial_effect(c)
 	c:RegisterEffect(e2)
 end
 function s.matcheck(g,lc,sumtype,tp)
-	return g:IsExists(Card.IsSetCard,1,nil,0x17d,lc,sumtype,tp)
+	return g:IsExists(Card.IsSetCard,1,nil,0x27d,lc,sumtype,tp)
 end
 function s.cfilter(c,e,tp)
 	local tc=e:GetHandler()
@@ -70,7 +70,7 @@ function s.thcon(e,tp,eg,ep,ev,re,r,rp)
 	return rc
 end
 function s.thfilter(c,typ)
-	return c:GetType()==typ and c:IsSetCard(0x17d) and c:IsAbleToHand()
+	return c:GetType()==typ and c:IsSetCard(0x27d) and c:IsAbleToHand()
 end
 function s.thtg(e,tp,eg,ep,ev,re,r,rp,chk)
 	local rc=e:GetLabelObject()

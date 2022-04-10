@@ -17,7 +17,7 @@ function s.initial_effect(c)
 	c:RegisterEffect(e1,false,1)
 end
 function s.matcheck(g,xyzc,tp)
-	return g:IsExists(Card.IsSetCard,1,nil,0x17d)
+	return g:IsExists(Card.IsSetCard,1,nil,0x27d)
 end
 function s.costfilter(c)
 	return c:IsFaceup() and c:IsAttribute(ATTRIBUTE_WIND) and c:IsAbleToDeckAsCost()

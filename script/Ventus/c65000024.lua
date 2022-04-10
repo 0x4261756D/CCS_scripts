@@ -27,7 +27,7 @@ function s.initial_effect(c)
 	c:RegisterEffect(e2)
 end
 function s.filter(c)
-	return c:IsSetCard(0x17d) and c:IsType(TYPE_MONSTER) and c:IsAbleToDeckAsCost()
+	return c:IsSetCard(0x27d) and c:IsType(TYPE_MONSTER) and c:IsAbleToDeckAsCost()
 end
 function s.con(e,c)
 	if c==nil then return true end

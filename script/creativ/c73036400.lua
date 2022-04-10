@@ -50,7 +50,7 @@ function s.initial_effect(c)
 end
 
 function s.spfilter(c)
-	return c:IsFaceup() and c:IsSetCard(0x15d)
+	return c:IsFaceup() and c:IsSetCard(0x25d)
 end
 function s.spcon(e, c)
 	if c == nil then return true end

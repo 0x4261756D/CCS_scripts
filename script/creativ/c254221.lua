@@ -57,7 +57,7 @@ function s.drcon(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	local rc=eg:GetFirst()
 	return rc:IsRelateToBattle() and rc:IsStatus(STATUS_OPPO_BATTLE)
-		and rc:IsFaceup() and rc:IsSetCard(0x15d) --and rc:IsControler(tp)
+		and rc:IsFaceup() and rc:IsSetCard(0x25d) --and rc:IsControler(tp)
 end
 function s.drtg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsPlayerCanDraw(tp,1) end
@@ -75,7 +75,7 @@ function s.cost2(e,tp,eg,ep,ev,re,r,rp,chk)
     Duel.Release(e:GetHandler(),REASON_COST)
 end
 function s.cfilter(c)
-    return c:IsFaceup() and c:IsSetCard(0x15d)
+    return c:IsFaceup() and c:IsSetCard(0x25d)
 end
 function s.tg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
     if chkc then return chkc~=e:GetHandler() and chkc:IsLocation(LOCATION_MZONE) and chkc:IsControler(tp) and s.cfilter(chkc) end

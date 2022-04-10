@@ -30,7 +30,7 @@ function s.initial_effect(c)
     c:RegisterEffect(e4)
 end
 function s.thfilter(c)
-	return c:IsSetCard(0x15d) and c:IsAbleToHand()
+	return c:IsSetCard(0x25d) and c:IsAbleToHand()
 end
 function s.thtg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsExistingMatchingCard(s.thfilter,tp,LOCATION_DECK,0,1,nil) end
@@ -49,7 +49,7 @@ function s.cost(e,tp,eg,ep,ev,re,r,rp,chk)
     Duel.Release(e:GetHandler(),REASON_COST)
 end
 function s.cfilter(c)
-    return c:IsFaceup() and c:IsSetCard(0x15d)
+    return c:IsFaceup() and c:IsSetCard(0x25d)
 end
 function s.tg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
     if chkc then return chkc~=e:GetHandler() and chkc:IsLocation(LOCATION_MZONE) and chkc:IsControler(tp) and s.cfilter(chkc) end

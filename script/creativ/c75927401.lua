@@ -23,7 +23,7 @@ function s.initial_effect(c)
 	c:RegisterEffect(e2)
 end
 function s.kfilter(c)
-	return c:IsFaceup() and c:IsSetCard(0x15d) 
+	return c:IsFaceup() and c:IsSetCard(0x25d) 
 end
 function s.condition(e,tp,eg,ep,ev,re,r,rp)
 	return re:IsActiveType(TYPE_MONSTER) and Duel.IsChainNegatable(ev) and Duel.IsExistingMatchingCard(s.kfilter,tp,LOCATION_MZONE,0,1,nil)

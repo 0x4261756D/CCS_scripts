@@ -1,7 +1,7 @@
 --Knochenschädel Basan
 local s, id = GetID()
 function s.initial_effect(c)
-	aux.EnableGeminiAttribute(c)
+	Gemini.AddProcedure(c)
 	--shuffle into deck
 	local e1=Effect.CreateEffect(c)
 	e1:SetCategory(CATEGORY_TODECK)

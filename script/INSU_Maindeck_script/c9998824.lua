@@ -1,7 +1,7 @@
 --Knochenschädel Karreth
 local s, id = GetID()
 function s.initial_effect(c)
-	aux.EnableGeminiAttribute(c)
+	Gemini.AddProcedure(c)
 	--summon
 	local e1=Effect.CreateEffect(c)
 	e1:SetCategory(CATEGORY_SUMMON)

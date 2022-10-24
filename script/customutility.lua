@@ -5,6 +5,82 @@ REGISTER_FLAG_FILTER=16
 
 --functions
 
+function Card.GetMaxCounterRemoval(c,tp,cttypes,reason)
+	local ct=0
+	if type(cttypes)=="table" then
+		for _,cttype in ipairs(cttypes) do
+			for i=1,c:GetCounter(cttype) do
+				if c:IsCanRemoveCounter(tp,cttype,i,reason) then
+					ct=ct+1
+				else
+					break
+				end
+			end
+		end
+	else
+		for i=1,c:GetCounter(cttypes) do
+			if c:IsCanRemoveCounter(tp,cttypes,i,reason) then
+				ct=ct+1
+			else
+				break
+			end
+		end
+	end
+	return ct
+end
+
+function Card.MaxCounterRemovalCheck(c,tp,cttypes,ctamount,reason)
+	return c:GetMaxCounterRemoval(tp,cttypes,reason)>=ctamount
+end
+
+function Group.GetMaxCounterRemoval(g,tp,cttypes,reason)
+	local ct=0
+	if type(cttypes)=="table" then
+		for _,cttype in ipairs(cttypes) do
+			for tc in g:Iter() do
+				ct=ct+tc:GetMaxCounterRemoval(tp,cttype,reason)
+			end
+		end
+	else
+		for tc in g:Iter() do
+			ct=ct+tc:GetMaxCounterRemoval(tp,cttypes,reason)
+		end
+	end
+	return ct
+end
+
+function Group.CanRemoveCounter(g,tp,cttypes,ctamount,reason)
+	return g:GetMaxCounterRemoval(tp,cttypes,reason)>=ctamount
+end
+
+function Group.RemoveCounter(g,tp,cttypes,ctamount,reason)
+	if type(cttypes)=="table" then
+		local ct=0
+		for _,cttype in ipairs(cttypes) do
+			ct=ct+g:GetMaxCounterRemoval(tp,cttype,reason)
+		end
+		if ct<ctamount then return end
+		local choices,tc,choice
+		for i=1,ctamount do
+			tc=g:FilterSelect(tp,Card.MaxCounterRemovalCheck,1,1,nil,tp,cttypes,1,reason):GetFirst()
+			choices={}
+			for _,cttype in ipairs(cttypes) do
+				table.insert(choices,{tc:IsCanRemoveCounter(tp,cttype,1,reason),tonumber(cttype)})
+			end
+			choice=Duel.SelectEffect(tp,table.unpack(choices))
+			tc:RemoveCounter(tp,cttypes[choice],1,reason)
+		end
+	else
+		if not g:CanRemoveCounter(tp,cttypes,ctamount,reason) then return end
+		local tc
+		for i=1,ctamount do
+			Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SELECT)
+			tc=g:FilterSelect(tp,Card.IsCanRemoveCounter,1,1,nil,tp,cttypes,1,reason):GetFirst()
+			tc:RemoveCounter(tp,cttypes,1,reason)
+		end
+	end
+end
+
 function Synchro.Tuner(f,...)
 	local params={...}
 	return function(target,scard,sumtype,tp)
@@ -31,13 +107,6 @@ function removeall(tab,element)
 			table.remove(tab,value)
 		end
 	end
-end
-
-function Auxiliary.SelectEffectEx(tp,...)
-	local op=aux.SelectEffect(tp,...)
-	local args={...}
-	args[op][3]()
-	return op
 end
 
 function Auxiliary.doccost(min,max,label,cost,order)
@@ -161,10 +230,6 @@ function Card.RegisterEffect(c,e,forced,...)
 	if c:IsStatus(STATUS_INITIALIZING) and not e then
 		error("Parameter 2 expected to be Effect, got nil instead.",2)
 	end
-	--1 == 511002571 - access to effects that activate that detach an Xyz Material as cost
-	--2 == 511001692 - access to Cardian Summoning conditions/effects
-	--4 ==  12081875 - access to Thunder Dragon effects that activate by discarding
-	--8 == 511310036 - access to Allure Queen effects that activate by sending themselves to GY
 	--16 == 300001010 - access to Effulgence Congregater Zalatiel to filter for "EVENT_" effects
 	local reg_e=regeff2(c,e,forced)
 	if not reg_e then
@@ -178,16 +243,8 @@ function Card.RegisterEffect(c,e,forced,...)
 		local e2=Effect.CreateEffect(c)
 		e2:SetType(EFFECT_TYPE_SINGLE)
 		e2:SetProperty(prop,EFFECT_FLAG2_MAJESTIC_MUST_COPY)
-		if val==1 then
-			e2:SetCode(511002571)
-		elseif val==2 then
-			e2:SetCode(511001692)
-		elseif val==4 then
-			e2:SetCode(12081875)
-		elseif val==8 then
-			e2:SetCode(511310036)
-		elseif val==16 then
-			e2:SetCode(300001010)
+		if val==16 then
+			e2:SetCode(300001010)		
 		end
 		e2:SetLabelObject(e)
 		e2:SetLabel(c:GetOriginalCode())
@@ -213,30 +270,6 @@ function Fusion.AddSpellTrapRep(c,s,value,f,...)
 		Duel.RegisterEffect(ge,0)
 	end)
 end
-
-function Xyz.OGFilter(c)
-	return c:IsType(TYPE_XYZ) and c:GetOverlayCount()>0
-end
-
-function Duel.GetOverlayGroup(tp,f1,f2,chk,ex1,ex2,params1,params2)
-	if not params1 then params1={} end
-	if not params2 then params2={} end
-	local g,og
-	if chk==0 then
-		g=Duel.GetMatchingGroup(Xyz.OGFilter,tp,LOCATION_MZONE,0,nil):Match(f1,ex1,table.unpack(params1))
-	elseif chk==1 then
-		g=Duel.GetMatchingGroup(Xyz.OGFilter,tp,0,LOCATION_MZONE,nil):Match(f1,ex1,table.unpack(params1))
-	elseif chk==2 then
-		g=Duel.GetMatchingGroup(Xyz.OGFilter,tp,LOCATION_MZONE,LOCATION_MZONE,nil):Match(f1,ex1,table.unpack(params1))
-	else
-		g=Group.CreateGroup()
-	end
-	for tc in g:Iter() do
-		og=og:Merge(tc:GetOverlayGroup():Match(f2,ex2,table.unpack(params2)))
-	end
-	return og
-end
-
 
 function hypercosmic_op(tc, tp, e)
 	if tc and Duel.SpecialSummonStep(tc, 0, tp, tp, false, false, POS_FACEUP) then

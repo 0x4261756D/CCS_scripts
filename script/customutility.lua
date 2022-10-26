@@ -2,7 +2,7 @@
 
 --constants
 REGISTER_FLAG_FILTER=16
-
+HINTMSG_REMOVE_COUNTER=10001
 --functions
 
 function Card.GetMaxCounterRemoval(c,tp,cttypes,reason)
@@ -62,6 +62,7 @@ function Group.RemoveCounter(g,tp,cttypes,ctamount,reason)
 		if ct<ctamount then return end
 		local choices,tc,choice
 		for i=1,ctamount do
+			Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_REMOVE_COUNTER)
 			tc=g:FilterSelect(tp,Card.MaxCounterRemovalCheck,1,1,nil,tp,cttypes,1,reason):GetFirst()
 			choices={}
 			for _,cttype in ipairs(cttypes) do
@@ -74,7 +75,7 @@ function Group.RemoveCounter(g,tp,cttypes,ctamount,reason)
 		if not g:CanRemoveCounter(tp,cttypes,ctamount,reason) then return end
 		local tc
 		for i=1,ctamount do
-			Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SELECT)
+			Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_REMOVE_COUNTER)
 			tc=g:FilterSelect(tp,Card.IsCanRemoveCounter,1,1,nil,tp,cttypes,1,reason):GetFirst()
 			tc:RemoveCounter(tp,cttypes,1,reason)
 		end

@@ -123,9 +123,8 @@ function s.thcost(e,tp,eg,ep,ev,re,r,rp,chk)
 end
 
 function s.thtg(e,tp,eg,ep,ev,re,r,rp,chk)
-	local c=e:GetHandler()
 	if chk==0 then
-		return Duel.IsExistingMatchingCard(s.thfilter,tp,LOCATION_DECK,0,1,nil) and c:IsAbleToExtra() and Duel.GetMZoneCount(tp,c)>0
+		return Duel.IsExistingMatchingCard(s.thfilter,tp,LOCATION_DECK,0,1,nil) and c:IsAbleToExtra() and Duel.GetLocationCount(tp,LOCATION_MZONE)>0
 	end
 end
 
@@ -157,7 +156,7 @@ end
 function s.lvop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	local lv,tuner={not c:IsLevel(6),aux.Stringid(id,3)},{not c:IsType(TYPE_TUNER),aux.Stringid(id,4)}
-	local choice=aux.SelectEffect(tp,lv,tuner)
+	local choice=Duel.SelectEffect(tp,lv,tuner)
 	if choice==1 then
 		local e1=Effect.CreateEffect(c)
 		e1:SetType(EFFECT_TYPE_SINGLE)

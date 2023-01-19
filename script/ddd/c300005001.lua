@@ -89,6 +89,7 @@ function s.pendcost(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsExistingMatchingCard(s.revfilter,tp,LOCATION_DECK,0,1,nil,e,tp) end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_CONFIRM)
 	local g=Duel.SelectMatchingCard(tp,s.revfilter,tp,LOCATION_DECK,0,1,1,nil,e,tp)
+	Duel.ConfirmCards(tp,g)
 	Duel.ConfirmCards(1-tp,g)
 	e:SetLabelObject(g:GetFirst())
 end
@@ -115,7 +116,7 @@ function s.pendop(e,tp,eg,ep,ev,re,r,rp)
 	tc:RegisterEffect(e2,true)
 	if not rev or not tc or not tc:IsRelateToEffect(e) or not Duel.IsExistingMatchingCard(s.spfilter,tp,LOCATION_EXTRA,0,1,nil,tc,rev,e,tp) or not c:IsCanBeSpecialSummoned(e,0,tp,false,false) then return end
 	if Duel.SpecialSummon(c,0,tp,tp,false,false,POS_FACEUP)>0 then
-		local op=aux.SelectEffect(tp,{aux.TRUE,aux.Stringid(id,2)},{rev:IsAbleToExtra(),aux.Stringid(id,3)})
+		local op=Duel.SelectEffect(tp,{aux.TRUE,aux.Stringid(id,2)},{rev:IsAbleToExtra(),aux.Stringid(id,3)})
 		if op==1 then
 			Duel.MoveToField(rev,tp,tp,LOCATION_PZONE,POS_FACEUP,true)
 		else

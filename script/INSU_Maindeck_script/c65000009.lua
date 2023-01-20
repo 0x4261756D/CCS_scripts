@@ -32,7 +32,7 @@ function s.negcon(e,tp,eg,ep,ev,re,r,rp)
 	return not rc:IsCode(id) and ((rc:IsMonster() and tl==LOCATION_MZONE) or (not rc:IsMonster() and tl==LOCATION_SZONE))
 end
 function s.costfilter(c)
-	return c:IsSetCard(0x800) and not c:IsPublic()
+	return c:IsSetCard(0xaff) and not c:IsPublic()
 end
 function s.negcost(e,tp,eg,ep,ev,re,r,rp,chk)
 	local c=e:GetHandler()
@@ -55,7 +55,7 @@ function s.negop(e,tp,eg,ep,ev,re,r,rp)
 	end
 end
 function s.spfilter(c,e,tp)
-	return c:IsSetCard(0x800) and c:IsCanBeSpecialSummoned(e,0,tp,false,false)
+	return c:IsSetCard(0xaff) and c:IsCanBeSpecialSummoned(e,0,tp,false,false)
 end
 function s.remfilter(c)
 	return c:IsType(TYPE_SPELL) and c:IsAbleToRemove()

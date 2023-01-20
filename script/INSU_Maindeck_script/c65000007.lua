@@ -28,10 +28,10 @@ function s.cost(e,tp,eg,ep,ev,re,r,rp,chk)
 	Duel.PayLPCost(tp,1000)
 end
 function s.filter(c)
-	return c:IsSetCard(0x800) and c:IsAbleToHand()
+	return c:IsSetCard(0xaff) and c:IsAbleToHand()
 end
 function s.filter2(c)
-	return c:IsSetCard(0x800) and c:IsType(TYPE_MONSTER) and c:IsAbleToHand()
+	return c:IsSetCard(0xaff) and c:IsType(TYPE_MONSTER) and c:IsAbleToHand()
 end
 function s.rmfilter(c)
 	return c:IsType(TYPE_SPELL) and c:IsAbleToRemove()

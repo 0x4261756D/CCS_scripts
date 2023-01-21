@@ -42,7 +42,7 @@ function s.matfilter(c)
 	return c:IsSetCard(0X2F)
 end
 function s.discon(e,tp,eg,ep,ev,re,r,rp)
-	return re:IsActiveType(TYPE_MONSTER) and rp==1-tp
+	return re:IsActiveType(TYPE_MONSTER) and rp==1-tp and e:GetHandler():IsFaceup() and e:GetHandler():IsLocation(LOCATION_MZONE)
 end
 function s.activate(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()

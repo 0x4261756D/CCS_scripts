@@ -63,7 +63,7 @@ function s.rmop(e,tp,eg,ep,ev,re,r,rp)
 			and Duel.IsExistingMatchingCard(Card.IsAbleToRemove,tp,0,LOCATION_GRAVE,1,nil)
 		local op=0
 		if b1 and b2 then
-			op=Duel.SelectOption(tp,aux.Stringid(75927401,0),aux.Stringid(75927401,1))
+			op=Duel.SelectOption(tp,aux.Stringid(id,0),aux.Stringid(id,1))
 		else
 			op=2
 		end

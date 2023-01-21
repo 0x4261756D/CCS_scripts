@@ -1,3 +1,4 @@
+-- Creative Conception Blader - The Devine
 local s, id = GetID()
 function s.initial_effect(c)
 	--Cannot be Summoned/Set

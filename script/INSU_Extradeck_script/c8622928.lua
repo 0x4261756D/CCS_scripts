@@ -6,7 +6,6 @@ function s.initial_effect(c)
 	c:EnableReviveLimit()
 	--field spell
 	local e1=Effect.CreateEffect(c)
-	e1:SetDescription(aux.Stringid(8622928,0))
 	e1:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
 	e1:SetCategory(CATEGORY_DESTROY)
 	e1:SetCode(EVENT_SPSUMMON_SUCCESS)
@@ -17,7 +16,6 @@ function s.initial_effect(c)
 	c:RegisterEffect(e1)
 	--special summon
 	local e2=Effect.CreateEffect(c)
-	e2:SetDescription(aux.Stringid(8622928,0))
 	e2:SetCategory(CATEGORY_SPECIAL_SUMMON)
 	e2:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
 	e2:SetCode(EVENT_BATTLE_DESTROYING)
@@ -55,7 +53,7 @@ end
 function s.lzop(e,tp,eg,ep,ev,re,r,rp)
 	local tc=Duel.GetFirstMatchingCard(s.cfilter,tp,LOCATION_DECK,0,nil,tp)
 	if tc then
-		aux.PlayFieldSpell(tc,e,tp,eg,ep,ev,re,r,rp)
+		Duel.ActivateFieldSpell(tc,e,tp,eg,ep,ev,re,r,rp)
 		local dg=Duel.GetMatchingGroup(nil,tp,LOCATION_ONFIELD,LOCATION_ONFIELD,nil)
 		if dg:GetCount()>0 and Duel.GetMatchingGroupCount(Card.IsSetCard,tp,LOCATION_GRAVE,0,nil,0x39)>=3 and Duel.SelectYesNo(tp,aux.Stringid(id,0)) then
 			Duel.BreakEffect()

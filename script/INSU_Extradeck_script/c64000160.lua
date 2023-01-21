@@ -1,3 +1,4 @@
+-- Injection Doctor Jinzo
 local s,id=GetID()
 function s.initial_effect(c)
 	--fusion material

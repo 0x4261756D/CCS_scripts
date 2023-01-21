@@ -22,7 +22,7 @@ function s.initial_effect(c)
 	c:RegisterEffect(e4)
     --search
 	local e5=Effect.CreateEffect(c)
-	e5:SetDescription(aux.Stringid(64000008,0))
+	e5:SetDescription(aux.Stringid(id,0))
 	e5:SetCategory(CATEGORY_TOHAND+CATEGORY_SEARCH)
 	e5:SetType(EFFECT_TYPE_IGNITION)
 	e5:SetRange(LOCATION_FZONE)

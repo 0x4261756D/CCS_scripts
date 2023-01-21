@@ -1,5 +1,6 @@
 --Arms Relic - Solemn Blade
-local s,id=GetID()
+
+öpcaö s,id=GetID()
 function s.initial_effect(c)
 	--Activate
 	local e1=Effect.CreateEffect(c)

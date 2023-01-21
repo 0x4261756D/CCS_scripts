@@ -1,3 +1,4 @@
+-- Creative Conception - Morpha
 local s, id = GetID()
 function s.initial_effect(c)
 	--atk up
@@ -10,11 +11,11 @@ function s.initial_effect(c)
 	c:RegisterEffect(e1)
 	--effect gain
     local e2=Effect.CreateEffect(c)
-    e2:SetDescription(aux.Stringid(29652790,1))
+    e2:SetDescription(aux.Stringid(id,1))
     e2:SetType(EFFECT_TYPE_IGNITION)
     e2:SetProperty(EFFECT_FLAG_CARD_TARGET)
     e2:SetRange(LOCATION_MZONE)
-    e2:SetCountLimit(1,29652790)
+    e2:SetCountLimit(1,id)
     e2:SetCost(s.cost)
     e2:SetTarget(s.tg)
     e2:SetOperation(s.op)
@@ -43,7 +44,7 @@ function s.op(e,tp,eg,ep,ev,re,r,rp)
 	local tc=Duel.GetFirstTarget()
     if not tc or not tc:IsRelateToEffect(e) then return end
     local e1=Effect.CreateEffect(e:GetHandler())
-	e1:SetDescription(aux.Stringid(29652790,5))
+	e1:SetDescription(aux.Stringid(id,5))
     e1:SetCategory(CATEGORY_DESTROY)
 	e1:SetProperty(EFFECT_FLAG_CARD_TARGET)
 	e1:SetType(EFFECT_TYPE_QUICK_O)
@@ -55,7 +56,7 @@ function s.op(e,tp,eg,ep,ev,re,r,rp)
 	e1:SetOperation(s.desop)
     e1:SetReset(RESET_EVENT+0x1fe0000)
     tc:RegisterEffect(e1)
-	tc:RegisterFlagEffect(0,RESET_EVENT+0x1fe0000,EFFECT_FLAG_CLIENT_HINT,1,0,aux.Stringid(29652790,2))
+	tc:RegisterFlagEffect(0,RESET_EVENT+0x1fe0000,EFFECT_FLAG_CLIENT_HINT,1,0,aux.Stringid(id,2))
 end
 function s.destg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chkc then return chkc:IsLocation(LOCATION_MZONE) and chkc:IsControler(1-tp) end

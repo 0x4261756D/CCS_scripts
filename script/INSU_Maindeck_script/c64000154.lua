@@ -68,7 +68,7 @@ function s.initial_effect(c)
 	c:RegisterEffect(e12)
 	--tohand
 	local e8=Effect.CreateEffect(c)
-	e8:SetDescription(aux.Stringid(64000154,0))
+	e8:SetDescription(aux.Stringid(id,0))
 	e8:SetCategory(CATEGORY_TOHAND+CATEGORY_SEARCH)
 	e8:SetType(EFFECT_TYPE_IGNITION)
 	e8:SetRange(LOCATION_FZONE)
@@ -83,7 +83,7 @@ function s.initial_effect(c)
 	Duel.PayLPCost(tp,500)
 end
 function s.filter(c)
-	return c:IsSetCard(0x19e) and not c:IsCode(64000154) and c:IsAbleToHand()
+	return c:IsSetCard(0x19e) and not c:IsCode(id) and c:IsAbleToHand()
 end
 function s.target(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsExistingMatchingCard(s.filter,tp,LOCATION_DECK,0,1,nil) end

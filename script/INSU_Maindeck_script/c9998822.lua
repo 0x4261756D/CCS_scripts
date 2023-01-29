@@ -29,7 +29,7 @@ function s.cfilter(c)
 	return c:IsType(TYPE_NORMAL)
 end
 function s.spcon(e,tp,eg,ep,ev,re,r,rp)
-	return aux.IsGeminiState(e) and eg:IsExists(s.cfilter,1,nil)
+	return Gemini.EffectStatusCondition(e) and eg:IsExists(s.cfilter,1,nil)
 end
 
 function s.filter(c,e,tp)
@@ -50,7 +50,7 @@ function s.spop(e,tp,eg,ep,ev,re,r,rp,chk)
 	end
 end
 function s.spfilter(c,e,tp)
-	return  c:IsType(TYPE_Gemini) and c:GetLevel()==1 and c:IsCanBeSpecialSummoned(e,0,tp,false,false)
+	return  c:IsType(TYPE_GEMINI) and c:GetLevel()==1 and c:IsCanBeSpecialSummoned(e,0,tp,false,false)
 end
 function s.spcondition(e,tp,eg,ep,ev,re,r,rp)
     return e:GetHandler():GetPreviousLocation()==LOCATION_MZONE and

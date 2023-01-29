@@ -25,12 +25,12 @@ function s.initial_effect(c)
 	c:RegisterEffect(e2)
 end
 
-function s.cfilter(c)
+function s.cfilter(c,tp)
 	return c:IsPreviousLocation(LOCATION_DECK) and c:IsRace(RACE_FAIRY) and c:IsControler(tp)
 		and c:GetPreviousControler()==tp
 end
 function s.sumcon(e,tp,eg,ep,ev,re,r,rp)
-	return aux.IsGeminiState(e) and eg:IsExists(s.cfilter,1,nil)
+	return Gemini.EffectStatusCondition(e) and eg:IsExists(s.cfilter,1,nil,tp)
 end
 
 function s.filter(c,e,tp)

@@ -47,7 +47,7 @@ end
 function s.spcon(e,c)
 	if c==nil then return true end
 	return (Duel.GetFieldGroupCount(c:GetControler(),LOCATION_MZONE,0)==0 
-		or Duel.IsExistingMatchingCard(s.filter,tp,LOCATION_MZONE,0,1,nil))
+		or Duel.IsExistingMatchingCard(s.filter,e:GetHandlerPlayer(),LOCATION_MZONE,0,1,nil))
 		and Duel.GetLocationCount(c:GetControler(),LOCATION_MZONE)>0
 end
 --
@@ -119,4 +119,5 @@ function s.mtop(e,tp,eg,ep,ev,re,r,rp)
 		e2:SetReset(RESET_EVENT+RESETS_STANDARD)
 		rc:RegisterEffect(e2)
 	end
+	rc:RegisterFlagEffect(0,RESET_EVENT+RESETS_STANDARD,EFFECT_FLAG_CLIENT_HINT,1,0,aux.Stringid(id, 2))
 end

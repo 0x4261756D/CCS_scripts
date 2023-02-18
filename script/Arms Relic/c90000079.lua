@@ -33,7 +33,7 @@ function s.condition(e,tp,eg,ep,ev,re,r,rp)
 	return e:GetHandler():IsSummonType(SUMMON_TYPE_SYNCHRO)
 end
 function s.filter(c,e,tp,ec)
-	return c:IsSetCard(0x1A9F) and c:IsType(TYPE_SPELL+TYPE_CONTINUOUS) and not c:IsForbidden()
+	return c:IsSetCard(0x1A9F) and c:IsType(TYPE_SPELL) and c:IsType(TYPE_CONTINUOUS) and not c:IsForbidden()
 end
 function s.target(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	local c=e:GetHandler()

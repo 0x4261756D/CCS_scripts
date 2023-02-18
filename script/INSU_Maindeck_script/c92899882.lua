@@ -45,7 +45,7 @@ function s.eqtg(e,tp,eg,ep,ev,re,r,rp,chk)
 	Duel.SetOperationInfo(0,CATEGORY_EQUIP,nil,1,tp,LOCATION_DECK)
 end
 function s.equipop(c,e,tp,tc)
-	if not aux.EquipByEffectAndLimitRegister(c,e,tp,tc,nil,true) then return end
+	if not Card.EquipByEffectAndLimitRegister(c,e,tp,tc,nil,true) then return end
 end
 function s.eqop(e,tp,eg,ep,ev,re,r,rp)
 	if Duel.GetLocationCount(tp,LOCATION_SZONE)==0 or e:GetHandler():IsFacedown() or not e:GetHandler():IsRelateToEffect(e)
@@ -70,7 +70,7 @@ function s.rmfilter(c)
 	return c:IsType(TYPE_SPELL) and c:IsAbleToRemoveAsCost()
 end
 function s.thfilter(c)
-	return c:IsType(TYPE_SPELL+TYPE_RITUAL) and c:IsAbleToHand()
+	return c:IsType(TYPE_SPELL) and c:IsType(TYPE_RITUAL) and c:IsAbleToHand()
 end
 
 function s.cost(e,tp,eg,ep,ev,re,r,rp,chk)

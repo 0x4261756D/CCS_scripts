@@ -1,5 +1,4 @@
 --Errata Representative
-Duel.LoadScript("customutility.lua")
 local s,id=GetID()
 function s.initial_effect(c)
 	--change effect
@@ -24,18 +23,14 @@ function s.chtg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsExistingMatchingCard(aux.TRUE,rp,LOCATION_ONFIELD,0,1,nil) or Duel.IsExistingMatchingCard(Card.IsFaceup,rp,0,LOCATION_MZONE,1,nil) end
 end
 function s.chop(e,tp,eg,ep,ev,re,r,rp)
-	local cons,strings,ops={Duel.IsExistingMatchingCard(aux.TRUE,rp,LOCATION_ONFIELD,0,1,nil),Duel.IsExistingMatchingCard(Card.IsFaceup,rp,0,LOCATION_MZONE,1,nil)},{aux.Stringid(id,1),aux.Stringid(id,0)},{
-		function(e,tp,eg,ep,ev,re,r,rp)
-			local g=Group.CreateGroup()
-			Duel.ChangeTargetCard(ev,g)
-			Duel.ChangeChainOperation(ev,s.repop1)
-		end,
-		function(e,tp,eg,ep,ev,re,r,rp) 
-			local g=Group.CreateGroup()
-			Duel.ChangeTargetCard(ev,g)
-			Duel.ChangeChainOperation(ev,s.repop2)
-		end}
-	aux.EffectCheck(1-tp,cons,strings,ops)(e,tp,eg,ep,ev,re,r,rp)
+	local choice=Duel.SelectEffect(1-tp,{Duel.IsExistingMatchingCard(aux.TRUE,rp,LOCATION_ONFIELD,0,1,nil),aux.Stringid(id,1)},{Duel.IsExistingMatchingCard(Card.IsFaceup,rp,0,LOCATION_MZONE,1,nil),aux.Stringid(id,0)})
+	if choice==1 then
+		Duel.ChangeTargetCard(ev,Group.CreateGroup())
+		Duel.ChangeChainOperation(ev,s.repop1)
+	else
+		Duel.ChangeTargetCard(ev,Group.CreateGroup())
+		Duel.ChangeChainOperation(ev,s.repop2)
+	end
 end
 function s.repop1(e,tp,eg,ep,ev,re,r,rp)
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_DESTROY)

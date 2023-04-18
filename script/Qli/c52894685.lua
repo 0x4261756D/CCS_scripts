@@ -2,10 +2,10 @@
 --Script by Coroln
 local s,id=GetID()
 function s.initial_effect(c)
---xyz summon
+	--xyz summon
 	c:EnableReviveLimit()
 	Xyz.AddProcedure(c,s.xyzfilter,nil,2,nil,nil,nil,nil,false,s.xyzcheck)
---pendulum summon
+	--pendulum summon
 	Pendulum.AddProcedure(c)
 	--splimit
 	local e1=Effect.CreateEffect(c)
@@ -58,14 +58,14 @@ s.listed_series={0xaa}
 s.listed_series={0x10aa}
 --xyz summon
 function s.xyzfilter(c,tp)
-  return c:IsSetCard(0xAA) and c:IsLevelAbove(1)
+ 	return c:IsSetCard(0xAA) and c:IsLevelAbove(1)
 end
 function s.xyzcheck(g,tp)
-  local mg=g:Filter(function(c) return not c:IsHasEffect(511001175) end,nil)
-  return mg:GetClassCount(Card.GetLevel)==1 
+  	local mg=g:Filter(function(c) return not c:IsHasEffect(511001175) end,nil)
+  	return mg:GetClassCount(Card.GetLevel)==1 
 end
 function s.check(c,lvl)
-  return c:Level()~=lvl and not c:IsHasEffect(511001175)
+  	return c:Level()~=lvl and not c:IsHasEffect(511001175)
 end
 --splimit
 function s.splimit(e,c)
@@ -79,22 +79,24 @@ function s.filter(c,e,tp)
 	return c:IsSetCard(0x10AA) and c:IsCanBeSpecialSummoned(e,0,tp,true,false)
 end
 function s.sptg(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return Duel.GetLocationCount(tp,LOCATION_MZONE)>0
-		and Duel.IsExistingMatchingCard(s.filter,tp,LOCATION_DECK,0,1,nil,e,tp) end
-		local g=Duel.GetFieldGroup(tp,LOCATION_PZONE,0)
-	Duel.SetOperationInfo(0,CATEGORY_DESTROY,g,2,0,0)
+	if chk==0 then 
+		return Duel.GetLocationCount(tp,LOCATION_MZONE)>0
+		and Duel.IsExistingMatchingCard(s.filter,tp,LOCATION_DECK,0,1,nil,e,tp) 
+	end
+	local g=Duel.GetFieldGroup(tp,LOCATION_PZONE,0)
+	Duel.SetOperationInfo(0,CATEGORY_DESTROY,g,2,tp,LOCATION_PZONE)
 	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,nil,1,tp,LOCATION_DECK)
 end
 function s.spop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	if not c:IsRelateToEffect(e) then return end
 	local dg=Duel.GetFieldGroup(tp,LOCATION_PZONE,0)
-	if #dg<2 then return end
+	if not dg or #dg<2 then return end
 	if Duel.Destroy(dg,REASON_EFFECT)~=2 then return end
 	if Duel.GetLocationCount(tp,LOCATION_MZONE)<=0 then return end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
 	local g=Duel.SelectMatchingCard(tp,s.filter,tp,LOCATION_DECK,0,1,1,nil,e,tp)
-	if #g>0 then
+	if g and #g>0 then
 		Duel.SpecialSummon(g,0,tp,tp,true,false,POS_FACEUP)
 	end
 end
@@ -117,10 +119,10 @@ end
 function s.penop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TODECK)
 	local g=Duel.SelectMatchingCard(tp,s.tdfilter,tp,LOCATION_EXTRA,0,1,1,nil)
-	if #g==0 then return end
+	if not g or #g==0 then return end
 	Duel.ConfirmCards(1-tp,g)
 	if Duel.SendtoDeck(g,nil,SEQ_DECKSHUFFLE,REASON_EFFECT)<1 then return end
-	if not Duel.CheckPendulumZones(tp) then return false end
+	if not Duel.CheckPendulumZones(tp) then return end
 	local c=e:GetHandler()
 	if c:IsRelateToEffect(e) then
 		Duel.MoveToField(c,tp,tp,LOCATION_PZONE,POS_FACEUP,true)

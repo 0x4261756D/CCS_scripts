@@ -10,7 +10,6 @@ function s.initial_effect(c)
 	e1:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_O)
 	e1:SetCode(EVENT_SPSUMMON_SUCCESS)
 	e1:SetRange(LOCATION_DECK+LOCATION_HAND)
-	e1:SetCondition(s.stackcon)
 	e1:SetCost(s.stackcost)
 	e1:SetTarget(s.stacktg)
 	e1:SetOperation(s.stackop)
@@ -60,44 +59,33 @@ end
 --Deck Stack + Draw
 
 function s.cfilter(c,tp)
-	return c:IsSummonType(SUMMON_TYPE_SYNCHRO) and c:IsSummonPlayer(tp) and Duel.GetFlagEffect(tp,c:GetCode())==0
+	return c:IsSummonType(SUMMON_TYPE_SYNCHRO) and c:IsSummonPlayer(tp) and Duel.GetFlagEffect(tp,c:GetCode()+id)==0
 end
 
 function s.cfilter2(c,tp)
-	return s.cfilter(c,tp) and (c:IsRace(RACE_DRAGON) or c:IsRace(RACE_MACHINE)) and c:IsLevelAbove(7)
+	return c:IsSummonType(SUMMON_TYPE_SYNCHRO) and c:IsSummonPlayer(tp) and (c:IsRace(RACE_DRAGON) or c:IsRace(RACE_MACHINE)) and c:IsLevelAbove(7)
 end
 
 function s.tdfilter(c)
 	return c:IsLevel(1) and c:IsRace(RACE_DRAGON) and (c:IsAbleToDeck() or c:IsLocation(LOCATION_DECK))
 end
 
-function s.revfilter(c,e,eg)
-	return c:IsType(TYPE_SYNCHRO) and c:IsSetCard(0x3f) and s.namecheck(eg,c) and not c:IsPublic()
-end
-
-function s.namecheck(g,c)
-	for tc in g:Iter() do
-		if c:ListsCode(tc:GetCode()) then return true end
-	end
-	return false
-end
-
-function s.stackcon(e,tp,eg,ep,ev,re,r,rp)
-	return eg:IsExists(s.cfilter,1,nil,tp)
+function s.revfilter(c,e,tc)
+	return c:IsType(TYPE_SYNCHRO) and c:IsSetCard(0x3f) and c:ListsCode(tc:GetCode()) and not c:IsPublic()
 end
 
 function s.stackcost(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return Duel.IsExistingMatchingCard(s.revfilter,tp,LOCATION_EXTRA,0,1,nil,e,eg) end
+	if chk==0 then return Duel.IsExistingMatchingCard(s.revfilter,tp,LOCATION_EXTRA,0,1,nil,e,eg:GetFirst()) and Duel.IsExistingMatchingCard(s.cfilter,tp,LOCATION_MZONE,0,1,nil,tp) end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_CONFIRM)
-	local tc=Duel.SelectMatchingCard(tp,s.revfilter,tp,LOCATION_EXTRA,0,1,1,nil,e,eg):GetFirst()
+	local tc=Duel.SelectMatchingCard(tp,s.revfilter,tp,LOCATION_EXTRA,0,1,1,nil,e,eg:GetFirst()):GetFirst()
 	if tc then Duel.ConfirmCards(tp,tc) end
-	for c in eg:Iter() do
-		Duel.RegisterFlagEffect(tp,c:GetCode()+id,RESET_PHASE+PHASE_END,0,1)
+	for _,code in ipairs(tc.listed_names) do
+		Duel.RegisterFlagEffect(tp,code+id,RESET_PHASE+PHASE_END,0,1)
 	end
 end
 
 function s.stacktg(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return Duel.IsExistingMatchingCard(s.tdfilter,tp,LOCATION_DECK+LOCATION_HAND,0,1,nil) end
+	if chk==0 then return #eg==1 and Duel.IsExistingMatchingCard(s.tdfilter,tp,LOCATION_DECK+LOCATION_HAND,0,1,nil) and s.cfilter(eg:GetFirst(),tp) end
 	Duel.SetOperationInfo(0,CATEGORY_TODECK,nil,1,tp,LOCATION_DECK+LOCATION_HAND)
 end
 

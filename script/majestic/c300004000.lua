@@ -1,4 +1,5 @@
 --Messias Draconis - Savior Dragon
+Duel.LoadScript("customutility.lua")
 local s,id=GetID()
 function s.initial_effect(c)
 	--Deck Stack + Draw
@@ -8,68 +9,100 @@ function s.initial_effect(c)
 	e1:SetProperty(EFFECT_FLAG_DELAY)
 	e1:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_O)
 	e1:SetCode(EVENT_SPSUMMON_SUCCESS)
-	e1:SetRange(LOCATION_DECK)
-	e1:SetCountLimit(1,id)
+	e1:SetRange(LOCATION_DECK+LOCATION_HAND)
 	e1:SetCondition(s.stackcon)
+	e1:SetCost(s.stackcost)
 	e1:SetTarget(s.stacktg)
 	e1:SetOperation(s.stackop)
 	c:RegisterEffect(e1)
-	--Token on SS
+	--SS on Draw
 	local e2=Effect.CreateEffect(c)
-	e2:SetDescription(aux.Stringid(id,3))
-	e2:SetCategory(CATEGORY_SPECIAL_SUMMON+CATEGORY_TOKEN)
-	e2:SetProperty(EFFECT_FLAG_DELAY+EFFECT_FLAG_CARD_TARGET)
+	e2:SetDescription(aux.Stringid(id,0))
+	e2:SetCategory(CATEGORY_SPECIAL_SUMMON)
 	e2:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
-	e2:SetCode(EVENT_SPSUMMON_SUCCESS)
-	e2:SetRange(LOCATION_MZONE)
-	e2:SetCountLimit(1,{id,1})
-	e2:SetCost(s.tokencost)
-	e2:SetTarget(s.tokentg)
-	e2:SetOperation(s.tokenop)
+	e2:SetProperty(EFFECT_FLAG_DAMAGE_STEP+EFFECT_FLAG_DELAY)
+	e2:SetCode(EVENT_DRAW)
+	e2:SetRange(LOCATION_HAND)
+	e2:SetCondition(s.spcon)
+	e2:SetTarget(s.sptg)
+	e2:SetOperation(s.spop)
 	c:RegisterEffect(e2)
-	--F -> O
+	--Token on SS
 	local e3=Effect.CreateEffect(c)
-	e3:SetProperty(EFFECT_FLAG_IGNORE_IMMUNE)
-	e3:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_CONTINUOUS)
-	e3:SetCode(EVENT_BE_MATERIAL)
-	e3:SetCondition(s.efcon)
-	e3:SetOperation(s.efop)
+	e3:SetDescription(aux.Stringid(id,3))
+	e3:SetCategory(CATEGORY_SPECIAL_SUMMON+CATEGORY_TOKEN)
+	e3:SetProperty(EFFECT_FLAG_DELAY+EFFECT_FLAG_CARD_TARGET)
+	e3:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
+	e3:SetCode(EVENT_SPSUMMON_SUCCESS)
+	e3:SetCondition(function(e,tp,eg,ep,ev,re) return re:GetHandler()==e:GetHandler() end)
+	e3:SetCost(s.tokencost)
+	e3:SetTarget(s.tokentg)
+	e3:SetOperation(s.tokenop)
 	c:RegisterEffect(e3)
-	--Can be treated as non-tuner for a Synchro Summon
+	--F -> O and Effect Change
 	local e4=Effect.CreateEffect(c)
-	e4:SetType(EFFECT_TYPE_SINGLE)
-	e4:SetProperty(EFFECT_FLAG_SINGLE_RANGE)
-	e4:SetRange(LOCATION_MZONE)
-	e4:SetCode(EFFECT_NONTUNER)
-	e4:SetValue(s.ntval)
+	e4:SetProperty(EFFECT_FLAG_IGNORE_IMMUNE)
+	e4:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_CONTINUOUS)
+	e4:SetCode(EVENT_BE_MATERIAL)
+	e4:SetCondition(s.efcon)
+	e4:SetOperation(s.efop)
 	c:RegisterEffect(e4)
+	--Can be treated as non-tuner for a Synchro Summon
+	local e5=Effect.CreateEffect(c)
+	e5:SetType(EFFECT_TYPE_SINGLE)
+	e5:SetProperty(EFFECT_FLAG_SINGLE_RANGE)
+	e5:SetRange(LOCATION_MZONE)
+	e5:SetCode(EFFECT_NONTUNER)
+	e5:SetValue(s.ntval)
+	c:RegisterEffect(e5)
 end
 
 --Deck Stack + Draw
 
 function s.cfilter(c,tp)
-	return c:IsSummonType(SUMMON_TYPE_SYNCHRO) and c:IsSummonPlayer(tp)
+	return c:IsSummonType(SUMMON_TYPE_SYNCHRO) and c:IsSummonPlayer(tp) and Duel.GetFlagEffect(tp,c:GetCode())==0
 end
 
 function s.cfilter2(c,tp)
-	return c:IsSummonType(SUMMON_TYPE_SYNCHRO) and c:IsSummonPlayer(tp) and (c:IsRace(RACE_DRAGON) or c:IsRace(RACE_MACHINE)) and c:IsLevelAbove(7)
+	return s.cfilter(c,tp) and (c:IsRace(RACE_DRAGON) or c:IsRace(RACE_MACHINE)) and c:IsLevelAbove(7)
+end
+
+function s.tdfilter(c)
+	return c:IsLevel(1) and c:IsRace(RACE_DRAGON) and (c:IsAbleToDeck() or c:IsLocation(LOCATION_DECK))
+end
+
+function s.revfilter(c,e,eg)
+	return c:IsType(TYPE_SYNCHRO) and c:IsSetCard(0x3f) and s.namecheck(eg,c) and not c:IsPublic()
+end
+
+function s.namecheck(g,c)
+	for tc in g:Iter() do
+		if c:ListsCode(tc:GetCode()) then return true end
+	end
+	return false
 end
 
 function s.stackcon(e,tp,eg,ep,ev,re,r,rp)
 	return eg:IsExists(s.cfilter,1,nil,tp)
 end
 
-function s.tdfilter(c)
-	return c:IsLevel(1) and c:IsRace(RACE_DRAGON)
+function s.stackcost(e,tp,eg,ep,ev,re,r,rp,chk)
+	if chk==0 then return Duel.IsExistingMatchingCard(s.revfilter,tp,LOCATION_EXTRA,0,1,nil,e,eg) end
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_CONFIRM)
+	local tc=Duel.SelectMatchingCard(tp,s.revfilter,tp,LOCATION_EXTRA,0,1,1,nil,e,eg):GetFirst()
+	if tc then Duel.ConfirmCards(tp,tc) end
+	for c in eg:Iter() do
+		Duel.RegisterFlagEffect(tp,c:GetCode()+id,RESET_PHASE+PHASE_END,0,1)
+	end
 end
 
 function s.stacktg(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return Duel.IsExistingMatchingCard(s.tdfilter,tp,LOCATION_DECK,0,1,nil) end
-	Duel.SetOperationInfo(0,CATEGORY_TODECK,nil,1,tp,LOCATION_DECK)
+	if chk==0 then return Duel.IsExistingMatchingCard(s.tdfilter,tp,LOCATION_DECK+LOCATION_HAND,0,1,nil) end
+	Duel.SetOperationInfo(0,CATEGORY_TODECK,nil,1,tp,LOCATION_DECK+LOCATION_HAND)
 end
 
 function s.stackop(e,tp,eg,ep,ev,re,r,rp)
-	local g=Duel.GetMatchingGroup(s.tdfilter,tp,LOCATION_DECK,0,nil)
+	local g=Duel.GetMatchingGroup(s.tdfilter,tp,LOCATION_DECK+LOCATION_HAND,0,nil)
 	if #g==0 then return end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TODECK)
 	local tc=g:Select(tp,1,1,nil):GetFirst()
@@ -82,9 +115,34 @@ function s.stackop(e,tp,eg,ep,ev,re,r,rp)
 	end
 end
 
---Token
+--SS on Draw
 
-function s.revfilter(c,e,tp)
+function s.synfilter(c,tp)
+	local res=false
+	for tc in Duel.GetMatchingGroup(Card.IsSetCard,tp,LOCATION_EXTRA,0,nil,0x3f):Iter() do
+		if tc:ListsCode(c:GetCode()) then res=true end
+	end
+	return c:IsFaceup() and c:IsType(TYPE_SYNCHRO) and res
+end
+
+function s.spcon(e,tp,eg,ep,ev,re,r,rp)
+	return Duel.IsExistingMatchingCard(s.synfilter,tp,LOCATION_MZONE,0,1,nil,tp)
+end
+
+function s.sptg(e,tp,eg,ep,ev,re,r,rp,chk)
+	local c=e:GetHandler()
+	if chk==0 then return Duel.GetLocationCount(tp,LOCATION_MZONE)>0 and c:IsCanBeSpecialSummoned(e,0,tp,false,false) end
+	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,c,1,tp,LOCATION_HAND)
+end
+
+function s.spop(e,tp,eg,ep,ev,re,r,rp)
+	local c=e:GetHandler()
+	if c:IsRelateToEffect(e) then Duel.SpecialSummon(c,0,tp,tp,false,false,POS_FACEUP) end
+end
+
+--Token on SS
+
+function s.revfilter2(c,e,tp)
 	return c:IsSetCard(0x3f) and c:IsType(TYPE_SYNCHRO) and Duel.IsExistingTarget(s.tgfilter,tp,LOCATION_MZONE,0,1,nil,c,e) and not c:IsPublic()
 end
 
@@ -93,9 +151,9 @@ function s.tgfilter(c,sc,e)
 end
 
 function s.tokencost(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return Duel.IsExistingMatchingCard(s.revfilter,tp,LOCATION_EXTRA,0,1,nil,e,tp) end
+	if chk==0 then return Duel.IsExistingMatchingCard(s.revfilter2,tp,LOCATION_EXTRA,0,1,nil,e,tp) end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_CONFIRM)
-	local revc=Duel.SelectMatchingCard(tp,s.revfilter,tp,LOCATION_EXTRA,0,1,1,nil,e,tp)
+	local revc=Duel.SelectMatchingCard(tp,s.revfilter2,tp,LOCATION_EXTRA,0,1,1,nil,e,tp)
 	Duel.ConfirmCards(1-tp,revc)
 	e:SetLabelObject(revc:GetFirst())
 end
@@ -129,7 +187,11 @@ function s.tokenop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.SpecialSummonComplete()
 end
 
---F -> O
+--F -> O and Effect Change
+
+function s.spfilter(c,tc,e,tp)
+	return tc:ListsCode(c:GetCode()) and not c:IsCode(21159309) and c:IsCanBeSpecialSummoned(e,0,tp,false,false)
+end
 
 function s.efcon(e,tp,eg,ep,ev,re,r,rp)
 	return r==REASON_SYNCHRO and e:GetHandler():GetReasonCard():IsSetCard(0x3f)
@@ -158,6 +220,7 @@ function s.efop(e,tp,eg,ep,ev,re,r,rp)
 			eff:SetCondition(s.efcon2(rc))
 		end
 	end
+	s.effchangeop(effs,rc)(e,tp,eg,ep,ev,re,r,rp)
 end
 
 function s.tedtg(f,c)
@@ -168,8 +231,62 @@ function s.tedtg(f,c)
 	end
 end
 
-function s.spfilter(c,tc,e,tp)
-	return tc:ListsCode(c:GetCode()) and not c:IsCode(21159309) and c:IsCanBeSpecialSummoned(e,0,tp,false,false)
+function s.effchangeop(effs,c)
+	return function(e,tp,eg,ep,ev,re,r,rp)
+		local code=c:GetCode()
+		--Star
+		if code==7841112 then
+			for _,eff in ipairs(effs) do
+				if (eff:GetType()&EFFECT_TYPE_QUICK_O)>0 then
+					local eff2=eff:Clone()
+					eff2:SetCost(s.alteredstarcost)
+					eff2:SetReset(RESET_EVENT+RESETS_STANDARD)
+					c:RegisterEffect(eff2)
+					c:RegisterFlagEffect(id,RESET_EVENT+RESETS_STANDARD,0,1)
+					eff:SetCondition(aux.AND(s.efcon2(c),eff:GetCondition()))
+				end
+			end
+		end
+		--Red
+		if code==67030233 or code==513000078 then
+			for _,eff in ipairs(effs) do
+				if (eff:GetCode()&EVENT_BATTLED)>0 then
+					local eff2=eff:Clone()
+					eff2:SetTarget(s.alteredredtg)
+					eff2:SetOperation(s.alteredredop)
+					eff2:SetReset(RESET_EVENT+RESETS_STANDARD)
+					c:RegisterEffect(eff2)
+					c:RegisterFlagEffect(id,RESET_EVENT+RESETS_STANDARD,0,1)
+					eff:SetCondition(aux.AND(s.efcon2(c),eff:GetCondition()))
+				end
+			end
+		end
+		--Rose
+		
+		--Feather
+		
+		--Fairy
+		
+		--Tool
+	end
+end
+
+function s.alteredstarcost(e,tp,eg,ep,ev,re,r,rp,chk)
+	if chk==0 then return Duel.IsExistingMatchingCard(aux.AND(Card.IsReleasable,Card.IsMonster),tp,LOCATION_HAND+LOCATION_MZONE,0,1,nil) end
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_RELEASE)
+	local g=Duel.SelectMatchingCard(tp,aux.AND(Card.IsReleasable,Card.IsMonster),tp,LOCATION_HAND+LOCATION_MZONE,0,1,1,nil)
+	Duel.Release(g,REASON_COST)
+end
+
+function s.alteredredtg(e,tp,eg,ep,ev,re,r,rp,chk)
+	if chk==0 then return true end
+	local g=Duel.GetMatchingGroup(aux.TRUE,tp,0,LOCATION_MZONE,nil)
+	Duel.SetOperationInfo(0,CATEGORY_DESTROY,g,#g,1-tp,LOCATION_MZONE)
+end
+
+function s.alteredredop(e,tp,eg,ep,ev,re,r,rp)
+	local g=Duel.GetMatchingGroup(aux.TRUE,tp,0,LOCATION_MZONE,nil)
+	Duel.Destroy(g,REASON_EFFECT)
 end
 
 --Non-Tuner

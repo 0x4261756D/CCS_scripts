@@ -42,7 +42,9 @@ function(c,cat,prop,opt,con,cost,tg,op)
 	end
 	e:SetType(EFFECT_TYPE_ACTIVATE)
 	e:SetCode(EVENT_FREE_CHAIN)
-	e:SetCountLimit(opt)
+	if opt then
+		e:SetCountLimit(opt)
+	end
 	e:SetCondition(Trapspell.Spellcon(con))
 	if cost then
 		e:SetCost(cost)
@@ -71,7 +73,9 @@ Trapspell.AddTrapEffect=aux.FunctionWithNamedArgs(
 		end
 		e:SetType(EFFECT_TYPE_ACTIVATE)
 		e:SetCode(EVENT_FREE_CHAIN)
-		e:SetCountLimit(opt)
+		if opt then
+			e:SetCountLimit(opt)
+		end
 		if prop then
 			e:SetProperty(prop)
 		end

@@ -5,7 +5,7 @@ function Card.IsTrapSpell(c)
 	return c:IsType(TYPE_TRAP) and e:GetValue()==TYPE_SPELL
 end
 
-if not TrapSpell then
+if not Trapspell then
 	Trapspell={}
 end
 

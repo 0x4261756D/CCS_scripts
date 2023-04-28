@@ -5,7 +5,9 @@ function Card.IsTrapSpell(c)
 	return c:IsType(TYPE_TRAP) and e:GetValue()==TYPE_SPELL
 end
 
-Trapspell={}
+if not TrapSpell then
+	Trapspell={}
+end
 
 function Trapspell.CreateActivation(c)
 	local e0=Effect.CreateEffect(c)

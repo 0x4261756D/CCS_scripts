@@ -31,7 +31,7 @@ function Trapspell.Spellcon(con)
 end
 
 Trapspell.AddSpellEffect=aux.FunctionWithNamedArgs(
-function(c,cat,prop,opt,con,cost,tg,op)
+function(c,cat,prop,opt,con,cost,tg,op,opt)
 	local e=Effect.CreateEffect(c)
 	e:SetDescription(3403)
 	if cat then
@@ -56,7 +56,7 @@ function(c,cat,prop,opt,con,cost,tg,op)
 		e:SetOperation(op)
 	end
 	return e
-end,"handler","cat","prop","con","cost","tg","op")
+end,"handler","cat","prop","con","cost","tg","op","opt")
 
 function Trapspell.Trapcon(con)
 	return function(e,tp,eg,ep,ev,re,r,rp)
@@ -65,7 +65,7 @@ function Trapspell.Trapcon(con)
 end
 
 Trapspell.AddTrapEffect=aux.FunctionWithNamedArgs(
-	function(c,cat,prop,opt,con,cost,tg,op) 
+	function(c,cat,prop,opt,con,cost,tg,op,opt) 
 		local e=Effect.CreateEffect(c)
 		e:SetDescription(3404)
 		if cat then
@@ -90,4 +90,4 @@ Trapspell.AddTrapEffect=aux.FunctionWithNamedArgs(
 			e:SetOperation(op)
 		end
 		return e
-end,"handler","cat","prop","con","cost","tg","op")
+end,"handler","cat","prop","con","cost","tg","op","opt")

@@ -17,18 +17,12 @@ function Trapspell.CreateActivation(c)
 	local e1=e0:Clone()
 	e1:SetCode(EFFECT_TRAP_ACT_IN_SET_TURN)
 	c:RegisterEffect(e1)
-	local e2=Effect.CreateEffect(c)
-	e2:SetProperty(EFFECT_FLAG_CANNOT_NEGATE+EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_IGNORE_IMMUNE)
-	e2:SetType(EFFECT_TYPE_SINGLE)
-	e2:SetCode(EFFECT_ADD_TYPE)
-	e2:SetValue(TYPE_SPELL)
-	e2:SetRange(LOCATION_ALL)
-	c:RegisterEffect(e2)
 end
 
 function Trapspell.Spellcon(con)
 	return function(e,tp,eg,ep,ev,re,r,rp)
-		return (not con or con(e,tp,eg,ep,ev,re,r,rp)) and Duel.GetCurrentChain()==0 and Duel.GetTurnPlayer()==tp
+		local bc=e:GetHandler():IsHasEffect(EFFECT_BECOME_QUICK)
+		return (not con or con(e,tp,eg,ep,ev,re,r,rp)) and (Duel.GetCurrentChain()==0 or bc) and Duel.GetTurnPlayer()==tp and (Duel.IsMainPhase() or bc)
 	end
 end
 
@@ -79,7 +73,9 @@ Trapspell.AddTrapEffect=aux.FunctionWithNamedArgs(
 			e:SetCountLimit(table.unpack(opt))
 		end
 		if prop then
-			e:SetProperty(prop)
+			e:SetProperty(prop,EFFECT_FLAG2_COF)
+		else
+			e:SetProperty(0,EFFECT_FLAG2_COF)
 		end
 		e:SetCondition(Trapspell.Trapcon(con))
 		if cost then

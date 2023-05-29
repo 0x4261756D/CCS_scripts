@@ -69,17 +69,17 @@ function s.spfilter(c,tc,rev,e,tp)
 	local mat=Group.FromCards(e:GetHandler(),tc)
 	local st,tpe
 	if c:IsType(TYPE_FUSION) then
-		st,tpe=SUMMON_TYPE_FUSION,TYPE_FUSION
+		st=SUMMON_TYPE_FUSION
 	elseif c:IsType(TYPE_SYNCHRO) then
-		st,tpe=SUMMON_TYPE_SYNCHRO,TYPE_SYNCHRO
+		st=SUMMON_TYPE_SYNCHRO
 	elseif c:IsType(TYPE_XYZ) then
-		st,tpe=SUMMON_TYPE_XYZ,TYPE_XYZ
+		st=SUMMON_TYPE_XYZ
 	elseif c:IsType(TYPE_LINK) then
-		st,tpe=SUMMON_TYPE_LINK,TYPE_LINK
+		st=SUMMON_TYPE_LINK
 	else
 		return false
 	end
-	local res=c:IsSetCard(0x10af) and c:IsMonster() and c:IsCanBeSpecialSummoned(e,st,tp,true,true) and Duel.GetLocationCountFromEx(tp,tp,Group.FromCards(c,tc),tpe)>0
+	local res=c:IsSetCard(0x10af) and c:IsMonster() and c:IsCanBeSpecialSummoned(e,st,tp,true,true) and Duel.GetLocationCountFromEx(tp,tp,Group.FromCards(e:GetHandler(),tc),c)>0
 		and ((c:IsType(TYPE_FUSION) and c:CheckFusionMaterial(mat)) or (c:IsType(TYPE_SYNCHRO) and c:IsSynchroSummonable(nil,mat)) or (c:IsType(TYPE_XYZ) and c:IsXyzSummonable(nil,mat)) or (c:IsType(TYPE_LINK) and c:IsLinkSummonable(nil,mat)))
 	e1:Reset()
 	return res
@@ -97,7 +97,7 @@ end
 function s.pendtg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	local rev=e:GetLabelObject()
 	if chkc then return chkc:IsLocation(LOCATION_MZONE) and chkc:IsControler(1-tp) and s.tgfilter(chkc,rev,e,tp) end
-	if chk==0 then return e:GetHandler():IsCanBeSpecialSummoned(e,0,tp,false,false) end
+	if chk==0 then return e:GetHandler():IsCanBeSpecialSummoned(e,0,tp,false,false) and Duel.GetLocationCount(tp,LOCATION_MZONE)>0 end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TARGET)
 	local tc=Duel.SelectTarget(tp,s.tgfilter,tp,0,LOCATION_MZONE,1,1,nil,rev,e,tp)
 end

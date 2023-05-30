@@ -4,6 +4,37 @@
 REGISTER_FLAG_FILTER=16
 HINTMSG_REMOVE_COUNTER=10001
 --functions
+local function arg_dump(e, func, kind, ...)
+	if DEBUG_ID == e:GetHandler():GetCode() then
+		Debug.Message(kind.." of "..e:GetHandler():GetCode())
+		local t = table.pack(...)
+		local str = "  "
+		for i = 1, t.n do
+			str = str..i..": "..type(t[i]).." "
+		end
+		Debug.Message(str)
+	end
+	return func(...)
+end
+
+local SetTg = Effect.SetTarget
+Effect.SetTarget = function (e, func)
+	return SetTg(e, function (...)
+		return arg_dump(e, func, "Target", ...)
+	end)
+end
+local SetCon = Effect.SetCondition
+Effect.SetCondition = function (e, func)
+	return SetCon(e, function (...)
+		return arg_dump(e, func, "Condition", ...)
+	end)
+end
+local SetOp = Effect.SetOperation
+Effect.SetOperation = function (e, func)
+	return SetOp(e, function (...)
+		return arg_dump(e, func, "Operation", ...)
+	end)
+end
 
 function Card.GetMaxCounterRemoval(c,tp,cttypes,reason)
 	local ct=0

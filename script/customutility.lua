@@ -295,3 +295,14 @@ function Fusion.AddSpellTrapRep(c,s,value,f,...)
 		Duel.RegisterEffect(ge,0)
 	end)
 end
+
+function GetMinMaxMaterialCount(i,...)
+	local params={...}
+	local min,max=0,0
+	for _,t in ipairs(params) do
+		for _,val in ipairs(t) do
+			min,max=min+val[i],max+val[i+1]
+		end
+	end
+	return min,max
+end

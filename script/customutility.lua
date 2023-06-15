@@ -3,6 +3,8 @@
 --constants
 REGISTER_FLAG_FILTER=16
 HINTMSG_REMOVE_COUNTER=10001
+HINTMSG__MATERIAL=10002
+HINTMSG_TRICK_MATERIAL=10003
 --functions
 local function arg_dump(e, func, kind, ...)
 	if DEBUG_ID == e:GetHandler():GetCode() then

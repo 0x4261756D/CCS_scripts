@@ -113,7 +113,7 @@ function Trick.Movecon2(e)
 end
 
 function Trick.Matfilter(c)
-	return c:IsCanBeTrickMaterial() and ((c:IsFaceup() and c:IsMonster()) or c:IsType(TYPE_SPELL))
+	return c:IsCanBeTrickMaterial() and ((c:IsFaceup() and c:IsMonster()) or c:IsType(TYPE_TRAP))
 end
 
 function Card.IsTrick(c)

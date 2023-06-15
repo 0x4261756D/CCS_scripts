@@ -252,39 +252,6 @@ function merge(t1, t2, filter)
 	end
 end
 
-local regeff2=Card.RegisterEffect
-function Card.RegisterEffect(c,e,forced,...)
-	if c:IsStatus(STATUS_INITIALIZING) and not e then
-		error("Parameter 2 expected to be Effect, got nil instead.",2)
-	end
-	--16 == 300001010 - access to Effulgence Congregater Zalatiel to filter for "EVENT_" effects
-	local reg_e=regeff2(c,e,forced)
-	if not reg_e then
-		return nil
-	end
-	local reg={...}
-	local resetflag,resetcount=e:GetReset()
-	for _,val in ipairs(reg) do
-		local prop=EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_IGNORE_IMMUNE+EFFECT_FLAG_SET_AVAILABLE
-		if e:IsHasProperty(EFFECT_FLAG_UNCOPYABLE) then prop=prop|EFFECT_FLAG_UNCOPYABLE end
-		local e2=Effect.CreateEffect(c)
-		e2:SetType(EFFECT_TYPE_SINGLE)
-		e2:SetProperty(prop,EFFECT_FLAG2_MAJESTIC_MUST_COPY)
-		if val==16 then
-			e2:SetCode(300001010)		
-		end
-		e2:SetLabelObject(e)
-		e2:SetLabel(c:GetOriginalCode())
-		if resetflag and resetcount then
-			e2:SetReset(resetflag,resetcount)
-		elseif resetflag then
-			e2:SetReset(resetflag)
-		end
-		c:RegisterEffect(e2)
-	end
-	return reg_e
-end
-
 function Fusion.AddSpellTrapRep(c,s,value,f,...)
 	f(...)
 	aux.GlobalCheck(s,function()

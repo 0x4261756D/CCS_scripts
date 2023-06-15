@@ -78,7 +78,7 @@ function Trick.SummonCheck(e,tp,mons,traps,min,max,chk)
 	if chk==0 then
 		return aux.SelectUnselectGroup(g,e,tp,min,max,Trick.Rescon(mons,traps,min),0)
 	else
-		local mat=aux.SelectUnselectGroup(g,e,tp,min,max,Trick.Rescon(mons,traps,min),1,tp,10002,Trick.Rescon(mons,traps,min),nil,true)
+		local mat=aux.SelectUnselectGroup(g,e,tp,min,max,Trick.Rescon(mons,traps,min),1,tp,HINTMSG_TRICK_MATERIAL,Trick.Rescon(mons,traps,min),nil,true)
 		mat:KeepAlive()
 		return mat
 	end

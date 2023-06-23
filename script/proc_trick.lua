@@ -1,6 +1,6 @@
 Duel.LoadScript("customutility.lua")
 
-SUMMON_TYPE_TRICK=0x23000000
+SUMMON_TYPE_TRICK=0x4f000000
 REASON_TRICK=0x20000000
 
 if not Trick then

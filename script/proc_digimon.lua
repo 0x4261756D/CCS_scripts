@@ -11,6 +11,9 @@ if not Digimon then
 end
 
 function Digimon.AddLogic(c,stage,rookies,champions,ultimates,megas,ultras)
+    if Digimon.GetStage(c) >= STAGE_MEGA then
+        c:EnableUnsummonable()
+    end
     local digitations = {}
     local rookies = rookies or {}
     local champions = champions or {}

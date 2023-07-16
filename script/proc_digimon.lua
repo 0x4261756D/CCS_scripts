@@ -10,16 +10,18 @@ if not Digimon then
 	Digimon={}
 end
 
-function Digimon.AddLogic(c,stage,rookies,champions,ultimates,megas,ultras)
+function Digimon.AddLogic(c,stage,rookies,champions,ultimates,megas,ultras,antibody)
     if Digimon.GetStage(c) >= STAGE_MEGA then
         c:EnableUnsummonable()
     end
     local digitations = {}
+    local stage = stage or 1
     local rookies = rookies or {}
     local champions = champions or {}
     local ultimates = ultimates or {}
     local megas = megas or {}
     local ultras = ultras or {}
+    local antibody = antibody or 0
     table.insert(digitations,rookies)
     table.insert(digitations,champions)
     table.insert(digitations,ultimates)
@@ -28,11 +30,17 @@ function Digimon.AddLogic(c,stage,rookies,champions,ultimates,megas,ultras)
     local m = c:GetMetatable()
     m.digitations = digitations
     m.stage = stage
+    m.antibody = antibody
 end
 
 function Digimon.GetStage(c)
     local m = c:GetMetatable()
     return m.stage or 0
+end
+
+function Digimon.GetXAntibody(c)
+    local m = c:GetMetatable()
+    return m.antibody or 0
 end
 
 function Digimon.GetDigitations(c,stage)

@@ -6,16 +6,35 @@ STAGE_ULTIMATE = 3
 STAGE_MEGA = 4
 STAGE_ULTRA = 5
 
+SET_DIGI = 0xC55
+SET_DIGITATION = 0x1C55
+
 if not Digimon then
 	Digimon={}
 end
 
-function Digimon.AddLogic(c,stage,additional_race,rookies,champions,ultimates,megas,ultras,antibody)
-    if Digimon.GetStage(c) >= STAGE_MEGA then
-        c:EnableUnsummonable()
+function Digimon.AddProc(c,stage,additional_race,can_be_ssed,rookies,champions,ultimates,megas,ultras,antibody)
+    local can_be_ssed = can_be_ssed or true
+    if type(can_be_ssed)~='boolean' then
+        can_be_ssed = true
+    end
+    if not can_be_ssed then
+        local e = Effect.CreateEffect(c)
+        e:SetType(EFFECT_TYPE_SINGLE)
+        e:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE)
+        e:SetCode(EFFECT_SPSUMMON_CONDITION)
+        e:SetCondition(Digimon.digitationcondition)
+        e:SetValue(Digimon.digitationlimit)
+        c:RegisterEffect(e)
+        local e1 = Effect.CreateEffect(c)
+        e1:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_CONTINUOUS)
+        e1:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE)
+        e1:SetCode(EVENT_SPSUMMON_SUCCESS)
+        e1:SetOperation(Digimon.digitationflagop)
+        c:RegisterEffect(e1)
     end
     local digitations = {}
-    local stage = stage or 1
+    local stage = stage or STAGE_ROOKIE
     local rookies = rookies or {}
     local champions = champions or {}
     local ultimates = ultimates or {}
@@ -32,13 +51,28 @@ function Digimon.AddLogic(c,stage,additional_race,rookies,champions,ultimates,me
     m.stage = stage
     m.antibody = antibody
     if additional_race then
-        local e = Effect.CreateEffect(c)
-        e:SetType(EFFECT_TYPE_SINGLE)
-        e:SetCode(EFFECT_ADD_RACE)
-        e:SetProperty(EFFECT_FLAG_SINGLE_RANGE+EFFECT_FLAG_IGNORE_IMMUNE+EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_CANNOT_NEGATE+EFFECT_FLAG_UNCOPYABLE)
-        e:SetRange(LOCATION_ALL)
-        e:SetProperty(additional_race)
-        c:RegisterEffect(e)
+        local e2 = Effect.CreateEffect(c)
+        e2:SetType(EFFECT_TYPE_SINGLE)
+        e2:SetCode(EFFECT_ADD_RACE)
+        e2:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE)
+        e2:SetRange(LOCATION_ALL)
+        e2:SetProperty(additional_race)
+        c:RegisterEffect(e2)
+    end
+end
+
+function Digimon.digitationcondition(e)
+	return not e:GetHandler():GetFlagEffect(4000)
+end
+
+function Digimon.digitationlimit(e,se,sp,st)
+	local eff=Duel.GetChainInfo(0,CHAININFO_TRIGGERING_EFFECT)
+	return se:GetHandler():IsSetCard(SET_DIGITATION) or eff:GetHandler():IsSetCard(0x1C55)
+end
+
+function Digimon.digitationflagop(e,tp,eg,ep,ev,re,r,rp)
+	if re:GetHandler():IsSetCard(SET_DIGITATION) and not e:GetHandler():GetFlagEffect(4000) then
+        e:GetHandler():RegisterFlagEffect(4000,RESET_EVENT+EVENT_TO_HAND+EVENT_TO_DECK,0,1)
     end
 end
 

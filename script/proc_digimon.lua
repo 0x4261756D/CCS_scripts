@@ -23,15 +23,8 @@ function Digimon.AddProc(c,stage,additional_race,can_be_ssed,rookies,champions,u
         e:SetType(EFFECT_TYPE_SINGLE)
         e:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE)
         e:SetCode(EFFECT_SPSUMMON_CONDITION)
-        e:SetCondition(Digimon.digitationcondition)
         e:SetValue(Digimon.digitationlimit)
         c:RegisterEffect(e)
-        local e1 = Effect.CreateEffect(c)
-        e1:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_CONTINUOUS)
-        e1:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE)
-        e1:SetCode(EVENT_SPSUMMON_SUCCESS)
-        e1:SetOperation(Digimon.digitationflagop)
-        c:RegisterEffect(e1)
     end
     local digitations = {}
     local stage = stage or STAGE_ROOKIE
@@ -51,29 +44,19 @@ function Digimon.AddProc(c,stage,additional_race,can_be_ssed,rookies,champions,u
     m.stage = stage
     m.antibody = antibody
     if additional_race then
-        local e2 = Effect.CreateEffect(c)
-        e2:SetType(EFFECT_TYPE_SINGLE)
-        e2:SetCode(EFFECT_ADD_RACE)
-        e2:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE)
-        e2:SetRange(LOCATION_ALL)
-        e2:SetProperty(additional_race)
-        c:RegisterEffect(e2)
+        local e = Effect.CreateEffect(c)
+        e:SetType(EFFECT_TYPE_SINGLE)
+        e:SetCode(EFFECT_ADD_RACE)
+        e:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE)
+        e:SetRange(LOCATION_ALL)
+        e:SetProperty(additional_race)
+        c:RegisterEffect(e)
     end
-end
-
-function Digimon.digitationcondition(e)
-	return not e:GetHandler():GetFlagEffect(4000)
 end
 
 function Digimon.digitationlimit(e,se,sp,st)
 	local eff=Duel.GetChainInfo(0,CHAININFO_TRIGGERING_EFFECT)
-	return se:GetHandler():IsSetCard(SET_DIGITATION) or eff:GetHandler():IsSetCard(0x1C55)
-end
-
-function Digimon.digitationflagop(e,tp,eg,ep,ev,re,r,rp)
-	if re:GetHandler():IsSetCard(SET_DIGITATION) and not e:GetHandler():GetFlagEffect(4000) then
-        e:GetHandler():RegisterFlagEffect(4000,RESET_EVENT+EVENT_TO_HAND+EVENT_TO_DECK,0,1)
-    end
+	return se:GetHandler():IsSetCard(SET_DIGITATION) or eff:GetHandler():IsSetCard(0x1C55) or e:GetHandler():IsStatus(STATUS_PROC_COMPLETE)
 end
 
 function Digimon.GetStage(c)

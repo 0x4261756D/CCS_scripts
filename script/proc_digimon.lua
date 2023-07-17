@@ -10,7 +10,7 @@ if not Digimon then
 	Digimon={}
 end
 
-function Digimon.AddLogic(c,stage,rookies,champions,ultimates,megas,ultras,antibody)
+function Digimon.AddLogic(c,stage,additional_race,rookies,champions,ultimates,megas,ultras,antibody)
     if Digimon.GetStage(c) >= STAGE_MEGA then
         c:EnableUnsummonable()
     end
@@ -31,6 +31,15 @@ function Digimon.AddLogic(c,stage,rookies,champions,ultimates,megas,ultras,antib
     m.digitations = digitations
     m.stage = stage
     m.antibody = antibody
+    if additional_race then
+        local e = Effect.CreateEffect(c)
+        e:SetType(EFFECT_TYPE_SINGLE)
+        e:SetCode(EFFECT_ADD_RACE)
+        e:SetProperty(EFFECT_FLAG_SINGLE_RANGE+EFFECT_FLAG_IGNORE_IMMUNE+EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_CANNOT_NEGATE+EFFECT_FLAG_UNCOPYABLE)
+        e:SetRange(LOCATION_ALL)
+        e:SetProperty(additional_race)
+        c:RegisterEffect(e)
+    end
 end
 
 function Digimon.GetStage(c)

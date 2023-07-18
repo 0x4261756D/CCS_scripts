@@ -129,7 +129,9 @@ function Digimon.AddTriggerDigivolution(c,count,loc,desc,forced,event,can_miss,c
 	    e:SetProperty(EFFECT_FLAG_DELAY)
     end
 	e:SetCode(event)
-	e:SetCountLimit(cl)
+    if cl then
+        e:SetCountLimit(table.unpack(cl)) 
+    end
     if con then
         e:SetCondition(con)
     end
@@ -155,7 +157,9 @@ function Digimon.AddQuickDigivolution(c,count,loc,desc,forced,event,cl,con,cost,
         e:SetType(EFFECT_TYPE_SINGLE + EFFECT_TYPE_QUICK_O)
     end
 	e:SetCode(event)
-	e:SetCountLimit(cl)
+	if cl then
+        e:SetCountLimit(table.unpack(cl)) 
+    end
     if con then
         e:SetCondition(con)
     end
@@ -176,7 +180,9 @@ function Digimon.AddIgnitionDigivolution(c,count,loc,desc,cl,con,cost,st,ignore_
     end
 	e:SetCategory(CATEGORY_TOGRAVE + CATEGORY_SPECIAL_SUMMON)
 	e:SetRange(LOCATION_MZONE)
-	e:SetCountLimit(cl)
+    if cl then
+        e:SetCountLimit(table.unpack(cl)) 
+    end
     if con then
         e:SetCondition(con)
     end

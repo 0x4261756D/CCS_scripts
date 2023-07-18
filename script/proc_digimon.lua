@@ -55,8 +55,7 @@ function Digimon.AddProc(c,stage,additional_race,summon_restrictions,rookies,cha
 end
 
 function Digimon.digitationlimit(e,se,sp,st)
-	local eff=Duel.GetChainInfo(0,CHAININFO_TRIGGERING_EFFECT)
-	return se:GetHandler():IsSetCard(SET_DIGITATION) or eff:GetHandler():IsSetCard(SET_DIGITATION) or e:GetHandler():IsStatus(STATUS_PROC_COMPLETE)
+	return se:GetHandler():IsSetCard(SET_DIGITATION) or e:GetHandler():IsStatus(STATUS_PROC_COMPLETE)
 end
 
 function Digimon.GetStage(c)
@@ -81,7 +80,7 @@ function Digimon.CanDigivolve(c,count)
 end
 
 function Digimon.IsExistingDigitationToSummon(c,e,tp,loc,count,st,ignore_conditions,ignore_limit,pos)
-    local g = Duel.GetMatchingGroup(Card.IsCanBeSpecialSummoned,tp,loc,nil,e,st,tp,ignore_conditions,ignore_limit,pos)
+    local g = Duel.GetMatchingGroup(Card.IsCanBeSpecialSummoned,tp,loc,0,nil,e,st,tp,ignore_conditions,ignore_limit,pos)
     local ct = 0
     for _,code in ipairs(Digimon.GetDigitations(c,Digimon.GetStage(c) + count)) do
         if g:IsExists(Card.IsCode,1,nil,code) then
@@ -179,6 +178,7 @@ function Digimon.AddIgnitionDigivolution(c,count,loc,desc,cl,con,cost,st,ignore_
 	    e:SetDescription(desc)
     end
 	e:SetCategory(CATEGORY_TOGRAVE + CATEGORY_SPECIAL_SUMMON)
+    e:SetType(EFFECT_TYPE_IGNITION)
 	e:SetRange(LOCATION_MZONE)
     if cl then
         e:SetCountLimit(table.unpack(cl)) 

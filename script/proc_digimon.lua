@@ -198,6 +198,8 @@ end
 function Digimon.DigivolutionTarget(c,count,loc,st,ignore_conditions,ignore_limit,pos)
     return function(e,tp,eg,ep,ev,re,r,rp,chk)
         if chk == 0 then return Digimon.IsExistingDigitationToSummon(c,e,tp,loc,count,st,nil,ignore_conditions,ignore_limit,pos) and Digimon.CanDigivolve(c,count) end
+	Duel.SetPossibleOperationInfo(0,CATEGORY_TOGRAVE,c,1,tp,LOCATION_MZONE)
+        Duel.SetPossibleOperationInfo(0,CATEGORY_SPECIAL_SUMMON,nil,1,tp,loc)
     end
 end
 

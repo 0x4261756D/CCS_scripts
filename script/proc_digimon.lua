@@ -13,12 +13,9 @@ if not Digimon then
 	Digimon={}
 end
 
-function Digimon.AddProc(c,stage,additional_race,can_be_ssed,rookies,champions,ultimates,megas,ultras,antibody)
-    local can_be_ssed = can_be_ssed or true
-    if type(can_be_ssed)~='boolean' then
-        can_be_ssed = true
-    end
-    if not can_be_ssed then
+function Digimon.AddProc(c,stage,additional_race,summon_restrictions,rookies,champions,ultimates,megas,ultras,antibody)
+    if type(summon_restrictions)=='boolean' and summon_restrictions then
+        c:EnableUnsummonable()
         local e = Effect.CreateEffect(c)
         e:SetType(EFFECT_TYPE_SINGLE)
         e:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE)
@@ -56,7 +53,7 @@ end
 
 function Digimon.digitationlimit(e,se,sp,st)
 	local eff=Duel.GetChainInfo(0,CHAININFO_TRIGGERING_EFFECT)
-	return se:GetHandler():IsSetCard(SET_DIGITATION) or eff:GetHandler():IsSetCard(0x1C55) or e:GetHandler():IsStatus(STATUS_PROC_COMPLETE)
+	return se:GetHandler():IsSetCard(SET_DIGITATION) or eff:GetHandler():IsSetCard(SET_DIGITATION) or e:GetHandler():IsStatus(STATUS_PROC_COMPLETE)
 end
 
 function Digimon.GetStage(c)

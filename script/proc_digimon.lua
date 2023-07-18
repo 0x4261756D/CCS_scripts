@@ -90,14 +90,14 @@ function Digimon.SelectDigitations(c,tp,count,stage)
     return t2
 end
 
-function Digimon.IsExistingDigitationToSummon(g,e,tp,st,loc1,loc2,count,ex,ignore_conditions,ignore_limit,pos,stage,f,...)
+function Digimon.IsExistingDigitationToSummon(g,e,tp,st,loc,count,ex,ignore_conditions,ignore_limit,pos,stage,f,...)
     local params = {...}
     if type(g) == 'card' then g = Group.FromCards(g) end
     local d = {}
     for c in g:Iter() do
         table.insert(d,Digimon.GetDigitations(c,stage))
     end
-    local g2 = Duel.GetMatchingGroup(Card.IsCanBeSpecialSummoned,tp,loc1,loc2,ex,e,st,tp,ignore_conditions,ignore_limit,pos)
+    local g2 = Duel.GetMatchingGroup(Card.IsCanBeSpecialSummoned,tp,loc,ex,e,st,tp,ignore_conditions,ignore_limit,pos)
     if f then g2 = g2:Filter(f,nil,table.unpack(params)) end
     local ct = 0
     for _,code in ipairs(d) do
@@ -108,15 +108,15 @@ function Digimon.IsExistingDigitationToSummon(g,e,tp,st,loc1,loc2,count,ex,ignor
     return ct >= count
 end
 
-function Digimon.SelectDigitationToSummon(g,e,tp,st,loc1,loc2,min,max,ex,ignore_conditions,ignore_limit,pos,stage,f,...)
+function Digimon.SelectDigitationToSummon(g,e,tp,st,loc,min,max,ex,ignore_conditions,ignore_limit,pos,stage,f,...)
     local params = {...}
     if type(g) == 'card' then g = Group.FromCards(g) end
-    if not Digimon.IsExistingDigitationToSummon(g,e,tp,st,loc1,loc2,min,ex,ignore_conditions,ignore_limit,pos,stage,f,table.unpack(params)) then return end
+    if not Digimon.IsExistingDigitationToSummon(g,e,tp,st,loc,0,min,ex,ignore_conditions,ignore_limit,pos,stage,f,table.unpack(params)) then return end
     local d = {}
     for c in g:Iter() do
         table.insert(d,Digimon.GetDigitations(c,stage))
     end
-    local g2 = Duel.GetMatchingGroup(Card.IsCanBeSpecialSummoned,tp,loc1,loc2,ex,e,st,tp,ignore_conditions,ignore_limit,pos):Filter(Card.IsCode,nil,table.unpack(d))
+    local g2 = Duel.GetMatchingGroup(Card.IsCanBeSpecialSummoned,tp,loc,0,ex,e,st,tp,ignore_conditions,ignore_limit,pos):Filter(Card.IsCode,nil,table.unpack(d))
     if f then g2 = g2:Filter(f,nil,table.unpack(params)) end
     Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
     g2 = g2:Select(tp,min,max,nil)
@@ -124,10 +124,10 @@ function Digimon.SelectDigitationToSummon(g,e,tp,st,loc1,loc2,min,max,ex,ignore_
     return g2
 end
 
-function Digimon.SummonDigitation(g,e,tp,st,loc1,loc2,min,max,ex,ignore_conditions,ignore_limit,pos,stage,f,...)
+function Digimon.SummonDigitation(g,e,tp,st,loc,min,max,ex,ignore_conditions,ignore_limit,pos,stage,f,...)
     local params = {...}
     if type(g) == 'card' then g = Group.FromCards(g) end
-    local g2 = Digimon.SelectDigitationToSummon(g,e,tp,st,loc1,loc2,min,max,ex,ignore_conditions,ignore_limit,pos,stage,f,table.unpack(params))
+    local g2 = Digimon.SelectDigitationToSummon(g,e,tp,st,loc,0,min,max,ex,ignore_conditions,ignore_limit,pos,stage,f,table.unpack(params))
     if g2 and #g2>0 then Duel.SpecialSummon(g2,st,tp,tp,ignore_conditions,ignore_limit,pos) end
     g2:DeleteGroup()
 end

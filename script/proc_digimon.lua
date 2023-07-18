@@ -76,7 +76,7 @@ function Digimon.GetDigitations(c,stage)
 end
 
 function Digimon.CanDigivolve(c,count)
-    return #Digimon.GetDigitations(c,Digimon.GetStage(c) + ct) > 0
+    return #(Digimon.GetDigitations(c,Digimon.GetStage(c) + count)) > 0
 end
 
 function Digimon.IsExistingDigitationToSummon(c,e,tp,loc,count,st,ignore_conditions,ignore_limit,pos)
@@ -107,9 +107,9 @@ end
 
 function Digimon.Digivolve(c,e,tp,loc,count,st,ignore_conditions,ignore_limit,pos)
     local count,st,ignore_conditions,ignore_limit,pos = count or 1,st or 0,ignore_conditions or false,ignore_limit or false,pos or POS_FACEUP
-    if not Digimon.IsExistingDigitationToSummon(c,e,tp,loc,st,Digimon.GetStage(c) + count,nil,ignore_conditions,ignore_limit,pos) or not Digimon.CanDigivolve(c,count) then return end
+    if not Digimon.IsExistingDigitationToSummon(c,e,tp,loc,count,st,ignore_conditions,ignore_limit,pos) or not Digimon.CanDigivolve(c,count) then return end
     Duel.SendtoGrave(c,REASON_EFFECT)
-    Digimon.SummonDigitation(c,e,tp,loc,st,ignore_conditions,ignore_limit,pos)
+    Digimon.SummonDigitation(c,e,tp,loc,count,st,ignore_conditions,ignore_limit,pos)
 end
 
 function Digimon.AddTriggerDigivolution(c,count,loc,desc,forced,event,can_miss,cl,con,cost,st,ignore_conditions,ignore_limit,pos)
@@ -197,7 +197,7 @@ end
 
 function Digimon.DigivolutionTarget(c,count,loc,st,ignore_conditions,ignore_limit,pos)
     return function(e,tp,eg,ep,ev,re,r,rp,chk)
-        if chk == 0 then return Digimon.IsExistingDigitationToSummon(c,e,tp,loc,st,Digimon.GetStage(c) + count,nil,ignore_conditions,ignore_limit,pos) and Digimon.CanDigivolve(c,count) end
+        if chk == 0 then return Digimon.IsExistingDigitationToSummon(c,e,tp,loc,count,st,nil,ignore_conditions,ignore_limit,pos) and Digimon.CanDigivolve(c,count) end
     end
 end
 

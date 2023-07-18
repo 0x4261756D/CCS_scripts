@@ -112,3 +112,91 @@ function Digimon.Digivolve(c,e,tp,loc,count,st,ignore_conditions,ignore_limit,po
     Duel.SendtoGrave(c,REASON_EFFECT)
     Digimon.SummonDigitation(c,e,tp,loc,st,ignore_conditions,ignore_limit,pos)
 end
+
+function Digimon.AddTriggerDigivolution(c,count,loc,desc,forced,event,can_miss,cl,con,cost,st,ignore_conditions,ignore_limit,pos)
+    local count,st,ignore_conditions,ignore_limit,pos = count or 1,st or 0,ignore_conditions or false,ignore_limit or false,pos or POS_FACEUP
+    local e = Effect.CreateEffect(c)
+    if desc then
+	    e:SetDescription(desc)
+    end
+	e:SetCategory(CATEGORY_TOGRAVE + CATEGORY_SPECIAL_SUMMON)
+    if forced then
+	    e:SetType(EFFECT_TYPE_SINGLE + EFFECT_TYPE_TRIGGER_F)
+    else
+        e:SetType(EFFECT_TYPE_SINGLE + EFFECT_TYPE_TRIGGER_O)
+    end
+    if not can_miss then
+	    e:SetProperty(EFFECT_FLAG_DELAY)
+    end
+	e:SetCode(event)
+	e:SetCountLimit(cl)
+    if con then
+        e:SetCondition(con)
+    end
+    if cost then
+        e:SetCost(cost)
+    end
+	e:SetTarget(Digimon.DigivolutionTarget(c,count,loc,st,ignore_conditions,ignore_limit,pos))
+	e:SetOperation(Digimon.DigivolutionOperation(c,count,loc,st,ignore_conditions,ignore_limit,pos))
+	c:RegisterEffect(e)
+    return e
+end
+
+function Digimon.AddQuickDigivolution(c,count,loc,desc,forced,event,cl,con,cost,st,ignore_conditions,ignore_limit,pos)
+    local count,st,ignore_conditions,ignore_limit,pos = count or 1,st or 0,ignore_conditions or false,ignore_limit or false,pos or POS_FACEUP
+    local e = Effect.CreateEffect(c)
+    if desc then
+	    e:SetDescription(desc)
+    end
+	e:SetCategory(CATEGORY_TOGRAVE + CATEGORY_SPECIAL_SUMMON)
+    if forced then
+	    e:SetType(EFFECT_TYPE_SINGLE + EFFECT_TYPE_QUICK_F)
+    else
+        e:SetType(EFFECT_TYPE_SINGLE + EFFECT_TYPE_QUICK_O)
+    end
+	e:SetCode(event)
+	e:SetCountLimit(cl)
+    if con then
+        e:SetCondition(con)
+    end
+    if cost then
+        e:SetCost(cost)
+    end
+	e:SetTarget(Digimon.DigivolutionTarget(c,count,loc,st,ignore_conditions,ignore_limit,pos))
+	e:SetOperation(Digimon.DigivolutionOperation(c,count,loc,st,ignore_conditions,ignore_limit,pos))
+	c:RegisterEffect(e)
+    return e
+end
+
+function Digimon.AddIgnitionDigivolution(c,count,loc,desc,cl,con,cost,st,ignore_conditions,ignore_limit,pos)
+    local count,st,ignore_conditions,ignore_limit,pos = count or 1,st or 0,ignore_conditions or false,ignore_limit or false,pos or POS_FACEUP
+    local e = Effect.CreateEffect(c)
+    if desc then
+	    e:SetDescription(desc)
+    end
+	e:SetCategory(CATEGORY_TOGRAVE + CATEGORY_SPECIAL_SUMMON)
+	e:SetRange(LOCATION_MZONE)
+	e:SetCountLimit(cl)
+    if con then
+        e:SetCondition(con)
+    end
+    if cost then
+        e:SetCost(cost)
+    end
+	e:SetTarget(Digimon.DigivolutionTarget(c,count,loc,st,ignore_conditions,ignore_limit,pos))
+	e:SetOperation(Digimon.DigivolutionOperation(c,count,loc,st,ignore_conditions,ignore_limit,pos))
+	c:RegisterEffect(e)
+    return e
+end
+
+function Digimon.DigivolutionTarget(c,count,loc,st,ignore_conditions,ignore_limit,pos)
+    return function(e,tp,eg,ep,ev,re,r,rp,chk)
+        if chk == 0 then return Digimon.IsExistingDigitationToSummon(c,e,tp,loc,st,Digimon.GetStage(c) + count,nil,ignore_conditions,ignore_limit,pos) and Digimon.CanDigivolve(c,count) end
+    end
+end
+
+function Digimon.DigivolutionOperation(c,count,loc,st,ignore_conditions,ignore_limit,pos)
+    return function(e,tp,eg,ep,ev,re,r,rp)
+        Digimon.Digivolve(c,e,tp,loc,count,st,ignore_conditions,ignore_limit,pos)
+    end
+end

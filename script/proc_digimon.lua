@@ -24,7 +24,7 @@ function Digimon.AddProc(c,stage,additional_race,summon_restrictions,rookies,cha
         c:RegisterEffect(e)
     end
     if stage >= STAGE_MEGA then
-	c:EnableUnsummonable()
+	    c:EnableUnsummonable()
     end
     local digitations = {}
     local stage = stage or STAGE_ROOKIE
@@ -49,7 +49,7 @@ function Digimon.AddProc(c,stage,additional_race,summon_restrictions,rookies,cha
         e:SetCode(EFFECT_ADD_RACE)
         e:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE)
         e:SetRange(LOCATION_ALL)
-        e:SetProperty(additional_race)
+        e:SetValue(additional_race)
         c:RegisterEffect(e)
     end
 end

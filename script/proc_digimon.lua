@@ -80,7 +80,7 @@ function Digimon.CanDigivolve(c,count)
 end
 
 function Digimon.CanDigivolveInto(c,code)
-    if type(code) == "card" then code = code:GetCode() end
+    if type(code) == "Card" then code = code:GetCode() end
     local digitations, stage = Digimon.GetDigitations(c), Digimon.GetStage(c)
     for i = 1, #digitations do
         if i > stage then
@@ -91,7 +91,7 @@ function Digimon.CanDigivolveInto(c,code)
 end
 
 function Digimon.CanDigivolveFrom(c,code)
-    if type(code) == "card" then code = code:GetCode() end
+    if type(code) == "Card" then code = code:GetCode() end
     local digitations, stage = Digimon.GetDigitations(c), Digimon.GetStage(c)
     for i = 1, #digitations do
         if i < stage then

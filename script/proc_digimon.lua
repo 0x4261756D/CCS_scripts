@@ -55,7 +55,7 @@ function Digimon.AddProc(c,stage,additional_race,summon_restrictions,rookies,cha
 end
 
 function Digimon.digitationlimit(e,se,sp,st)
-	return se:GetHandler():IsSetCard(SET_DIGITATION) or e:GetHandler():IsStatus(STATUS_PROC_COMPLETE)
+	return se:GetHandler():IsSetCard(SET_DIGI) or e:GetHandler():IsStatus(STATUS_PROC_COMPLETE)
 end
 
 function Digimon.GetStage(c)
@@ -112,7 +112,7 @@ function Digimon.Digivolve(c,e,tp,loc,count,st,ignore_conditions,ignore_limit,po
     Digimon.SummonDigitation(c,e,tp,loc,count,st,ignore_conditions,ignore_limit,pos)
 end
 
-function Digimon.AddSingleTriggerDigivolution(c,count,loc,desc,forced,event,can_miss,cl,con,cost,st,ignore_conditions,ignore_limit,pos)
+function Digimon.AddSingleTriggerDigivolution(c,count,loc,desc,forced,range,event,can_miss,cl,con,cost,st,ignore_conditions,ignore_limit,pos)
     local count,st,ignore_conditions,ignore_limit,pos = count or 1,st or 0,ignore_conditions or false,ignore_limit or false,pos or POS_FACEUP
     local e = Effect.CreateEffect(c)
     if desc then
@@ -131,6 +131,9 @@ function Digimon.AddSingleTriggerDigivolution(c,count,loc,desc,forced,event,can_
     if cl then
         e:SetCountLimit(table.unpack(cl)) 
     end
+    if range then
+        e:SetRange(range)
+    end
     if con then
         e:SetCondition(con)
     end
@@ -143,7 +146,7 @@ function Digimon.AddSingleTriggerDigivolution(c,count,loc,desc,forced,event,can_
     return e
 end
 
-function Digimon.AddFieldTriggerDigivolution(c,count,loc,desc,forced,event,can_miss,cl,con,cost,st,ignore_conditions,ignore_limit,pos)
+function Digimon.AddFieldTriggerDigivolution(c,count,loc,desc,forced,range,event,can_miss,cl,con,cost,st,ignore_conditions,ignore_limit,pos)
     local count,st,ignore_conditions,ignore_limit,pos = count or 1,st or 0,ignore_conditions or false,ignore_limit or false,pos or POS_FACEUP
     local e = Effect.CreateEffect(c)
     if desc then
@@ -161,6 +164,9 @@ function Digimon.AddFieldTriggerDigivolution(c,count,loc,desc,forced,event,can_m
 	e:SetCode(event)
     if cl then
         e:SetCountLimit(table.unpack(cl)) 
+    end
+    if range then
+        e:SetRange(range)
     end
     if con then
         e:SetCondition(con)

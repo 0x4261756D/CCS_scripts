@@ -112,7 +112,7 @@ function Digimon.Digivolve(c,e,tp,loc,count,st,ignore_conditions,ignore_limit,po
     Digimon.SummonDigitation(c,e,tp,loc,count,st,ignore_conditions,ignore_limit,pos)
 end
 
-function Digimon.AddTriggerDigivolution(c,count,loc,desc,forced,event,can_miss,cl,con,cost,st,ignore_conditions,ignore_limit,pos)
+function Digimon.AddSingleTriggerDigivolution(c,count,loc,desc,forced,event,can_miss,cl,con,cost,st,ignore_conditions,ignore_limit,pos)
     local count,st,ignore_conditions,ignore_limit,pos = count or 1,st or 0,ignore_conditions or false,ignore_limit or false,pos or POS_FACEUP
     local e = Effect.CreateEffect(c)
     if desc then
@@ -123,6 +123,37 @@ function Digimon.AddTriggerDigivolution(c,count,loc,desc,forced,event,can_miss,c
 	    e:SetType(EFFECT_TYPE_SINGLE + EFFECT_TYPE_TRIGGER_F)
     else
         e:SetType(EFFECT_TYPE_SINGLE + EFFECT_TYPE_TRIGGER_O)
+    end
+    if not can_miss then
+	    e:SetProperty(EFFECT_FLAG_DELAY)
+    end
+	e:SetCode(event)
+    if cl then
+        e:SetCountLimit(table.unpack(cl)) 
+    end
+    if con then
+        e:SetCondition(con)
+    end
+    if cost then
+        e:SetCost(cost)
+    end
+	e:SetTarget(Digimon.DigivolutionTarget(c,count,loc,st,ignore_conditions,ignore_limit,pos))
+	e:SetOperation(Digimon.DigivolutionOperation(c,count,loc,st,ignore_conditions,ignore_limit,pos))
+	c:RegisterEffect(e)
+    return e
+end
+
+function Digimon.AddFieldTriggerDigivolution(c,count,loc,desc,forced,event,can_miss,cl,con,cost,st,ignore_conditions,ignore_limit,pos)
+    local count,st,ignore_conditions,ignore_limit,pos = count or 1,st or 0,ignore_conditions or false,ignore_limit or false,pos or POS_FACEUP
+    local e = Effect.CreateEffect(c)
+    if desc then
+	    e:SetDescription(desc)
+    end
+	e:SetCategory(CATEGORY_TOGRAVE + CATEGORY_SPECIAL_SUMMON)
+    if forced then
+	    e:SetType(EFFECT_TYPE_FIELD + EFFECT_TYPE_TRIGGER_F)
+    else
+        e:SetType(EFFECT_TYPE_FIELD + EFFECT_TYPE_TRIGGER_O)
     end
     if not can_miss then
 	    e:SetProperty(EFFECT_FLAG_DELAY)
@@ -198,6 +229,8 @@ end
 function Digimon.DigivolutionTarget(c,count,loc,st,ignore_conditions,ignore_limit,pos)
     return function(e,tp,eg,ep,ev,re,r,rp,chk)
         if chk == 0 then return Digimon.IsExistingDigitationToSummon(c,e,tp,loc,count,st,nil,ignore_conditions,ignore_limit,pos) and Digimon.CanDigivolve(c,count) end
+	Duel.SetPossibleOperationInfo(0,CATEGORY_TOGRAVE,c,1,tp,LOCATION_MZONE)
+        Duel.SetPossibleOperationInfo(0,CATEGORY_SPECIAL_SUMMON,nil,1,tp,loc)
     end
 end
 

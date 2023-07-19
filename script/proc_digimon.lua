@@ -79,6 +79,26 @@ function Digimon.CanDigivolve(c,count)
     return #(Digimon.GetDigitations(c,Digimon.GetStage(c) + count)) > 0
 end
 
+function Digimon.CanDigivolveInto(c,code)
+    local digitations, stage = Digimon.GetDigitations(c), Digimon.GetStage(c)
+    for i = 1, #digitations do
+        if i > stage then
+            if contains(digitations[i],code) then return true end
+        end
+    end
+    return false
+end
+
+function Digimon.CanDigivolveFrom(c,code)
+    local digitations, stage = Digimon.GetDigitations(c), Digimon.GetStage(c)
+    for i = 1, #digitations do
+        if i < stage then
+            if contains(digitations[i],code) then return true end
+        end
+    end
+    return false
+end
+
 function Digimon.IsExistingDigitationToSummon(c,e,tp,loc,count,st,ignore_conditions,ignore_limit,pos)
     local g = Duel.GetMatchingGroup(Card.IsCanBeSpecialSummoned,tp,loc,0,nil,e,st,tp,ignore_conditions,ignore_limit,pos)
     local ct = 0

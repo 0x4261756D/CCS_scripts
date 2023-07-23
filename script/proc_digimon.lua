@@ -79,8 +79,30 @@ function Digimon.CanDigivolve(c,count)
     return #(Digimon.GetDigitations(c,Digimon.GetStage(c) + count)) > 0
 end
 
-function Digimon.IsExistingDigitationToSummon(c,e,tp,loc,count,st,ignore_conditions,ignore_limit,pos)
-    local g = Duel.GetMatchingGroup(Card.IsCanBeSpecialSummoned,tp,loc,0,nil,e,st,tp,ignore_conditions,ignore_limit,pos)
+function Digimon.CanDigivolveInto(c,code)
+    if type(code) == "Card" then code = code:GetCode() end
+    local digitations, stage = Digimon.GetDigitations(c), Digimon.GetStage(c)
+    for i = 1, #digitations do
+        if i > stage then
+            if contains(digitations[i],code) then return true end
+        end
+    end
+    return false
+end
+
+function Digimon.CanDigivolveFrom(c,code)
+    if type(code) == "Card" then code = code:GetCode() end
+    local digitations, stage = Digimon.GetDigitations(c), Digimon.GetStage(c)
+    for i = 1, #digitations do
+        if i < stage then
+            if contains(digitations[i],code) then return true end
+        end
+    end
+    return false
+end
+
+function Digimon.IsExistingDigitationToSummon(c,g,e,tp,loc,count,st,ignore_conditions,ignore_limit,pos)
+    local g = g or Duel.GetMatchingGroup(Card.IsCanBeSpecialSummoned,tp,loc,0,nil,e,st,tp,ignore_conditions,ignore_limit,pos)
     local ct = 0
     for _,code in ipairs(Digimon.GetDigitations(c,Digimon.GetStage(c) + count)) do
         if g:IsExists(Card.IsCode,1,nil,code) then
@@ -90,8 +112,8 @@ function Digimon.IsExistingDigitationToSummon(c,e,tp,loc,count,st,ignore_conditi
     return ct > 0
 end
 
-function Digimon.SelectDigitationToSummon(c,e,tp,loc,count,st,ignore_conditions,ignore_limit,pos)
-    if not Digimon.IsExistingDigitationToSummon(c,e,tp,loc,count,st,0,1,ignore_conditions,ignore_limit,pos) then return end
+function Digimon.SelectDigitationToSummon(c,g,e,tp,loc,count,st,ignore_conditions,ignore_limit,pos)
+    if not Digimon.IsExistingDigitationToSummon(c,g,e,tp,loc,count,st,ignore_conditions,ignore_limit,pos) then return end
     local g = Duel.GetMatchingGroup(Card.IsCanBeSpecialSummoned,tp,loc,0,nil,e,st,tp,ignore_conditions,ignore_limit,pos):Filter(Card.IsCode,nil,table.unpack(Digimon.GetDigitations(c,Digimon.GetStage(c) + count)))
     Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
     g = g:Select(tp,1,1,nil)
@@ -99,17 +121,17 @@ function Digimon.SelectDigitationToSummon(c,e,tp,loc,count,st,ignore_conditions,
     return g
 end
 
-function Digimon.SummonDigitation(c,e,tp,loc,count,st,ignore_conditions,ignore_limit,pos)
-    local g = Digimon.SelectDigitationToSummon(c,e,tp,loc,count,st,ignore_conditions,ignore_limit,pos)
+function Digimon.SummonDigitation(c,g,e,tp,loc,count,st,ignore_conditions,ignore_limit,pos)
+    local g = Digimon.SelectDigitationToSummon(c,g,e,tp,loc,count,st,ignore_conditions,ignore_limit,pos)
     if g and #g>0 then Duel.SpecialSummon(g,st,tp,tp,ignore_conditions,ignore_limit,pos) end
     g:DeleteGroup()
 end
 
-function Digimon.Digivolve(c,e,tp,loc,count,st,ignore_conditions,ignore_limit,pos)
+function Digimon.Digivolve(c,g,e,tp,loc,count,st,ignore_conditions,ignore_limit,pos)
     local count,st,ignore_conditions,ignore_limit,pos = count or 1,st or 0,ignore_conditions or false,ignore_limit or false,pos or POS_FACEUP
-    if not Digimon.IsExistingDigitationToSummon(c,e,tp,loc,count,st,ignore_conditions,ignore_limit,pos) or not Digimon.CanDigivolve(c,count) then return end
+    if not Digimon.IsExistingDigitationToSummon(c,nil,e,tp,loc,count,st,ignore_conditions,ignore_limit,pos) or not Digimon.CanDigivolve(c,count) then return end
     Duel.SendtoGrave(c,REASON_EFFECT)
-    Digimon.SummonDigitation(c,e,tp,loc,count,st,ignore_conditions,ignore_limit,pos)
+    Digimon.SummonDigitation(c,g,e,tp,loc,count,st,ignore_conditions,ignore_limit,pos)
 end
 
 function Digimon.AddSingleTriggerDigivolution(c,count,loc,desc,forced,range,event,can_miss,cl,con,cost,st,ignore_conditions,ignore_limit,pos)
@@ -143,6 +165,7 @@ function Digimon.AddSingleTriggerDigivolution(c,count,loc,desc,forced,range,even
 	e:SetTarget(Digimon.DigivolutionTarget(c,count,loc,st,ignore_conditions,ignore_limit,pos))
 	e:SetOperation(Digimon.DigivolutionOperation(c,count,loc,st,ignore_conditions,ignore_limit,pos))
 	c:RegisterEffect(e)
+    e:SetLabel(loc,count,st)
     return e
 end
 
@@ -177,6 +200,7 @@ function Digimon.AddFieldTriggerDigivolution(c,count,loc,desc,forced,range,event
 	e:SetTarget(Digimon.DigivolutionTarget(c,count,loc,st,ignore_conditions,ignore_limit,pos))
 	e:SetOperation(Digimon.DigivolutionOperation(c,count,loc,st,ignore_conditions,ignore_limit,pos))
 	c:RegisterEffect(e)
+    e:SetLabel(loc,count,st)
     return e
 end
 
@@ -205,6 +229,7 @@ function Digimon.AddQuickDigivolution(c,count,loc,desc,forced,event,cl,con,cost,
 	e:SetTarget(Digimon.DigivolutionTarget(c,count,loc,st,ignore_conditions,ignore_limit,pos))
 	e:SetOperation(Digimon.DigivolutionOperation(c,count,loc,st,ignore_conditions,ignore_limit,pos))
 	c:RegisterEffect(e)
+    e:SetLabel(loc,count,st)
     return e
 end
 
@@ -229,19 +254,27 @@ function Digimon.AddIgnitionDigivolution(c,count,loc,desc,cl,con,cost,st,ignore_
 	e:SetTarget(Digimon.DigivolutionTarget(c,count,loc,st,ignore_conditions,ignore_limit,pos))
 	e:SetOperation(Digimon.DigivolutionOperation(c,count,loc,st,ignore_conditions,ignore_limit,pos))
 	c:RegisterEffect(e)
+    e:SetLabel(loc,count,st)
     return e
 end
 
 function Digimon.DigivolutionTarget(c,count,loc,st,ignore_conditions,ignore_limit,pos)
     return function(e,tp,eg,ep,ev,re,r,rp,chk)
-        if chk == 0 then return Digimon.IsExistingDigitationToSummon(c,e,tp,loc,count,st,nil,ignore_conditions,ignore_limit,pos) and Digimon.CanDigivolve(c,count) end
-	Duel.SetPossibleOperationInfo(0,CATEGORY_TOGRAVE,c,1,tp,LOCATION_MZONE)
+        if chk == 0 then return Digimon.IsExistingDigitationToSummon(c,nil,e,tp,loc,count,st,ignore_conditions,ignore_limit,pos) and Digimon.CanDigivolve(c,count) end
+	    Duel.SetPossibleOperationInfo(0,CATEGORY_TOGRAVE,c,1,tp,LOCATION_MZONE)
         Duel.SetPossibleOperationInfo(0,CATEGORY_SPECIAL_SUMMON,nil,1,tp,loc)
     end
 end
 
 function Digimon.DigivolutionOperation(c,count,loc,st,ignore_conditions,ignore_limit,pos)
     return function(e,tp,eg,ep,ev,re,r,rp)
-        Digimon.Digivolve(c,e,tp,loc,count,st,ignore_conditions,ignore_limit,pos)
+        Digimon.Digivolve(c,nil,e,tp,loc,count,st,ignore_conditions,ignore_limit,pos)
     end
+end
+
+function Digimon.CostFilter(f,tc,e,g)
+	return function(c,...)
+        local params = {e:GetLabel()}
+	    return f(c,...) and Digimon.IsExistingDigitationToSummon(tc,g-Group.FromCards(c),e,e:GetHandlerPlayer(),table.unpack(params))
+	end
 end

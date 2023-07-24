@@ -76,7 +76,12 @@ function Digimon.GetDigitations(c,stage)
 end
 
 function Digimon.CanDigivolve(c,count)
-    return #(Digimon.GetDigitations(c,Digimon.GetStage(c) + count)) > 0
+    local stage = Digimon.GetStage(c)
+    if count then return #(Digimon.GetDigitations(c,stage + count)) > 0 end
+    for i = 1, STAGE_MEGA - stage do
+        if Digimon.CanDigivolve(c,i) then return true end
+    end    
+    return false
 end
 
 function Digimon.CanDigivolveInto(c,code)

@@ -78,9 +78,9 @@ end
 function Digimon.CanDigivolve(c,count)
     local stage = Digimon.GetStage(c)
     if count then return #(Digimon.GetDigitations(c,stage + count)) > 0 end
-    for i = 1, STAGE_MEGA - stage do
+    for i = 1, STAGE_ULTRA - stage do
         if Digimon.CanDigivolve(c,i) then return true end
-    end    
+    end
     return false
 end
 

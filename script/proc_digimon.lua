@@ -77,7 +77,7 @@ end
 
 function Digimon.CanDigivolve(c,count)
     local stage = Digimon.GetStage(c)
-    if count then return #(Digimon.GetDigitations(c,stage + count)) > 0 end
+    if count and Digimon.GetDigitations(c,stage + count) then return #(Digimon.GetDigitations(c,stage + count)) > 0 end
     for i = 1, STAGE_ULTRA - stage do
         if Digimon.CanDigivolve(c,i) then return true end
     end
@@ -119,7 +119,7 @@ end
 
 function Digimon.SelectDigitationToSummon(c,g,e,tp,loc,count,st,ignore_conditions,ignore_limit,pos)
     if not Digimon.IsExistingDigitationToSummon(c,g,e,tp,loc,count,st,ignore_conditions,ignore_limit,pos) then return end
-    local g = Duel.GetMatchingGroup(Card.IsCanBeSpecialSummoned,tp,loc,0,nil,e,st,tp,ignore_conditions,ignore_limit,pos):Filter(Card.IsCode,nil,table.unpack(Digimon.GetDigitations(c,Digimon.GetStage(c) + count)))
+    local g = g:Filter(Card.IsCode,nil,table.unpack(Digimon.GetDigitations(c,Digimon.GetStage(c) + count))) or Duel.GetMatchingGroup(Card.IsCanBeSpecialSummoned,tp,loc,0,nil,e,st,tp,ignore_conditions,ignore_limit,pos):Filter(Card.IsCode,nil,table.unpack(Digimon.GetDigitations(c,Digimon.GetStage(c) + count)))
     Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
     g = g:Select(tp,1,1,nil)
     g:KeepAlive()
@@ -134,7 +134,7 @@ end
 
 function Digimon.Digivolve(c,g,e,tp,loc,count,st,ignore_conditions,ignore_limit,pos)
     local count,st,ignore_conditions,ignore_limit,pos = count or 1,st or 0,ignore_conditions or false,ignore_limit or false,pos or POS_FACEUP
-    if not Digimon.IsExistingDigitationToSummon(c,nil,e,tp,loc,count,st,ignore_conditions,ignore_limit,pos) or not Digimon.CanDigivolve(c,count) then return end
+    if not Digimon.IsExistingDigitationToSummon(c,g,e,tp,loc,count,st,ignore_conditions,ignore_limit,pos) or not Digimon.CanDigivolve(c,count) then return end
     Duel.SendtoGrave(c,REASON_EFFECT)
     Digimon.SummonDigitation(c,g,e,tp,loc,count,st,ignore_conditions,ignore_limit,pos)
 end

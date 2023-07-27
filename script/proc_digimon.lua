@@ -9,18 +9,24 @@ STAGE_ULTRA = 5
 SET_DIGI = 0xC55
 SET_DIGITATION = 0x1C55
 
+EFFECT_FLAG_DIGIVOLUTION = 0x20000000
+
 if not Digimon then
 	Digimon={}
 end
 
 function Digimon.AddProc(c,stage,additional_race,summon_restrictions,rookies,champions,ultimates,megas,ultras,antibody)
-    if type(summon_restrictions)=='boolean' and summon_restrictions then
+    if summon_restrictions == 1 or summon_restrictions == 2 then
         c:EnableUnsummonable()
         local e = Effect.CreateEffect(c)
         e:SetType(EFFECT_TYPE_SINGLE)
         e:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE)
         e:SetCode(EFFECT_SPSUMMON_CONDITION)
-        e:SetValue(Digimon.digitationlimit)
+        if summon_restrictions == 1 then
+            e:SetValue(Digimon.DigitationLimit)
+        else
+            e:SetValue(Digimon.JogressLimit)
+        end
         c:RegisterEffect(e)
     end
     if stage >= STAGE_MEGA then
@@ -54,8 +60,13 @@ function Digimon.AddProc(c,stage,additional_race,summon_restrictions,rookies,cha
     end
 end
 
-function Digimon.digitationlimit(e,se,sp,st)
-	return se:GetHandler():IsSetCard(SET_DIGI) or e:GetHandler():IsStatus(STATUS_PROC_COMPLETE)
+function Digimon.DigitationLimit(e,se,sp,st)
+	return se:IsHasProperty(EFFECT_FLAG_DIGIVOLUTION) or e:GetHandler():IsStatus(STATUS_PROC_COMPLETE)
+end
+
+function Digimon.JogressLimit(e,se,sp,st)
+	local code = Duel.GetChainInfo(0,CHAININFO_TRIGGERING_CODE)
+	return ((se:GetHandler():IsCode(CARD_JOGRESS_EVOLUTION) or code == CARD_JOGRESS_EVOLUTION) and st == SUMMON_TYPE_FUSION) or e:GetHandler():IsStatus(STATUS_PROC_COMPLETE)
 end
 
 function Digimon.GetStage(c)
@@ -152,7 +163,9 @@ function Digimon.AddSingleTriggerDigivolution(c,count,loc,desc,forced,range,even
         e:SetType(EFFECT_TYPE_SINGLE + EFFECT_TYPE_TRIGGER_O)
     end
     if not can_miss then
-	    e:SetProperty(EFFECT_FLAG_DELAY)
+	    e:SetProperty(EFFECT_FLAG_DELAY + EFFECT_FLAG_DIGIVOLUTION)
+    else
+        e:SetProperty(EFFECT_FLAG_DIGIVOLUTION)
     end
 	e:SetCode(event)
     if cl then
@@ -187,7 +200,9 @@ function Digimon.AddFieldTriggerDigivolution(c,count,loc,desc,forced,range,event
         e:SetType(EFFECT_TYPE_FIELD + EFFECT_TYPE_TRIGGER_O)
     end
     if not can_miss then
-	    e:SetProperty(EFFECT_FLAG_DELAY)
+	    e:SetProperty(EFFECT_FLAG_DELAY + EFFECT_FLAG_DIGIVOLUTION)
+    else
+        e:SetProperty(EFFECT_FLAG_DIGIVOLUTION)
     end
 	e:SetCode(event)
     if cl then
@@ -216,6 +231,7 @@ function Digimon.AddQuickDigivolution(c,count,loc,desc,forced,event,cl,con,cost,
 	    e:SetDescription(desc)
     end
 	e:SetCategory(CATEGORY_TOGRAVE + CATEGORY_SPECIAL_SUMMON)
+    e:SetProperty(EFFECT_FLAG_DIGIVOLUTION)
     if forced then
 	    e:SetType(EFFECT_TYPE_SINGLE + EFFECT_TYPE_QUICK_F)
     else
@@ -245,6 +261,7 @@ function Digimon.AddIgnitionDigivolution(c,count,loc,desc,cl,con,cost,st,ignore_
 	    e:SetDescription(desc)
     end
 	e:SetCategory(CATEGORY_TOGRAVE + CATEGORY_SPECIAL_SUMMON)
+    e:SetProperty(EFFECT_FLAG_DIGIVOLUTION)
     e:SetType(EFFECT_TYPE_IGNITION)
 	e:SetRange(LOCATION_MZONE)
     if cl then

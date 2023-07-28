@@ -66,7 +66,7 @@ end
 
 function Digimon.JogressLimit(e,se,sp,st)
 	local eff = Duel.GetChainInfo(0,CHAININFO_TRIGGERING_EFFECT)
-    	if eff then return ((se:GetHandler():IsCode(CARD_JOGRESS_EVOLUTION) or eff:GetHandler():GetCode() == CARD_JOGRESS_EVOLUTION) and st == SUMMON_TYPE_FUSION) or e:GetHandler():IsStatus(STATUS_PROC_COMPLETE) end
+    	if eff then return ((se:GetHandler():IsCode(CARD_JOGRESS_EVOLUTION) or eff:GetHandler():IsCode(CARD_JOGRESS_EVOLUTION)) and st == SUMMON_TYPE_FUSION) or e:GetHandler():IsStatus(STATUS_PROC_COMPLETE) end
 	return ((se:GetHandler():IsCode(CARD_JOGRESS_EVOLUTION)) and st == SUMMON_TYPE_FUSION) or e:GetHandler():IsStatus(STATUS_PROC_COMPLETE)
 end
 

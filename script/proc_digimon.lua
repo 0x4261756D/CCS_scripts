@@ -16,7 +16,7 @@ if not Digimon then
 end
 
 function Digimon.AddProc(c,stage,additional_race,summon_restrictions,rookies,champions,ultimates,megas,ultras,antibody)
-    if summon_restrictions == 1 or summon_restrictions == 2 then
+    if summon_restrictions == 1 or summon_restrictions == 2 or summon_restrictions == 3 then
         c:EnableUnsummonable()
         local e = Effect.CreateEffect(c)
         e:SetType(EFFECT_TYPE_SINGLE)
@@ -24,8 +24,10 @@ function Digimon.AddProc(c,stage,additional_race,summon_restrictions,rookies,cha
         e:SetCode(EFFECT_SPSUMMON_CONDITION)
         if summon_restrictions == 1 then
             e:SetValue(Digimon.DigitationLimit)
-        else
+        elseif summon_restrictions == 2 then
             e:SetValue(Digimon.JogressLimit)
+        else
+            e:SetValue(Digimon.AntibodyLimit)
         end
         c:RegisterEffect(e)
     end
@@ -68,6 +70,12 @@ function Digimon.JogressLimit(e,se,sp,st)
 	local eff = Duel.GetChainInfo(0,CHAININFO_TRIGGERING_EFFECT)
     	if eff then return ((se:GetHandler():IsCode(CARD_JOGRESS_EVOLUTION) or eff:GetHandler():IsCode(CARD_JOGRESS_EVOLUTION)) and st == SUMMON_TYPE_FUSION) or e:GetHandler():IsStatus(STATUS_PROC_COMPLETE) end
 	return ((se:GetHandler():IsCode(CARD_JOGRESS_EVOLUTION)) and st == SUMMON_TYPE_FUSION) or e:GetHandler():IsStatus(STATUS_PROC_COMPLETE)
+end
+
+function Digimon.AntibodyLimit(e,se,sp,st)
+	local eff = Duel.GetChainInfo(0,CHAININFO_TRIGGERING_EFFECT)
+    	if eff then return ((se:GetHandler():IsCode(CARD_X_ANTIBODY) or eff:GetHandler():IsCode(CARD_X_ANTIBODY)) and st == SUMMON_TYPE_XYZ) or e:GetHandler():IsStatus(STATUS_PROC_COMPLETE) end
+	return ((se:GetHandler():IsCode(CARD_X_ANTIBODY)) and st == SUMMON_TYPE_XYZ) or e:GetHandler():IsStatus(STATUS_PROC_COMPLETE)
 end
 
 function Digimon.GetStage(c)

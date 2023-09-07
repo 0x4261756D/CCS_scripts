@@ -65,38 +65,7 @@ function removeall(tab,element)
 		end
 	end
 end
-function Auxiliary.ForceExtraRules(c,card,init,...)
-    local e1=Effect.CreateEffect(c)
-    e1:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
-    e1:SetCode(EVENT_ADJUST)
-    e1:SetProperty(EFFECT_FLAG_UNCOPYABLE+EFFECT_FLAG_CANNOT_DISABLE)
-    e1:SetOperation(Auxiliary.ForceExtraRulesOperation(card,init,...))
-    Duel.RegisterEffect(e1,0)
-end
 
-function Auxiliary.ForceExtraRulesOperation(card,init,...)
-    local arg = {...}
-    return function(e,tp,eg,ep,ev,re,r,rp)
-        local c = e:GetOwner()
-        local p = c:GetControler()
-        Duel.DisableShuffleCheck()
-        Duel.SendtoDeck(c,nil,-2,REASON_RULE)
-        local ct = Duel.GetMatchingGroupCount(nil,p,LOCATION_HAND+LOCATION_DECK,0,c)
-        if (Duel.IsDuelType(DUEL_MODE_SPEED) and ct < 20 or ct < 40) and Duel.SelectYesNo(1-p, aux.Stringid(4014,5)) then
-            Duel.Win(1-p,0x55)
-        end
-        if c:IsPreviousLocation(LOCATION_HAND) then Duel.Draw(p, 1, REASON_RULE) end
-        if not card.global_active_check then
-            --Duel.ConfirmCards(1-p, c)
-                --Duel.Hint(HINT_CARD,tp,c:GetCode())
-                --Duel.Hint(HINT_OPSELECTED,tp,aux.Stringid(4014,7))
-                --Duel.Hint(HINT_OPSELECTED,1-tp,aux.Stringid(4014,7))
-                init(c,table.unpack(arg))
-            card.global_active_check = true
-        end
-        e:Reset()
-    end
-end
 function Auxiliary.doccost(min,max,label,cost,order)
 	return function(e,tp,eg,ep,ev,re,r,rp,chk)
 		local c=e:GetHandler()

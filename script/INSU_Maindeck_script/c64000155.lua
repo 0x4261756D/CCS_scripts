@@ -20,7 +20,7 @@ function s.condition(e,tp,eg,ep,ev,re,r,rp)
 	return Duel.IsExistingMatchingCard(s.filter,tp,LOCATION_MZONE,0,1,nil) and Duel.IsExistingMatchingCard(s.filter2, tp, LOCATION_DECK, 0, 1, nil)
 end
 function s.filter2(c)
-	return (c:IsSetCard(0x19d) or c:IsSetCard(0x19e) or c:IsCode(79575620)) and c:IsAbleToHand() and not c:IsCode(id)
+	return (c:IsSetCard(0x1b0d) or c:IsSetCard(0x1b0e) or c:IsCode(79575620)) and c:IsAbleToHand() and not c:IsCode(id)
 end
 function s.target(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chkc then return chkc:GetControler()==tp and chkc:GetLocation()==LOCATION_DECK and s.filter(chkc) end

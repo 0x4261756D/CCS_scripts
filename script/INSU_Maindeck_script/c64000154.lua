@@ -13,7 +13,7 @@ function s.initial_effect(c)
 	e2:SetRange(LOCATION_FZONE)
 	e2:SetTargetRange(LOCATION_MZONE,0)
 	e2:SetValue(600)
-	e2:SetTarget(aux.TargetBoolFunction(Card.IsSetCard,0x19d))
+	e2:SetTarget(aux.TargetBoolFunction(Card.IsSetCard,0x1b0d))
 	c:RegisterEffect(e2)
 	local e3=e2:Clone()
 	e3:SetCode(EFFECT_UPDATE_DEFENSE)
@@ -83,7 +83,7 @@ function s.initial_effect(c)
 	Duel.PayLPCost(tp,500)
 end
 function s.filter(c)
-	return c:IsSetCard(0x19e) and not c:IsCode(id) and c:IsAbleToHand()
+	return c:IsSetCard(0x1b0e) and not c:IsCode(id) and c:IsAbleToHand()
 end
 function s.target(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsExistingMatchingCard(s.filter,tp,LOCATION_DECK,0,1,nil) end

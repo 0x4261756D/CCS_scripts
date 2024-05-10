@@ -74,10 +74,10 @@ function s.poscon(e,tp,eg,ep,ev,re,r,rp)
 	return e:GetHandler():IsSummonType(SUMMON_TYPE_PENDULUM)
 end
 function s.posfilter(c)
-	return c:IsCanChangePosition() and not c:IsPosition(POS_DEFENSE)
+	return c:IsCanChangePosition() and not c:IsDefensePos()
 end
 function s.postg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
-	if chkc then return chkc:IsLocation(LOCATION_MZONE) and chkc:IsControler(1-tp) and not chkc:IsPosition(POS_FACEUP_DEFENSE) end
+	if chkc then return chkc:IsLocation(LOCATION_MZONE) and chkc:IsControler(1-tp) and not chkc:IsDefensePos() end
 	if chk==0 then return Duel.IsExistingTarget(s.posfilter,tp,0,LOCATION_MZONE,1,nil) end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_POSCHANGE)
 	local g=Duel.SelectTarget(tp,s.posfilter,tp,0,LOCATION_MZONE,1,1,nil)
@@ -85,8 +85,7 @@ function s.postg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 end
 function s.posop(e,tp,eg,ep,ev,re,r,rp)
 	local tc=Duel.GetFirstTarget()
-	if tc:IsRelateToEffect(e) and tc:IsLocation(LOCATION_MZONE)
-		and Duel.ChangePosition(tc,POS_FACEUP_DEFENSE)~=0 then
+	if tc:IsRelateToEffect(e) and tc:IsLocation(LOCATION_MZONE) and Duel.ChangePosition(tc,POS_DEFENSE)~=0 then
 		local e1=Effect.CreateEffect(e:GetHandler())
 		e1:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_CONTINUOUS)
 		e1:SetCode(EVENT_BE_BATTLE_TARGET)

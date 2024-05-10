@@ -1,3 +1,4 @@
+-- Fire Shelter
 local s, id = GetID()
 function s.initial_effect(c)
 	--Activate
@@ -7,7 +8,7 @@ function s.initial_effect(c)
 	c:RegisterEffect(e1)
 	--tohand
 	local e2=Effect.CreateEffect(c)
-	e2:SetDescription(aux.Stringid(66000000,0))
+	e2:SetDescription(aux.Stringid(id,0))
 	e2:SetCategory(CATEGORY_TOHAND+CATEGORY_SEARCH)
 	e2:SetType(EFFECT_TYPE_IGNITION)
 	e2:SetRange(LOCATION_FZONE)
@@ -18,12 +19,12 @@ function s.initial_effect(c)
 	c:RegisterEffect(e2)
 	--to grave
 	local e3=Effect.CreateEffect(c)
-	e3:SetDescription(aux.Stringid(66000000,1))
+	e3:SetDescription(aux.Stringid(id,1))
 	e3:SetCategory(CATEGORY_TOGRAVE)
 	e3:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_O)
 	e3:SetProperty(EFFECT_FLAG_CARD_TARGET)
 	e3:SetRange(LOCATION_FZONE)
-	e3:SetCountLimit(1,66000001)
+	e3:SetCountLimit(1,{id, 1})
 	e3:SetCode(EVENT_PHASE+PHASE_END)
 	e3:SetCondition(s.effcon)
 	e3:SetTarget(s.target2)
@@ -31,13 +32,13 @@ function s.initial_effect(c)
 	c:RegisterEffect(e3)
 	--draw
 	local e4=Effect.CreateEffect(c)
-	e4:SetDescription(aux.Stringid(66000000,2))
+	e4:SetDescription(aux.Stringid(id,2))
 	e4:SetCategory(CATEGORY_DRAW)
 	e4:SetType(EFFECT_TYPE_QUICK_O)
 	e4:SetCode(EVENT_FREE_CHAIN)
 	e4:SetRange(LOCATION_FZONE)
 	e4:SetProperty(EFFECT_FLAG_CARD_TARGET)
-	e4:SetCountLimit(1,66000000)
+	e4:SetCountLimit(1,{id, 2})
 	e4:SetHintTiming(TIMING_BATTLE_START)
 	e4:SetCondition(s.effcon2)
 	e4:SetTarget(s.target3)
@@ -114,7 +115,7 @@ end
 function s.target2(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chkc then return chkc:IsLocation(LOCATION_REMOVED) and s.filter(chkc) end
 	if chk==0 then return Duel.IsExistingTarget(s.filter,tp,LOCATION_REMOVED,LOCATION_REMOVED,1,nil) end
-	Duel.Hint(HINT_SELECTMSG,tp,aux.Stringid(66000000,0))
+	Duel.Hint(HINT_SELECTMSG,tp,aux.Stringid(id,0))
 	local g=Duel.SelectTarget(tp,s.filter,tp,LOCATION_REMOVED,LOCATION_REMOVED,1,2,nil)
 	Duel.SetOperationInfo(0,CATEGORY_TOGRAVE,g,g:GetCount(),0,0)
 end
@@ -163,6 +164,6 @@ end
 function s.cfilter4(c)
 	return c:IsSetCard(0x39) and c:IsType(TYPE_MONSTER)
 end
-function s.effcon5(e,tp,eg,ep,ev,re,r,rp)
-return Duel.IsExistingMatchingCard(s.cfilter4,tp,LOCATION_GRAVE,0,7,nil)
+function s.effcon5(e)
+	return Duel.IsExistingMatchingCard(s.cfilter4,e:GetHandlerPlayer(),LOCATION_GRAVE,0,7,nil)
 end

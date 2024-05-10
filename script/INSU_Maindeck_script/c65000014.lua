@@ -42,10 +42,10 @@ end
 function s.efilter(e,ct)
 	local te=Duel.GetChainInfo(ct,CHAININFO_TRIGGERING_EFFECT)
 	local tc=te:GetHandler()
-	return te:IsActiveType(TYPE_MONSTER) and tc:IsSetCard(0x800) and tc:IsSummonType(SUMMON_TYPE_SPECIAL)
+	return te:IsActiveType(TYPE_MONSTER) and tc:IsSetCard(0xaff) and tc:IsSummonType(SUMMON_TYPE_SPECIAL)
 end
 function s.thcon(e,tp,eg,ep,ev,re,r,rp)
-	return re and re:GetHandler():IsSetCard(0x800)
+	return re and re:GetHandler():IsSetCard(0xaff)
 end
 function s.thfilter(c)
 	return c:IsType(TYPE_FIELD) and c:IsAbleToHand()
@@ -64,7 +64,7 @@ function s.thop(e,tp,eg,ep,ev,re,r,rp)
 end
 function s.repfilter(c,tp)
 	return c:IsFaceup() and c:IsControler(tp) and c:IsLocation(LOCATION_ONFIELD)
-		and c:IsSetCard(0x800) and not c:IsReason(REASON_REPLACE) and c:IsReason(REASON_EFFECT)
+		and c:IsSetCard(0xaff) and not c:IsReason(REASON_REPLACE) and c:IsReason(REASON_EFFECT)
 end
 function s.reptg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return e:GetHandler():IsAbleToRemove() and eg:IsExists(s.repfilter,1,nil,tp) end

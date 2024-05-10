@@ -34,7 +34,7 @@ function s.initial_effect(c)
 	end
 
 function s.cfilter(c)
-	return c:IsFacedown() or not c:IsSetCard(0x800) 
+	return c:IsFacedown() or not c:IsSetCard(0xaff) 
 end
 function s.spcon(e,tp,eg,ep,ev,re,r,rp)
 	return Duel.GetFieldGroupCount(tp,LOCATION_MZONE,0)>0
@@ -76,7 +76,7 @@ function s.thop(e,tp,eg,ep,ev,re,r,rp)
 end
 
 function s.kfilter(c)
-	return c:IsSetCard(0x800) and c:IsAbleToDeckAsCost()
+	return c:IsSetCard(0xaff) and c:IsAbleToDeckAsCost()
 end
 function s.cost(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsExistingMatchingCard(s.kfilter,tp,LOCATION_GRAVE,0,1,nil) end

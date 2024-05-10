@@ -1,5 +1,5 @@
 --Ventus Blessing
-Duel.LoadScript("customutility.lua")
+Duel.LoadScript("archetype_specific_functions.lua")
 local s,id=GetID()
 function s.initial_effect(c)
 	--Activate

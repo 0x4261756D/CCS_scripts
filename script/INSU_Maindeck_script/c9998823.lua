@@ -27,11 +27,11 @@ end
 
 function s.cfilter(c,tp)
 	return c:IsControler(tp) and c:IsPreviousLocation(LOCATION_GRAVE)
-		and (c:IsType(TYPE_Gemini) or c:IsType(TYPE_NORMAL))
+		and (c:IsType(TYPE_GEMINI) or c:IsType(TYPE_NORMAL))
 		--
 end
 function s.condition(e,tp,eg,ep,ev,re,r,rp)
-	return aux.IsGeminiState(e) and eg:IsExists(s.cfilter,1,nil,tp)
+	return Gemini.EffectStatusCondition(e) and eg:IsExists(s.cfilter,1,nil,tp)
 end
 function s.target(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chk==0 then return Duel.IsExistingMatchingCard(Card.IsAbleToRemove,tp,LOCATION_ONFIELD,LOCATION_ONFIELD,1,1,nil) end

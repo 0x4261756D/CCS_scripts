@@ -4,13 +4,13 @@ local s, id = GetID()
 function s.initial_effect(c)
 	--draw
 	local e1=Effect.CreateEffect(c)
-	e1:SetDescription(aux.Stringid(675321,0))
+	e1:SetDescription(aux.Stringid(id,0))
 	e1:SetCategory(CATEGORY_DRAW)
 	e1:SetType(EFFECT_TYPE_QUICK_O)
 	e1:SetCode(EVENT_FREE_CHAIN)
 	e1:SetHintTiming(0,0x1c0)
 	e1:SetRange(LOCATION_HAND)
-	e1:SetCountLimit(1,675321)
+	e1:SetCountLimit(1,id)
 	e1:SetCost(s.cost)
 	e1:SetOperation(s.operation)
 	c:RegisterEffect(e1)
@@ -60,13 +60,13 @@ function s.regcon(e,tp,eg,ep,ev,re,r,rp)
 		and re:IsHasType(EFFECT_TYPE_ACTIONS) and not re:IsHasType(EFFECT_TYPE_CONTINUOUS)
 end
 function s.regop(e,tp,eg,ep,ev,re,r,rp)
-	Duel.RegisterFlagEffect(tp,675321,RESET_CHAIN,0,1)
+	Duel.RegisterFlagEffect(tp,id,RESET_CHAIN,0,1)
 end
 function s.drcon2(e,tp,eg,ep,ev,re,r,rp)
-	return Duel.GetFlagEffect(tp,675321)>0
+	return Duel.GetFlagEffect(tp,id)>0
 end
 function s.drop2(e,tp,eg,ep,ev,re,r,rp)
-	local n=Duel.GetFlagEffect(tp,675321)
-	Duel.ResetFlagEffect(tp,675321)
+	local n=Duel.GetFlagEffect(tp,id)
+	Duel.ResetFlagEffect(tp,id)
 	Duel.Draw(tp,n,REASON_EFFECT)
 end

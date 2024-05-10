@@ -41,7 +41,7 @@ function s.initial_effect(c)
 end
 
 function s.rmfilter(c,tp)
-	return c:IsType(TYPE_SPELL) and c:IsSetCard(0x800) and c:IsAbleToRemoveAsCost() and Duel.IsExistingMatchingCard(s.thfilter1,tp,LOCATION_REMOVED,0,1,nil,c:GetCode())
+	return c:IsType(TYPE_SPELL) and c:IsSetCard(0xaff) and c:IsAbleToRemoveAsCost() and Duel.IsExistingMatchingCard(s.thfilter1,tp,LOCATION_REMOVED,0,1,nil,c:GetCode())
 end
 function s.thfilter1(c,r)
 	return c:IsAbleToHand() and not c:IsCode(r) and c:IsType(TYPE_SPELL)
@@ -91,7 +91,7 @@ function s.aclimit(e,re)
 	return re:GetHandler():IsCode(e:GetLabel())
 end
 function s.thfilter(c)
-	return c:IsSetCard(0x800) and c:IsType(TYPE_MONSTER) and c:IsAbleToHand()
+	return c:IsSetCard(0xaff) and c:IsType(TYPE_MONSTER) and c:IsAbleToHand()
 end
 function s.thtg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return true end

@@ -1,3 +1,4 @@
+-- Injection Needle
 local s, id = GetID()
 function s.initial_effect(c)
 	aux.AddEquipProcedure(c,0,s.filter,s.eqlimit)
@@ -5,7 +6,7 @@ function s.initial_effect(c)
 	local e2=Effect.CreateEffect(c)
 	e2:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_F)
 	e2:SetCategory(CATEGORY_RECOVER)
-	e2:SetDescription(aux.Stringid(64000152,0))
+	e2:SetDescription(aux.Stringid(id,0))
 	e2:SetCode(EVENT_BATTLE_DAMAGE)
 	e2:SetRange(LOCATION_SZONE)
 	e2:SetCondition(s.reccon)
@@ -20,10 +21,10 @@ function s.initial_effect(c)
 end
 function s.eqlimit(e,c)
 	return c:GetControler()==e:GetHandler():GetControler()
-		and (c:IsCode(5519829) or c:IsCode(79575620) or (c:IsSetCard(0x19d)))
+		and (c:IsCode(5519829) or c:IsCode(79575620) or (c:IsSetCard(0x1b0d)))
 end
 function s.filter(c)
-	return c:IsCode(5519829) or c:IsCode(79575620) or (c:IsSetCard(0x19d))
+	return c:IsCode(5519829) or c:IsCode(79575620) or (c:IsSetCard(0x1b0d))
 end
 function s.reccon(e,tp,eg,ep,ev,re,r,rp)
 	local ec=e:GetHandler():GetEquipTarget()

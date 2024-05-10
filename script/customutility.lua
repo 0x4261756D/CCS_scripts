@@ -3,83 +3,39 @@
 --constants
 REGISTER_FLAG_FILTER=16
 HINTMSG_REMOVE_COUNTER=10001
+HINTMSG__MATERIAL=10002
+HINTMSG_TRICK_MATERIAL=10003
 --functions
-
-function Card.GetMaxCounterRemoval(c,tp,cttypes,reason)
-	local ct=0
-	if type(cttypes)=="table" then
-		for _,cttype in ipairs(cttypes) do
-			for i=1,c:GetCounter(cttype) do
-				if c:IsCanRemoveCounter(tp,cttype,i,reason) then
-					ct=ct+1
-				else
-					break
-				end
-			end
+local function arg_dump(e, func, kind, ...)
+	if DEBUG_ID == e:GetHandler():GetCode() then
+		Debug.Message(kind.." of "..e:GetHandler():GetCode())
+		local t = table.pack(...)
+		local str = "  "
+		for i = 1, t.n do
+			str = str..i..": "..type(t[i]).." "
 		end
-	else
-		for i=1,c:GetCounter(cttypes) do
-			if c:IsCanRemoveCounter(tp,cttypes,i,reason) then
-				ct=ct+1
-			else
-				break
-			end
-		end
+		Debug.Message(str)
 	end
-	return ct
+	return func(...)
 end
 
-function Card.MaxCounterRemovalCheck(c,tp,cttypes,ctamount,reason)
-	return c:GetMaxCounterRemoval(tp,cttypes,reason)>=ctamount
+local SetTg = Effect.SetTarget
+Effect.SetTarget = function (e, func)
+	return SetTg(e, function (...)
+		return arg_dump(e, func, "Target", ...)
+	end)
 end
-
-function Group.GetMaxCounterRemoval(g,tp,cttypes,reason)
-	local ct=0
-	if type(cttypes)=="table" then
-		for _,cttype in ipairs(cttypes) do
-			for tc in g:Iter() do
-				ct=ct+tc:GetMaxCounterRemoval(tp,cttype,reason)
-			end
-		end
-	else
-		for tc in g:Iter() do
-			ct=ct+tc:GetMaxCounterRemoval(tp,cttypes,reason)
-		end
-	end
-	return ct
+local SetCon = Effect.SetCondition
+Effect.SetCondition = function (e, func)
+	return SetCon(e, function (...)
+		return arg_dump(e, func, "Condition", ...)
+	end)
 end
-
-function Group.CanRemoveCounter(g,tp,cttypes,ctamount,reason)
-	return g:GetMaxCounterRemoval(tp,cttypes,reason)>=ctamount
-end
-
-function Group.RemoveCounter(g,tp,cttypes,ctamount,reason)
-	if type(cttypes)=="table" then
-		local ct=0
-		for _,cttype in ipairs(cttypes) do
-			ct=ct+g:GetMaxCounterRemoval(tp,cttype,reason)
-		end
-		if ct<ctamount then return end
-		local choices,tc,choice
-		for i=1,ctamount do
-			Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_REMOVE_COUNTER)
-			tc=g:FilterSelect(tp,Card.MaxCounterRemovalCheck,1,1,nil,tp,cttypes,1,reason):GetFirst()
-			choices={}
-			for _,cttype in ipairs(cttypes) do
-				table.insert(choices,{tc:IsCanRemoveCounter(tp,cttype,1,reason),tonumber(cttype)})
-			end
-			choice=Duel.SelectEffect(tp,table.unpack(choices))
-			tc:RemoveCounter(tp,cttypes[choice],1,reason)
-		end
-	else
-		if not g:CanRemoveCounter(tp,cttypes,ctamount,reason) then return end
-		local tc
-		for i=1,ctamount do
-			Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_REMOVE_COUNTER)
-			tc=g:FilterSelect(tp,Card.IsCanRemoveCounter,1,1,nil,tp,cttypes,1,reason):GetFirst()
-			tc:RemoveCounter(tp,cttypes,1,reason)
-		end
-	end
+local SetOp = Effect.SetOperation
+Effect.SetOperation = function (e, func)
+	return SetOp(e, function (...)
+		return arg_dump(e, func, "Operation", ...)
+	end)
 end
 
 function Synchro.Tuner(f,...)
@@ -109,7 +65,38 @@ function removeall(tab,element)
 		end
 	end
 end
+function Auxiliary.ForceExtraRules(c,card,init,...)
+    local e1=Effect.CreateEffect(c)
+    e1:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
+    e1:SetCode(EVENT_ADJUST)
+    e1:SetProperty(EFFECT_FLAG_UNCOPYABLE+EFFECT_FLAG_CANNOT_DISABLE)
+    e1:SetOperation(Auxiliary.ForceExtraRulesOperation(card,init,...))
+    Duel.RegisterEffect(e1,0)
+end
 
+function Auxiliary.ForceExtraRulesOperation(card,init,...)
+    local arg = {...}
+    return function(e,tp,eg,ep,ev,re,r,rp)
+        local c = e:GetOwner()
+        local p = c:GetControler()
+        Duel.DisableShuffleCheck()
+        Duel.SendtoDeck(c,nil,-2,REASON_RULE)
+        local ct = Duel.GetMatchingGroupCount(nil,p,LOCATION_HAND+LOCATION_DECK,0,c)
+        if (Duel.IsDuelType(DUEL_MODE_SPEED) and ct < 20 or ct < 40) and Duel.SelectYesNo(1-p, aux.Stringid(4014,5)) then
+            Duel.Win(1-p,0x55)
+        end
+        if c:IsPreviousLocation(LOCATION_HAND) then Duel.Draw(p, 1, REASON_RULE) end
+        if not card.global_active_check then
+            --Duel.ConfirmCards(1-p, c)
+                --Duel.Hint(HINT_CARD,tp,c:GetCode())
+                --Duel.Hint(HINT_OPSELECTED,tp,aux.Stringid(4014,7))
+                --Duel.Hint(HINT_OPSELECTED,1-tp,aux.Stringid(4014,7))
+                init(c,table.unpack(arg))
+            card.global_active_check = true
+        end
+        e:Reset()
+    end
+end
 function Auxiliary.doccost(min,max,label,cost,order)
 	return function(e,tp,eg,ep,ev,re,r,rp,chk)
 		local c=e:GetHandler()
@@ -219,39 +206,6 @@ function merge(t1, t2, filter)
 	end
 end
 
-local regeff2=Card.RegisterEffect
-function Card.RegisterEffect(c,e,forced,...)
-	if c:IsStatus(STATUS_INITIALIZING) and not e then
-		error("Parameter 2 expected to be Effect, got nil instead.",2)
-	end
-	--16 == 300001010 - access to Effulgence Congregater Zalatiel to filter for "EVENT_" effects
-	local reg_e=regeff2(c,e,forced)
-	if not reg_e then
-		return nil
-	end
-	local reg={...}
-	local resetflag,resetcount=e:GetReset()
-	for _,val in ipairs(reg) do
-		local prop=EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_IGNORE_IMMUNE+EFFECT_FLAG_SET_AVAILABLE
-		if e:IsHasProperty(EFFECT_FLAG_UNCOPYABLE) then prop=prop|EFFECT_FLAG_UNCOPYABLE end
-		local e2=Effect.CreateEffect(c)
-		e2:SetType(EFFECT_TYPE_SINGLE)
-		e2:SetProperty(prop,EFFECT_FLAG2_MAJESTIC_MUST_COPY)
-		if val==16 then
-			e2:SetCode(300001010)		
-		end
-		e2:SetLabelObject(e)
-		e2:SetLabel(c:GetOriginalCode())
-		if resetflag and resetcount then
-			e2:SetReset(resetflag,resetcount)
-		elseif resetflag then
-			e2:SetReset(resetflag)
-		end
-		c:RegisterEffect(e2)
-	end
-	return reg_e
-end
-
 function Fusion.AddSpellTrapRep(c,s,value,f,...)
 	f(...)
 	aux.GlobalCheck(s,function()
@@ -263,4 +217,15 @@ function Fusion.AddSpellTrapRep(c,s,value,f,...)
 		ge:SetValue(value or function(e,cc) if not cc then return false end return cc:IsOriginalCode(c:GetOriginalCode()) end)
 		Duel.RegisterEffect(ge,0)
 	end)
+end
+
+function GetMinMaxMaterialCount(i,...)
+	local params={...}
+	local min,max=0,0
+	for _,t in ipairs(params) do
+		for _,val in ipairs(t) do
+			min,max=min+val[i],max+val[i+1]
+		end
+	end
+	return min,max
 end

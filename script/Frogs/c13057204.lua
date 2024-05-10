@@ -1,3 +1,4 @@
+-- Forrestborn Frog
 local s, id = GetID()
 function s.initial_effect(c)
 	--fusion material
@@ -43,7 +44,7 @@ function s.initial_effect(c)
 	c:RegisterEffect(e4)
 	--draw
 	local e5=Effect.CreateEffect(c)
-	e5:SetDescription(aux.Stringid(13057204,0))
+	e5:SetDescription(aux.Stringid(id,0))
 	e5:SetCategory(CATEGORY_DRAW)
 	e5:SetCode(EVENT_SPSUMMON_SUCCESS)
 	e5:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)

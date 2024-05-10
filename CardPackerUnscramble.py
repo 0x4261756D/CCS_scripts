@@ -49,7 +49,7 @@ else:
 	);
 	''')
 
-	con.execute('INSERT INTO main.temp2 SELECT id, desc, name, str1, str2, str3, str4, str5, str6, str7, str8, str9, str10, str11, str12, str13, str14, str15, str16 FROM main.texts;')
+	con.execute('INSERT INTO main.temp2 SELECT id, name, desc, str1, str2, str3, str4, str5, str6, str7, str8, str9, str10, str11, str12, str13, str14, str15, str16 FROM main.texts;')
 	con.execute('DROP TABLE main.texts;')
 	con.execute('ALTER TABLE main.temp2 RENAME TO texts;')
 	con.commit()

@@ -1,13 +1,13 @@
+-- Archlord Ixchel
 local s, id = GetID()
 function s.initial_effect(c)
-  --draw
-local e1=Effect.CreateEffect(c)
-	e1:SetDescription(aux.Stringid(64000106,0))
+	local e1=Effect.CreateEffect(c)
+	e1:SetDescription(aux.Stringid(id,0))
 	e1:SetCategory(CATEGORY_DRAW)
 	e1:SetType(EFFECT_TYPE_IGNITION)
 	e1:SetProperty(EFFECT_FLAG_PLAYER_TARGET)
 	e1:SetRange(LOCATION_HAND)
-	e1:SetCountLimit(1,64000106)
+	e1:SetCountLimit(1,{id, 1})
 	e1:SetCost(s.drcost)
 	e1:SetTarget(s.target)
 	e1:SetOperation(s.drop)
@@ -18,7 +18,7 @@ local e1=Effect.CreateEffect(c)
 	e2:SetCode(EFFECT_SPSUMMON_PROC)
 	e2:SetProperty(EFFECT_FLAG_UNCOPYABLE+EFFECT_FLAG_CANNOT_DISABLE)
 	e2:SetRange(LOCATION_GRAVE)
-	e2:SetCountLimit(1,64000107)
+	e2:SetCountLimit(1,{id, 2})
 	e2:SetCondition(s.spcon)
 	e2:SetOperation(s.spop)
 	c:RegisterEffect(e2)
@@ -38,7 +38,7 @@ function s.target(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsPlayerCanDraw(tp,2) end
 	local d=2
 	if Duel.IsEnvironment(56433456)
-		and Duel.SelectOption(tp,aux.Stringid(64000106,0),aux.Stringid(64000106,1))==1 then
+		and Duel.SelectOption(tp,aux.Stringid(id,0),aux.Stringid(id,1))==1 then
 		d=3
 	end
 	Duel.SetTargetPlayer(tp)

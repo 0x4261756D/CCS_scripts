@@ -45,16 +45,16 @@ function s.initial_effect(c)
 	c:RegisterEffect(e6)
 end
 function s.nevtgfilter(c)
-	return c:IsFaceup() and c:IsSetCard(0x800) and c:IsType(TYPE_MONSTER)
+	return c:IsFaceup() and c:IsSetCard(0xaff) and c:IsType(TYPE_MONSTER)
 end
 function s.limcon(e)
 	return Duel.GetMatchingGroupCount(s.nevtgfilter,e:GetHandler():GetControler(),LOCATION_MZONE,0,nil)>0
 end
 function s.atlimit(e,c)
-	return c:IsFaceup() and c:IsSetCard(0x800)
+	return c:IsFaceup() and c:IsSetCard(0xaff)
 end
 function s.shfilter(c,tp)
-	return c:IsFaceup() and c:IsSetCard(0x800) and c:IsType(TYPE_MONSTER) and c:GetSummonPlayer()==tp
+	return c:IsFaceup() and c:IsSetCard(0xaff) and c:IsType(TYPE_MONSTER) and c:GetSummonPlayer()==tp
 end
 function s.shcon(e,tp,eg,ep,ev,re,r,rp)
 	return eg:IsExists(s.shfilter,1,nil,tp)
@@ -75,7 +75,7 @@ function s.filter1(c)
 	return c:IsType(TYPE_SPELL) and c:IsAbleToDeck() and not c:IsPublic()
 end
 function s.filter2(c)
-	return c:IsSetCard(0x800) and c:IsType(TYPE_SPELL) and c:IsAbleToDeck() and not c:IsPublic()
+	return c:IsSetCard(0xaff) and c:IsType(TYPE_SPELL) and c:IsAbleToDeck() and not c:IsPublic()
 end
 function s.target(e,tp,eg,ep,ev,re,r,rp,chk)
 	local g=Duel.GetMatchingGroup(s.filter1,tp,LOCATION_HAND,0,nil)

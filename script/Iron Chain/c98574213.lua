@@ -18,11 +18,10 @@ function s.dspfilter(c,e,tp)
 	return c:IsSetCard(0x25) and c:IsLevelBelow(4) and not c:IsCode(id)
 		and c:IsCanBeSpecialSummoned(e,0,tp,false,false,POS_FACEUP)
 end
-function s.spcon(e,tp,eg,ep,ev,re,r,rp)
+function s.spcon(e,c)
 	if c==nil then return true end
-	local tp=c:GetControler()
-	return Duel.GetFieldGroupCount(tp,LOCATION_MZONE,0)==0
-		and Duel.GetLocationCount(tp,LOCATION_MZONE)>0
+	local tp=e:GetHandlerPlayer()
+	return Duel.GetFieldGroupCount(tp,LOCATION_MZONE,0,nil)==0 and Duel.GetLocationCount(tp,LOCATION_MZONE)>0
 end
 function s.spop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()

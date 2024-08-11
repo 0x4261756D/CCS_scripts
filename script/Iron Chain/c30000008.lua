@@ -21,6 +21,8 @@ function s.initial_effect(c)
     e2:SetOperation(s.operation)
     c:RegisterEffect(e2)
 end
+s.listed_series={0x25}
+s.listed_names={id}
 --mill
 function s.cfilter(c,tp)
     return c:IsPreviousLocation(LOCATION_DECK) and c:IsPreviousControler(tp)
@@ -28,7 +30,7 @@ end
 function s.condtion(e,tp,eg,ep,ev,re,r,rp)
     if not re then return false end
     local rc=re:GetHandler()
-    return re:GetHandler():GetCode()~=id and (r&REASON_EFFECT)~=0 and eg:IsExists(s.cfilter,1,nil,1-tp)
+    return re:GetHandler():GetCode()~=id and eg:IsExists(s.cfilter,1,nil,1-tp)
 end
 function s.target(e,tp,eg,ep,ev,re,r,rp,chk)
     if chk==0 then return e:GetHandler():IsRelateToEffect(e) end

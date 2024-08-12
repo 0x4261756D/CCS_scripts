@@ -29,7 +29,6 @@ function s.cfilter(c,tp)
 end
 function s.condtion(e,tp,eg,ep,ev,re,r,rp)
     if not re then return false end
-    local rc=re:GetHandler()
     return re:GetHandler():GetCode()~=id and eg:IsExists(s.cfilter,1,nil,1-tp)
 end
 function s.target(e,tp,eg,ep,ev,re,r,rp,chk)

@@ -28,18 +28,17 @@ end
 function s.sptg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.GetLocationCount(tp,LOCATION_MZONE)>0
 		and Duel.IsExistingMatchingCard(s.filter,tp,LOCATION_HAND,0,1,nil,e,tp) end
-        Duel.Hint(HINT_OPSELECTED,1-tp,e:GetDescription())
-		Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,nil,1,tp,LOCATION_HAND)
-    	Duel.SetOperationInfo(0,CATEGORY_DECKDES,nil,0,1-tp,1)
+	Duel.Hint(HINT_OPSELECTED,1-tp,e:GetDescription())
+	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,nil,1,tp,LOCATION_HAND)
+	Duel.SetOperationInfo(0,CATEGORY_DECKDES,nil,0,1-tp,1)
 end
 function s.spop(e,tp,eg,ep,ev,re,r,rp)
 	if Duel.GetLocationCount(tp,LOCATION_MZONE)<=0 then return end
-		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
-		local g=Duel.SelectMatchingCard(tp,s.filter,tp,LOCATION_HAND,0,1,1,nil,e,tp)
-    	if g:GetCount()>0 and g:GetFirst():IsLocation(LOCATION_HAND) then
-  	    	local ct=g:GetFirst():GetLevel()
-			Duel.SpecialSummon(g,0,tp,tp,false,false,POS_FACEUP)
-        	Duel.DiscardDeck(1-tp,ct,REASON_EFFECT)
-	    end
-    end
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
+	local g=Duel.SelectMatchingCard(tp,s.filter,tp,LOCATION_HAND,0,1,1,nil,e,tp)
+	if g:GetCount()>0 and g:GetFirst():IsLocation(LOCATION_HAND) then
+		local ct=g:GetFirst():GetLevel()
+		Duel.SpecialSummon(g,0,tp,tp,false,false,POS_FACEUP)
+		Duel.DiscardDeck(1-tp,ct,REASON_EFFECT)
+	end
 end

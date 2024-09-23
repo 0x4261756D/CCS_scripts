@@ -2,6 +2,7 @@ Duel.LoadScript("customutility.lua")
 
 function Card.IsTrapSpell(c)
 	local e=c:IsHasEffect(EFFECT_ADD_TYPE)
+	if not e then return false end
 	return c:IsType(TYPE_TRAP) and e:GetValue()==TYPE_SPELL
 end
 
@@ -17,6 +18,13 @@ function Trapspell.CreateActivation(c)
 	local e1=e0:Clone()
 	e1:SetCode(EFFECT_TRAP_ACT_IN_SET_TURN)
 	c:RegisterEffect(e1)
+	local e2=Effect.CreateEffect(c)
+	e2:SetType(EFFECT_TYPE_SINGLE)
+	e2:SetProperty(EFFECT_FLAG_IGNORE_IMMUNE+EFFECT_FLAG_SET_AVAILABLE)
+	e2:SetCode(EFFECT_ADD_TYPE)
+	e2:SetRange(LOCATION_ALL)
+	e2:SetValue(TYPE_SPELL)
+	c:RegisterEffect(e2)
 end
 
 function Trapspell.Spellcon(con)

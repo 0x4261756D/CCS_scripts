@@ -65,6 +65,21 @@ function removeall(tab,element)
 		end
 	end
 end
+
+function tableFilter(t, f, ...)
+	local t2 = {}
+	for _, v in ipairs(t) do
+		if f(v, ...) then 
+			table.insert(t2, v)
+		end
+	end
+	return t2
+end
+
+function tableFilterCount(t, f, ...)
+	return #s.tableFilter(t, f, ...)
+end
+
 function Auxiliary.ForceExtraRules(c,card,init,...)
     local e1=Effect.CreateEffect(c)
     e1:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)

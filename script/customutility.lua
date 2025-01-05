@@ -66,18 +66,18 @@ function removeall(tab,element)
 	end
 end
 
-function tableFilter(t,f,...)
+function tableFilter(t,f,ex,...)
 	local t2 = {}
 	for _, v in ipairs(t) do
-		if f(v,...) then 
+		if f(v,...) and v~=ex then 
 			table.insert(t2,v)
 		end
 	end
 	return t2
 end
 
-function tableFilterCount(t,f,...)
-	return #tableFilter(t,f,...)
+function tableFilterCount(t,f,ex,...)
+	return #tableFilter(t,f,ex,...)
 end
 
 function Auxiliary.ForceExtraRules(c,card,init,...)

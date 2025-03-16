@@ -80,6 +80,26 @@ function tableFilterCount(t,f,ex,...)
 	return #tableFilter(t,f,ex,...)
 end
 
+function any(t,f,...)
+	for _, v in ipairs(t) do
+		if f(v,...) then return true end
+	end
+	return false
+end
+
+function all(t,f,...)
+	for _, v in ipairs(t) do
+		if not f(v,...) then return false end
+	end
+	return true
+end
+
+function forEach(t,f,...)
+	for _, v in ipairs(t) do
+		f(v,...)
+	end
+end
+
 function Auxiliary.ForceExtraRules(c,card,init,...)
     local e1=Effect.CreateEffect(c)
     e1:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
